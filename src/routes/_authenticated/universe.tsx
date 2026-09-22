@@ -267,6 +267,8 @@ function UniversePage() {
         가까워집니다.
       </p>
 
+      <QuestBoard userId={userId} />
+
       <Dialog open={Boolean(selected)} onOpenChange={(o) => !o && setSelected(null)}>
         <DialogContent className="max-h-[85vh] overflow-y-auto border-border bg-card">
           <DialogHeader>
