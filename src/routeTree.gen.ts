@@ -18,6 +18,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authenticated/equipment'
 import { Route as AuthenticatedMeRouteImport } from './routes/_authenticated/me'
 import { Route as AuthenticatedRoomRouteImport } from './routes/_authenticated/room'
+import { Route as AuthenticatedActivitiesIndexRouteImport } from './routes/_authenticated/activities.index'
 import { Route as AuthenticatedBoardBoardIndexRouteImport } from './routes/_authenticated/board.$board.index'
 import { Route as AuthenticatedBoardBoardPostIdRouteImport } from './routes/_authenticated/board.$board.$postId'
 
@@ -65,6 +66,12 @@ const AuthenticatedRoomRoute = AuthenticatedRoomRouteImport.update({
   path: '/room',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedActivitiesIndexRoute =
+  AuthenticatedActivitiesIndexRouteImport.update({
+    id: '/activities/',
+    path: '/activities/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedBoardBoardIndexRoute =
   AuthenticatedBoardBoardIndexRouteImport.update({
     id: '/board/$board/',
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/me': typeof AuthenticatedMeRoute
   '/room': typeof AuthenticatedRoomRoute
+  '/activities/': typeof AuthenticatedActivitiesIndexRoute
   '/board/$board/$postId': typeof AuthenticatedBoardBoardPostIdRoute
   '/board/$board/': typeof AuthenticatedBoardBoardIndexRoute
 }
@@ -99,6 +107,7 @@ export interface FileRoutesByTo {
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/me': typeof AuthenticatedMeRoute
   '/room': typeof AuthenticatedRoomRoute
+  '/activities': typeof AuthenticatedActivitiesIndexRoute
   '/board/$board/$postId': typeof AuthenticatedBoardBoardPostIdRoute
   '/board/$board': typeof AuthenticatedBoardBoardIndexRoute
 }
@@ -113,6 +122,7 @@ export interface FileRoutesById {
   '/_authenticated/equipment': typeof AuthenticatedEquipmentRoute
   '/_authenticated/me': typeof AuthenticatedMeRoute
   '/_authenticated/room': typeof AuthenticatedRoomRoute
+  '/_authenticated/activities/': typeof AuthenticatedActivitiesIndexRoute
   '/_authenticated/board/$board/$postId': typeof AuthenticatedBoardBoardPostIdRoute
   '/_authenticated/board/$board/': typeof AuthenticatedBoardBoardIndexRoute
 }
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/equipment'
     | '/me'
     | '/room'
+    | '/activities/'
     | '/board/$board/$postId'
     | '/board/$board/'
   fileRoutesByTo: FileRoutesByTo
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/equipment'
     | '/me'
     | '/room'
+    | '/activities'
     | '/board/$board/$postId'
     | '/board/$board'
   id:
@@ -152,6 +164,7 @@ export interface FileRouteTypes {
     | '/_authenticated/equipment'
     | '/_authenticated/me'
     | '/_authenticated/room'
+    | '/_authenticated/activities/'
     | '/_authenticated/board/$board/$postId'
     | '/_authenticated/board/$board/'
   fileRoutesById: FileRoutesById
@@ -227,6 +240,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRoomRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/activities/': {
+      id: '/_authenticated/activities/'
+      path: '/activities'
+      fullPath: '/activities/'
+      preLoaderRoute: typeof AuthenticatedActivitiesIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/board/$board/': {
       id: '/_authenticated/board/$board/'
       path: '/board/$board'
@@ -251,6 +271,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedEquipmentRoute: typeof AuthenticatedEquipmentRoute
   AuthenticatedMeRoute: typeof AuthenticatedMeRoute
   AuthenticatedRoomRoute: typeof AuthenticatedRoomRoute
+  AuthenticatedActivitiesIndexRoute: typeof AuthenticatedActivitiesIndexRoute
   AuthenticatedBoardBoardPostIdRoute: typeof AuthenticatedBoardBoardPostIdRoute
   AuthenticatedBoardBoardIndexRoute: typeof AuthenticatedBoardBoardIndexRoute
 }
@@ -262,6 +283,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEquipmentRoute: AuthenticatedEquipmentRoute,
   AuthenticatedMeRoute: AuthenticatedMeRoute,
   AuthenticatedRoomRoute: AuthenticatedRoomRoute,
+  AuthenticatedActivitiesIndexRoute: AuthenticatedActivitiesIndexRoute,
   AuthenticatedBoardBoardPostIdRoute: AuthenticatedBoardBoardPostIdRoute,
   AuthenticatedBoardBoardIndexRoute: AuthenticatedBoardBoardIndexRoute,
 }
