@@ -134,7 +134,7 @@ function UpcomingEvents() {
 
 function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div className="bg-card px-6 py-6">
+    <div className="corner-marks bg-card px-6 py-6">
       <p className="label-mono">{label}</p>
       <p
         className={`mt-2 truncate font-mono text-sm ${accent ? "text-primary" : "text-foreground"}`}
