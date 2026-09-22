@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
 import { formatDate, formatDateTime } from "@/lib/format";
-import { initialOf, signAvatars } from "@/lib/avatars";
+import { signAvatars } from "@/lib/avatars";
 import { ConstellationAvatar } from "@/components/constellation-avatar";
 
 const RENTAL_LABEL: Record<string, string> = {

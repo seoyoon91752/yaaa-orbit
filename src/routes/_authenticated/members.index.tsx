@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell } from "@/components/member-shell";
-import { initialOf, signAvatars } from "@/lib/avatars";
+import { signAvatars } from "@/lib/avatars";
 import { ConstellationAvatar } from "@/components/constellation-avatar";
 import { SheetStrip } from "@/components/sheet-strip";
 
