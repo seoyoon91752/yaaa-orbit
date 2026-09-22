@@ -143,6 +143,46 @@
   box-shadow: 3px 3px 0 0 color-mix(in oklab, var(--primary) 22%, transparent);
 }
 
+/* Faint crosshair ticks in each corner — drafting-instrument detail. */
+@utility corner-marks {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    pointer-events: none;
+    --mark: color-mix(in oklab, var(--primary) 40%, transparent);
+    background-image:
+      linear-gradient(var(--mark), var(--mark)), linear-gradient(var(--mark), var(--mark)),
+      linear-gradient(var(--mark), var(--mark)), linear-gradient(var(--mark), var(--mark)),
+      linear-gradient(var(--mark), var(--mark)), linear-gradient(var(--mark), var(--mark)),
+      linear-gradient(var(--mark), var(--mark)), linear-gradient(var(--mark), var(--mark));
+    background-repeat: no-repeat;
+    background-size:
+      9px 1px,
+      1px 9px,
+      9px 1px,
+      1px 9px,
+      9px 1px,
+      1px 9px,
+      9px 1px,
+      1px 9px;
+    background-position:
+      left top,
+      left top,
+      right top,
+      right top,
+      left bottom,
+      left bottom,
+      right bottom,
+      right bottom;
+    opacity: 0.65;
+    transition: opacity 0.3s ease;
+  }
+}
+
+
 @utility blueprint-panel {
   border: 1px solid var(--border);
   background: color-mix(in oklab, var(--background) 82%, transparent);
