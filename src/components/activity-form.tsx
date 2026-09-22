@@ -23,6 +23,7 @@ export const emptyActivity: ActivityFormState = {
   ends_at: "",
   apply_deadline: "",
   capacity: "",
+  stardust_reward: "1",
 };
 
 export const ACTIVITY_CATEGORIES = ["관측회", "번개 관측", "세미나", "정기모임", "기타"];
