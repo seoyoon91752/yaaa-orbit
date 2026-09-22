@@ -115,26 +115,22 @@ function BoardList() {
         ) : null
       }
     >
-      {/* 치수선 스타일 요약 */}
-      <div className="mb-10 flex items-center gap-3 font-mono text-[11px] tracking-[0.12em] text-muted-foreground">
-        <span className="h-2.5 w-px bg-border" />
-        <span className="text-primary">◀</span>
-        <span className="h-px flex-1 bg-border" />
-        <span className="whitespace-nowrap">
-          NEW{" "}
+      {/* 왼쪽 세로선 캡션 */}
+      <div className="mb-10 border-l-2 border-primary/40 pl-4">
+        <p className="font-mono text-xs tracking-[0.12em] text-muted-foreground">
+          NEW POSTS{" "}
           <span className="text-primary">
             {newCount.data === undefined ? "—" : newCount.data}
           </span>
-          <span className="mx-2 text-border">|</span>
+        </p>
+        <p className="mt-1 font-mono text-xs tracking-[0.12em] text-muted-foreground">
           LATEST{" "}
           <span className="text-foreground">
             {data?.rows[0] ? formatDate(data.rows[0].created_at) : "—"}
           </span>
-        </span>
-        <span className="h-px flex-1 bg-border" />
-        <span className="text-primary">▶</span>
-        <span className="h-2.5 w-px bg-border" />
+        </p>
       </div>
+
 
 
 
