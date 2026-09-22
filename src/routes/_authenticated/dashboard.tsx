@@ -115,7 +115,7 @@ function UpcomingEvents() {
       ) : (
         <ul className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
           {data!.map((e) => (
-            <li key={e.id} className="corner-marks bg-card px-6 py-6">
+            <li key={e.id} className="bg-card px-6 py-6">
               <p className="label-mono text-gold">{e.category}</p>
               <p className="mt-3 truncate font-display text-lg font-semibold">{e.title}</p>
               <p className="mt-2 font-mono text-xs text-muted-foreground">
@@ -134,7 +134,7 @@ function UpcomingEvents() {
 
 function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div className="corner-marks bg-card px-6 py-6">
+    <div className="bg-card px-6 py-6">
       <p className="label-mono">{label}</p>
       <p
         className={`mt-2 truncate font-mono text-sm ${accent ? "text-primary" : "text-foreground"}`}
@@ -160,7 +160,7 @@ function Shortcut({
     <Link
       to={to}
       params={params ?? {}}
-      className="corner-marks bg-card px-6 py-7 transition-colors hover:bg-primary/5"
+      className="bg-card px-6 py-7 transition-colors hover:bg-primary/5"
     >
       <p className="label-mono">{sub}</p>
       <p className="mt-3 font-display text-xl font-semibold">{label} →</p>
