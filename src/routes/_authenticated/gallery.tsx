@@ -30,7 +30,7 @@ type PhotoRow = {
   shot_at: string | null;
   storage_path: string;
   created_at: string;
-  url?: string;
+  url?: string | undefined;
 };
 
 const emptyForm = { title: "", caption: "", shot_at: "" };
