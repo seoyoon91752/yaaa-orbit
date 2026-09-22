@@ -90,7 +90,7 @@ function GalleryPage() {
       }
     },
     onSuccess: () => {
-      toast.success("사진이 등록되었습니다. 별가루가 지급되었습니다.");
+      toast.success("사진이 등록되었습니다.");
       setOpen(false);
       setForm(emptyForm);
       setFile(null);
