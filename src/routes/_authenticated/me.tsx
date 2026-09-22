@@ -194,18 +194,33 @@ function MyPage() {
     },
   });
 
-  const savePhone = useMutation({
+  const saveDepartment = useMutation({
     mutationFn: async () => {
       const { error } = await supabase
         .from("profiles")
-        .update({ department: department.trim() || null, phone: phone.trim() || null })
+        .update({ department: department.trim() || null })
         .eq("id", userId!);
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("정보가 저장되었습니다.");
+      toast.success("학과가 저장되었습니다.");
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
       queryClient.invalidateQueries({ queryKey: ["members"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const savePhone = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ phone: phone.trim() || null })
+        .eq("id", userId!);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("연락처가 저장되었습니다.");
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -308,6 +323,13 @@ function MyPage() {
               <p className="mt-2 text-xs text-muted-foreground">
                 입력한 학과는 부원 프로필 명단에 표시됩니다.
               </p>
+              <button
+                onClick={() => saveDepartment.mutate()}
+                disabled={saveDepartment.isPending}
+                className="mt-3 w-full rounded-sm border border-primary/40 px-5 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10 disabled:opacity-50 sm:w-auto"
+              >
+                {saveDepartment.isPending ? "저장 중…" : "학과 저장"}
+              </button>
             </div>
             <div>
               <p className="label-mono mb-2">연락처</p>
@@ -317,14 +339,14 @@ function MyPage() {
                 placeholder="010-0000-0000"
                 className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
               />
+              <button
+                onClick={() => savePhone.mutate()}
+                disabled={savePhone.isPending}
+                className="mt-3 w-full rounded-sm border border-primary/40 px-5 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10 disabled:opacity-50 sm:w-auto"
+              >
+                {savePhone.isPending ? "저장 중…" : "연락처 저장"}
+              </button>
             </div>
-            <button
-              onClick={() => savePhone.mutate()}
-              disabled={savePhone.isPending}
-              className="w-full rounded-sm border border-primary/40 px-5 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10 disabled:opacity-50 sm:w-auto"
-            >
-              {savePhone.isPending ? "저장 중…" : "저장"}
-            </button>
           </div>
         </section>
 
