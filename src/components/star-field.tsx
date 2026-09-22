@@ -55,7 +55,7 @@ export function StarField({ className = "" }: { className?: string }) {
       for (const [i, j] of links) {
         const a = stars[i]!;
         const b = stars[j]!;
-        ctx.strokeStyle = "rgba(148, 196, 220, 0.06)";
+        ctx.strokeStyle = "rgba(40, 80, 210, 0.13)";
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
@@ -65,7 +65,7 @@ export function StarField({ className = "" }: { className?: string }) {
       for (const s of stars) {
         const twinkle = reduced ? 1 : 0.75 + Math.sin(frame * 0.01 + s.tw) * 0.25;
         ctx.globalAlpha = s.a * twinkle;
-        ctx.fillStyle = s.r > 1 ? "rgba(255, 226, 170, 0.9)" : "rgba(226, 240, 255, 0.9)";
+        ctx.fillStyle = s.r > 1 ? "rgba(30, 64, 200, 0.85)" : "rgba(60, 100, 220, 0.6)";
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
         ctx.fill();
