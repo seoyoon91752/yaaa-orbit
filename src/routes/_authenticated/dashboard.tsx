@@ -160,7 +160,7 @@ function Shortcut({
     <Link
       to={to}
       params={params ?? {}}
-      className="corner-marks bg-card px-6 py-7 transition-colors hover:bg-primary/5"
+      className="bg-card px-6 py-7 transition-colors hover:bg-primary/5"
     >
       <p className="label-mono">{sub}</p>
       <p className="mt-3 font-display text-xl font-semibold">{label} →</p>
