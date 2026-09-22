@@ -115,7 +115,7 @@ function ActivityDetail() {
       if (error) throw error;
     },
     onSuccess: (_d, v) => {
-      if (v.attended) toast.success("출석 확인 · 별가루가 지급되었습니다.");
+      if (v.attended) toast.success("출석이 확인되었습니다.");
       invalidate();
     },
     onError: (e: Error) => toast.error(e.message),
