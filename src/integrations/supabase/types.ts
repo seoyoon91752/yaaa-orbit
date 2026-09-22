@@ -811,6 +811,7 @@ export type Database = {
       rental_status:
         | "pending"
         | "approved"
+        | "return_requested"
         | "rejected"
         | "returned"
         | "cancelled"
@@ -949,6 +950,7 @@ export const Constants = {
       rental_status: [
         "pending",
         "approved",
+        "return_requested",
         "rejected",
         "returned",
         "cancelled",
