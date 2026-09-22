@@ -1,18 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMembership, useSession } from "@/hooks/use-session";
-import { SiteHeader } from "@/components/site-header";
-import { StarField } from "@/components/star-field";
-import { supabase } from "@/integrations/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { MemberShell, useMemberContext } from "@/components/member-shell";
+import { useMembership, useSession } from "@/hooks/use-session";
+import { formatDateTime } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "부원 홈 — YAAA 연세 아마추어 천문회" },
-      { name: "description", content: "YAAA 부원 전용 홈. 인증 상태와 공지를 확인하세요." },
+      { name: "description", content: "YAAA 부원 전용 홈. 다가오는 일정과 공지를 확인하세요." },
       { property: "og:title", content: "부원 홈 — YAAA" },
       { property: "og:description", content: "YAAA 부원 전용 공간." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Dashboard,
@@ -20,11 +22,10 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function Dashboard() {
   const { session } = useSession();
-  const { data, isLoading } = useMembership(Boolean(session));
+  const { data } = useMembership(Boolean(session));
   const queryClient = useQueryClient();
 
   const profile = data?.profile;
-  const status = profile?.status ?? "pending";
 
   async function bootstrapAdmin() {
     const { data: ok, error } = await supabase.rpc("claim_first_admin");
@@ -41,79 +42,94 @@ function Dashboard() {
   }
 
   return (
-    <div className="relative min-h-screen">
-      <StarField className="opacity-40" />
-      <div className="relative z-10">
-        <SiteHeader />
-        <main className="mx-auto max-w-6xl px-6 py-16">
-          <p className="label-mono">Member Console</p>
-          <h1 className="mt-3 text-3xl font-semibold sm:text-4xl">
-            {profile?.full_name ? `${profile.full_name} 님, 환영합니다` : "부원 홈"}
-          </h1>
-
-          {isLoading ? (
-            <p className="mt-8 font-mono text-sm text-muted-foreground">LOADING…</p>
-          ) : (
-            <>
-              <div className="mt-10 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
-                <Stat label="Status" value={statusLabel(status)} accent={status === "verified"} />
-                <Stat label="Student ID" value={profile?.student_id ?? "—"} />
-                <Stat label="Email" value={profile?.email ?? "—"} />
-              </div>
-
-              {status !== "verified" && (
-                <div className="mt-8 hairline rounded-lg border-gold/40 bg-gold/5 p-6">
-                  <p className="font-display text-lg font-semibold text-gold">
-                    {status === "pending" ? "관리자 승인 대기 중" : "가입이 거절되었습니다"}
-                  </p>
-                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                    {status === "pending"
-                      ? "입력하신 이름·학번이 부원 명부와 일치하지 않아 자동 인증되지 않았습니다. 운영진이 확인 후 수동으로 승인합니다. 승인 전에는 부원 전용 자료를 열람할 수 없습니다."
-                      : "운영진이 가입 신청을 거절했습니다. 문의는 동아리 운영진에게 연락해 주세요."}
-                  </p>
-                </div>
-              )}
-
-              {status === "verified" && (
-                <div className="mt-8 hairline rounded-lg bg-card/60 p-8">
-                  <p className="label-mono">Notice</p>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                    인증이 완료되었습니다. 게시판 · 관측 캘린더 · 마이페이지는 2단계에서
-                    추가됩니다.
-                  </p>
-                </div>
-              )}
-
-              <div className="mt-10 flex flex-wrap gap-3">
-                {data?.isAdmin && (
-                  <Link
-                    to="/admin"
-                    className="rounded-sm border border-primary/40 px-4 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10"
-                  >
-                    관리자 페이지 →
-                  </Link>
-                )}
-                {!data?.adminExists && (
-                  <button
-                    onClick={bootstrapAdmin}
-                    className="rounded-sm border border-gold/40 px-4 py-2.5 text-sm text-gold transition-colors hover:bg-gold/10"
-                  >
-                    최초 관리자로 등록
-                  </button>
-                )}
-              </div>
-            </>
-          )}
-        </main>
+    <MemberShell
+      eyebrow="Member Console"
+      title={profile?.full_name ? `${profile.full_name} 님, 환영합니다` : "부원 홈"}
+    >
+      <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
+        <Stat label="Status" value="명부 인증 완료" accent />
+        <Stat label="Student ID" value={profile?.student_id ?? "—"} />
+        <Stat label="Email" value={profile?.email ?? "—"} />
       </div>
-    </div>
+
+      <UpcomingEvents />
+
+      <div className="mt-12 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
+        <Shortcut to="/board/$board" params={{ board: "notice" }} label="공지사항" sub="Notices" />
+        <Shortcut to="/board/$board" params={{ board: "free" }} label="자유게시판" sub="Community" />
+        <Shortcut to="/me" label="마이페이지" sub="My Record" />
+      </div>
+
+      <div className="mt-10 flex flex-wrap gap-3">
+        {data?.isAdmin && (
+          <Link
+            to="/admin"
+            className="rounded-sm border border-primary/40 px-4 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10"
+          >
+            관리자 페이지 →
+          </Link>
+        )}
+        {!data?.adminExists && (
+          <button
+            onClick={bootstrapAdmin}
+            className="rounded-sm border border-gold/40 px-4 py-2.5 text-sm text-gold transition-colors hover:bg-gold/10"
+          >
+            최초 관리자로 등록
+          </button>
+        )}
+      </div>
+    </MemberShell>
   );
 }
 
-function statusLabel(status: string) {
-  if (status === "verified") return "명부 인증 완료";
-  if (status === "rejected") return "거절됨";
-  return "승인 대기";
+function UpcomingEvents() {
+  const { profile } = useMemberContext();
+  const { data } = useQuery({
+    queryKey: ["upcoming-events"],
+    enabled: profile?.status === "verified",
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("events")
+        .select("id, title, category, location, starts_at")
+        .gte("starts_at", new Date().toISOString())
+        .order("starts_at")
+        .limit(3);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  return (
+    <section className="mt-16">
+      <div className="flex items-end justify-between gap-6">
+        <p className="label-mono">Upcoming</p>
+        <Link
+          to="/calendar"
+          className="font-mono text-xs text-primary transition-opacity hover:opacity-80"
+        >
+          전체 일정 →
+        </Link>
+      </div>
+      {(data?.length ?? 0) === 0 ? (
+        <p className="mt-6 font-mono text-sm text-muted-foreground">예정된 일정이 없습니다.</p>
+      ) : (
+        <ul className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
+          {data!.map((e) => (
+            <li key={e.id} className="bg-card px-6 py-6">
+              <p className="label-mono text-gold">{e.category}</p>
+              <p className="mt-3 truncate font-display text-lg font-semibold">{e.title}</p>
+              <p className="mt-2 font-mono text-xs text-muted-foreground">
+                {formatDateTime(e.starts_at)}
+              </p>
+              <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
+                {e.location ?? "장소 미정"}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
 }
 
 function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
@@ -126,5 +142,28 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
         {value}
       </p>
     </div>
+  );
+}
+
+function Shortcut({
+  to,
+  params,
+  label,
+  sub,
+}: {
+  to: "/board/$board" | "/me" | "/calendar";
+  params?: { board: string };
+  label: string;
+  sub: string;
+}) {
+  return (
+    <Link
+      to={to}
+      params={params ?? {}}
+      className="bg-card px-6 py-7 transition-colors hover:bg-primary/5"
+    >
+      <p className="label-mono">{sub}</p>
+      <p className="mt-3 font-display text-xl font-semibold">{label} →</p>
+    </Link>
   );
 }

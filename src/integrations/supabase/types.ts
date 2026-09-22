@@ -14,12 +14,126 @@ export type Database = {
   }
   public: {
     Tables: {
+      events: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          ends_at: string | null
+          id: string
+          location: string | null
+          starts_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          location?: string | null
+          starts_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          location?: string | null
+          starts_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      post_comments: {
+        Row: {
+          author_id: string
+          author_name: string
+          body: string
+          created_at: string
+          id: string
+          post_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          author_name: string
+          body: string
+          created_at?: string
+          id?: string
+          post_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          author_name?: string
+          body?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          author_id: string
+          author_name: string
+          board: Database["public"]["Enums"]["board_kind"]
+          body: string
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          view_count: number
+        }
+        Insert: {
+          author_id: string
+          author_name: string
+          board: Database["public"]["Enums"]["board_kind"]
+          body: string
+          created_at?: string
+          id?: string
+          title: string
+          updated_at?: string
+          view_count?: number
+        }
+        Update: {
+          author_id?: string
+          author_name?: string
+          board?: Database["public"]["Enums"]["board_kind"]
+          body?: string
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          view_count?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
           email: string | null
           full_name: string
           id: string
+          phone: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           status: Database["public"]["Enums"]["member_status"]
@@ -31,6 +145,7 @@ export type Database = {
           email?: string | null
           full_name: string
           id: string
+          phone?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: Database["public"]["Enums"]["member_status"]
@@ -42,6 +157,7 @@ export type Database = {
           email?: string | null
           full_name?: string
           id?: string
+          phone?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: Database["public"]["Enums"]["member_status"]
@@ -121,6 +237,7 @@ export type Database = {
           email: string | null
           full_name: string
           id: string
+          phone: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           status: Database["public"]["Enums"]["member_status"]
@@ -141,10 +258,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_post_view: { Args: { _post_id: string }; Returns: undefined }
+      is_verified_member: { Args: { _user_id: string }; Returns: boolean }
       norm_text: { Args: { _v: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "member"
+      board_kind: "notice" | "free"
       member_status: "verified" | "pending" | "rejected"
     }
     CompositeTypes: {
@@ -274,6 +394,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "member"],
+      board_kind: ["notice", "free"],
       member_status: ["verified", "pending", "rejected"],
     },
   },
