@@ -64,6 +64,13 @@
       "when": 1790096192150,
       "tag": "0008_stardust_and_collection",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790097303950,
+      "tag": "0009_gallery_photos",
+      "breakpoints": true
     }
   ]
 }
