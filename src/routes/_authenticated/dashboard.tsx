@@ -137,13 +137,13 @@ function UpcomingEvents() {
 
 function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div className="bg-card px-6 py-6">
-      <p className="label-mono">{label}</p>
-      <p
-        className={`mt-2 truncate font-mono text-sm ${accent ? "text-primary" : "text-foreground"}`}
-      >
+    <div>
+      <dt className="font-mono text-[0.65rem] tracking-[0.12em] text-muted-foreground/70">
+        {label}
+      </dt>
+      <dd className={`mt-1.5 font-mono text-sm ${accent ? "text-primary" : "text-foreground"}`}>
         {value}
-      </p>
+      </dd>
     </div>
   );
 }
@@ -160,13 +160,11 @@ function Shortcut({
   sub: string;
 }) {
   return (
-    <Link
-      to={to}
-      params={params ?? {}}
-      className="bg-card px-6 py-7 transition-colors hover:bg-primary/5"
-    >
-      <p className="label-mono">{sub}</p>
-      <p className="mt-3 font-display text-xl font-semibold">{label} →</p>
+    <Link to={to} params={params ?? {}} className="group">
+      <p className="font-mono text-[0.65rem] tracking-[0.12em] text-muted-foreground/70">{sub}</p>
+      <p className="mt-2 font-display text-xl transition-colors group-hover:text-primary">
+        {label} →
+      </p>
     </Link>
   );
 }
