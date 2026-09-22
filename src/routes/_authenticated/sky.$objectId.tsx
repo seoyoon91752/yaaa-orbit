@@ -158,7 +158,11 @@ function SkyDetail() {
                 onClick={() => {
                   setForm({
                     id: o.id,
-                    kind: o.kind as SkyKind,
+                    scale: scaleOfKind(o.kind_code),
+                    kind_code: o.kind_code,
+                    subtype: o.subtype ?? "",
+                    ra: o.ra ?? "",
+                    decl: o.decl ?? "",
                     name: o.name,
                     latin_name: o.latin_name ?? "",
                     summary: o.summary ?? "",
