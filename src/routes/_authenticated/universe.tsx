@@ -191,8 +191,8 @@ function UniversePage() {
         const dec = parseDec(o.decl, o.id);
         return {
           row: r,
-          left: (1 - ((ra % 24) + 24) / 24 / 1) * 100,
-          top: ((90 - Math.max(-90, Math.min(90, dec))) / 180) * 100,
+          left: Math.min(96, Math.max(4, (1 - (((ra % 24) + 24) % 24) / 24) * 100)),
+          top: Math.min(94, Math.max(6, ((90 - Math.max(-90, Math.min(90, dec))) / 180) * 100)),
           rarity: (RARITY_OF_SCALE[o.scale] ?? "common") as Rarity,
         };
       });
