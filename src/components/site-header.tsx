@@ -22,7 +22,7 @@ export function SiteHeader() {
           <span className="font-display text-lg font-bold tracking-[0.18em] text-foreground">
             YAAA
           </span>
-          <span className="label-mono hidden sm:inline">Yonsei Astronomy</span>
+          <span className="label-mono hidden sm:inline">Yonsei Amateur Astronomy Association</span>
         </Link>
 
         <nav className="flex items-center gap-1 text-sm">
