@@ -55,7 +55,6 @@ function MyPage() {
   useEffect(() => {
     if (profile.data) {
       setDepartment(profile.data.department ?? "");
-      setDepartment(profile.data.department ?? "");
     }
     const path = profile.data?.avatar_path;
     if (!path) {
