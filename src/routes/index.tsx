@@ -68,9 +68,11 @@ function Home() {
 
       <div className="relative z-10">
         <SiteHeader />
+        <CoordinateLine />
 
         {/* Hero */}
-        <section className="mx-auto max-w-6xl px-6 pt-24 pb-28 sm:pt-32">
+        <section className="mx-auto max-w-6xl px-6 pt-20 pb-28 sm:pt-28">
+
           <div className="grid items-center gap-10 md:grid-cols-[1.1fr_0.9fr] md:gap-12 lg:gap-16">
             <div>
               <Reveal>
