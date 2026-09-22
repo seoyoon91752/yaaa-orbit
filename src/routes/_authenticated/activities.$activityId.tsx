@@ -237,6 +237,7 @@ function ActivityDetail() {
                         ends_at: a.ends_at ? toLocalInput(a.ends_at) : "",
                         apply_deadline: toLocalInput(a.apply_deadline),
                         capacity: a.capacity ? String(a.capacity) : "",
+                        stardust_reward: String(a.stardust_reward ?? 1),
                       });
                       setFormOpen(true);
                     }}
