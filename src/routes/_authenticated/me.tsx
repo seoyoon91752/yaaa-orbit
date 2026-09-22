@@ -109,6 +109,43 @@ function MyPage() {
     },
   });
 
+  const hostedActivities = useQuery({
+    queryKey: ["my-hosted-activities", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("activities")
+        .select("id, title, category, location, starts_at")
+        .eq("created_by", userId!)
+        .order("starts_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const myPhotos = useQuery({
+    queryKey: ["my-gallery", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("gallery_photos")
+        .select("id, title, shot_at, created_at, storage_path")
+        .eq("user_id", userId!)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      const rows = data ?? [];
+      if (rows.length === 0) return [] as ((typeof rows)[number] & { url: string | null })[];
+      const { data: signed } = await supabase.storage
+        .from("gallery")
+        .createSignedUrls(
+          rows.map((r) => r.storage_path),
+          60 * 60,
+        );
+      const map = new Map((signed ?? []).map((s) => [s.path ?? "", s.signedUrl]));
+      return rows.map((r) => ({ ...r, url: map.get(r.storage_path) ?? null }));
+    },
+  });
+
   const stardust = useQuery({
     queryKey: ["stardust", userId],
     enabled: Boolean(userId),
