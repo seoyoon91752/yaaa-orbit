@@ -77,14 +77,6 @@ function Dashboard() {
       </div>
 
       <div className="mt-10 flex flex-wrap gap-3">
-        {data?.isAdmin && (
-          <Link
-            to="/admin"
-            className="rounded-sm border border-primary/40 px-4 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10"
-          >
-            관리자 페이지 →
-          </Link>
-        )}
         {!data?.adminExists && (
           <button
             onClick={bootstrapAdmin}
