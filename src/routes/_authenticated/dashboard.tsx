@@ -115,7 +115,7 @@ function UpcomingEvents() {
       ) : (
         <ul className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
           {data!.map((e) => (
-            <li key={e.id} className="corner-marks bg-card px-6 py-6">
+            <li key={e.id} className="bg-card px-6 py-6">
               <p className="label-mono text-gold">{e.category}</p>
               <p className="mt-3 truncate font-display text-lg font-semibold">{e.title}</p>
               <p className="mt-2 font-mono text-xs text-muted-foreground">
