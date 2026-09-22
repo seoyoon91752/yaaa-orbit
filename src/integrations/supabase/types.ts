@@ -263,7 +263,7 @@ export type Database = {
       norm_text: { Args: { _v: string }; Returns: string }
     }
     Enums: {
-      app_role: "admin" | "member"
+      app_role: "admin" | "member" | "officer"
       board_kind: "notice" | "free"
       member_status: "verified" | "pending" | "rejected"
     }
@@ -393,7 +393,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "member"],
+      app_role: ["admin", "member", "officer"],
       board_kind: ["notice", "free"],
       member_status: ["verified", "pending", "rejected"],
     },
