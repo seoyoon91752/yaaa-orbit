@@ -4,7 +4,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatDateTime } from "@/lib/format";
+
+const RENTAL_LABEL: Record<string, string> = {
+  pending: "대기중",
+  approved: "승인됨",
+  rejected: "거절됨",
+  returned: "반납완료",
+  cancelled: "취소됨",
+};
 
 export const Route = createFileRoute("/_authenticated/me")({
   head: () => ({
@@ -54,6 +62,34 @@ function MyPage() {
         .select("id, board, title, created_at, view_count")
         .eq("author_id", userId!)
         .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const myRentals = useQuery({
+    queryKey: ["my-rentals", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("equipment_rentals")
+        .select("id, start_date, end_date, status, return_note, equipment(name)")
+        .eq("user_id", userId!)
+        .order("start_date", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const myBookings = useQuery({
+    queryKey: ["my-reservations", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("room_reservations")
+        .select("id, starts_at, ends_at, purpose, headcount")
+        .eq("user_id", userId!)
+        .order("starts_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },
