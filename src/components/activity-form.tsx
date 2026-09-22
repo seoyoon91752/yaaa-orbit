@@ -110,15 +110,6 @@ export function ActivityForm({
           className={inputClass}
         />
       </Labeled>
-      <Labeled label="출석 시 지급할 별가루">
-        <input
-          type="number"
-          min={0}
-          value={form.stardust_reward}
-          onChange={(e) => setForm({ ...form, stardust_reward: e.target.value })}
-          className={`${inputClass} font-mono`}
-        />
-      </Labeled>
       <Labeled label="설명">
         <textarea
           rows={4}

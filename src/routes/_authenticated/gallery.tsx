@@ -90,7 +90,7 @@ function GalleryPage() {
       }
     },
     onSuccess: () => {
-      toast.success("사진이 등록되었습니다. 별가루가 지급되었습니다.");
+      toast.success("사진이 등록되었습니다.");
       setOpen(false);
       setForm(emptyForm);
       setFile(null);
@@ -131,7 +131,7 @@ function GalleryPage() {
       }
     >
       <p className="mb-10 font-mono text-xs text-muted-foreground">
-        REWARD · 사진 1장 업로드마다 별가루 1개 (하루 최대 3개)
+        REWARD · 사진 업로드는 "나의 우주" 퀘스트 달성에 반영됩니다
       </p>
 
 
