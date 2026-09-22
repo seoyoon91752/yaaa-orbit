@@ -65,7 +65,11 @@ function SkyDetail() {
       const { error } = await supabase
         .from("celestial_objects")
         .update({
-          kind: form.kind,
+          scale: form.scale,
+          kind_code: form.kind_code,
+          subtype: form.subtype.trim() || null,
+          ra: form.ra.trim() || null,
+          decl: form.decl.trim() || null,
           name: form.name.trim(),
           latin_name: form.latin_name.trim() || null,
           summary: form.summary.trim() || null,
