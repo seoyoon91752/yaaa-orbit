@@ -4,6 +4,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* 눈누 무료 한글 디스플레이 서체 — 카페24 아네모네 오스퀘어 (각진 디스플레이) */
+@font-face {
+  font-family: "Cafe24Ohsquare";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.4/Cafe24Ohsquare.woff")
+    format("woff");
+  font-weight: 400 900;
+  font-display: swap;
+}
+
 /*
  * YAAA — Yonsei Amateur Astronomy Association
  * Observatory-grade dark design system. Single dark palette.
@@ -16,7 +25,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --font-display: "Space Grotesk", "IBM Plex Sans KR", sans-serif;
+  --font-display: "Cafe24Ohsquare", "Space Grotesk", "IBM Plex Sans KR", sans-serif;
   --font-sans: "IBM Plex Sans KR", "Space Grotesk", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
