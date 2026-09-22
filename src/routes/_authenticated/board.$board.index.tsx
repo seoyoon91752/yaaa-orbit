@@ -116,20 +116,28 @@ function BoardList() {
         ) : null
       }
     >
-      <SheetStrip
-        items={[
-          {
-            label: "New posts",
-            value: newCount.data === undefined ? "—" : String(newCount.data),
-            accent: "primary",
-          },
-          {
-            label: "Latest",
-            value: data?.rows[0] ? formatDate(data.rows[0].created_at) : "—",
-            accent: "gold",
-          },
-        ]}
-      />
+      {/* 치수선 스타일 요약 */}
+      <div className="mb-10 flex items-center gap-3 font-mono text-[11px] tracking-[0.12em] text-muted-foreground">
+        <span className="h-2.5 w-px bg-border" />
+        <span className="text-primary">◀</span>
+        <span className="h-px flex-1 bg-border" />
+        <span className="whitespace-nowrap">
+          NEW{" "}
+          <span className="text-primary">
+            {newCount.data === undefined ? "—" : newCount.data}
+          </span>
+          <span className="mx-2 text-border">|</span>
+          LATEST{" "}
+          <span className="text-foreground">
+            {data?.rows[0] ? formatDate(data.rows[0].created_at) : "—"}
+          </span>
+        </span>
+        <span className="h-px flex-1 bg-border" />
+        <span className="text-primary">▶</span>
+        <span className="h-2.5 w-px bg-border" />
+      </div>
+
+
 
 
       {open && canWrite && (
