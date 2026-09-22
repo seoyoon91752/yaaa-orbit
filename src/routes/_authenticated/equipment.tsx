@@ -23,7 +23,13 @@ export const Route = createFileRoute("/_authenticated/equipment")({
 });
 
 type EquipmentStatus = "available" | "rented" | "maintenance" | "broken";
-type RentalStatus = "pending" | "approved" | "rejected" | "returned" | "cancelled";
+type RentalStatus =
+  | "pending"
+  | "approved"
+  | "return_requested"
+  | "rejected"
+  | "returned"
+  | "cancelled";
 
 type EquipmentRow = {
   id: string;
@@ -43,8 +49,18 @@ type RentalRow = {
   purpose: string;
   status: RentalStatus;
   return_note: string | null;
+  returned_at: string | null;
   created_at: string;
 };
+
+const todayStr = () => {
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
+
+const isOverdue = (r: { status: RentalStatus; end_date: string }) =>
+  (r.status === "approved" || r.status === "return_requested") && r.end_date < todayStr();
 
 const CATEGORIES = ["망원경", "삼각대", "카메라", "아이피스", "기타"];
 
@@ -64,7 +80,8 @@ const STATUS_CLASS: Record<EquipmentStatus, string> = {
 
 const RENTAL_LABEL: Record<RentalStatus, string> = {
   pending: "대기중",
-  approved: "승인됨",
+  approved: "대여중",
+  return_requested: "반납 확인 대기",
   rejected: "거절됨",
   returned: "반납완료",
   cancelled: "취소됨",
@@ -73,6 +90,7 @@ const RENTAL_LABEL: Record<RentalStatus, string> = {
 const RENTAL_CLASS: Record<RentalStatus, string> = {
   pending: "text-gold",
   approved: "text-primary",
+  return_requested: "text-gold",
   rejected: "text-destructive",
   returned: "text-muted-foreground",
   cancelled: "text-muted-foreground",
@@ -117,7 +135,7 @@ function EquipmentPage() {
       const { data, error } = await supabase
         .from("equipment_rentals")
         .select(
-          "id, equipment_id, user_id, user_name, start_date, end_date, purpose, status, return_note, created_at",
+          "id, equipment_id, user_id, user_name, start_date, end_date, purpose, status, return_note, returned_at, created_at",
         )
         .order("start_date", { ascending: false });
       if (error) throw error;
@@ -189,6 +207,21 @@ function EquipmentPage() {
     },
     onSuccess: () => {
       toast.success("신청이 취소되었습니다.");
+      invalidate();
+    },
+    onError: (e) => toast.error(friendlyError(e)),
+  });
+
+  const requestReturn = useMutation({
+    mutationFn: async ({ id, note }: { id: string; note: string }) => {
+      const { error } = await supabase.rpc("request_rental_return", {
+        _rental_id: id,
+        _note: note.trim(),
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("반납 신청이 접수되었습니다. 임원진 확인을 기다려 주세요.");
       invalidate();
     },
     onError: (e) => toast.error(friendlyError(e)),
