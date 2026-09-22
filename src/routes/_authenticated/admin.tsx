@@ -54,6 +54,7 @@ function AdminPage() {
             <RosterSection />
             <ApprovalSection />
             <RoleSection />
+            <QuestSection />
           </div>
         )}
       </main>
