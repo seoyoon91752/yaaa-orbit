@@ -47,6 +47,16 @@ function Dashboard() {
     <MemberShell
       eyebrow="Member Console"
       title={profile?.full_name ? `${profile.full_name} 님, 환영합니다` : "부원 홈"}
+      actions={
+        data?.isAdmin ? (
+          <Link
+            to="/admin"
+            className="shrink-0 rounded-sm border border-primary/40 px-4 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10"
+          >
+            관리자 페이지 →
+          </Link>
+        ) : null
+      }
     >
       <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
         <Stat label="Status" value="명부 인증 완료" accent />
@@ -67,14 +77,6 @@ function Dashboard() {
       </div>
 
       <div className="mt-10 flex flex-wrap gap-3">
-        {data?.isAdmin && (
-          <Link
-            to="/admin"
-            className="rounded-sm border border-primary/40 px-4 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10"
-          >
-            관리자 페이지 →
-          </Link>
-        )}
         {!data?.adminExists && (
           <button
             onClick={bootstrapAdmin}
