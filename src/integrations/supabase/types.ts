@@ -397,6 +397,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_path: string | null
           created_at: string
           email: string | null
           full_name: string
@@ -409,6 +410,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          avatar_path?: string | null
           created_at?: string
           email?: string | null
           full_name: string
@@ -421,6 +423,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          avatar_path?: string | null
           created_at?: string
           email?: string | null
           full_name?: string
@@ -629,6 +632,7 @@ export type Database = {
       claim_membership: {
         Args: never
         Returns: {
+          avatar_path: string | null
           created_at: string
           email: string | null
           full_name: string
@@ -680,6 +684,16 @@ export type Database = {
       increment_post_view: { Args: { _post_id: string }; Returns: undefined }
       is_officer: { Args: { _user_id: string }; Returns: boolean }
       is_verified_member: { Args: { _user_id: string }; Returns: boolean }
+      list_members: {
+        Args: never
+        Returns: {
+          avatar_path: string
+          cohort: string
+          department: string
+          full_name: string
+          id: string
+        }[]
+      }
       list_room_slots: {
         Args: { _from: string; _to: string }
         Returns: {

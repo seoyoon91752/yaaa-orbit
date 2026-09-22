@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
 import { formatDate, formatDateTime } from "@/lib/format";
+import { initialOf, signAvatars } from "@/lib/avatars";
 
 const RENTAL_LABEL: Record<string, string> = {
   pending: "대기중",
@@ -32,8 +33,10 @@ function MyPage() {
   const { userId } = useMemberContext();
   const queryClient = useQueryClient();
   const [phone, setPhone] = useState("");
+  const [currentPw, setCurrentPw] = useState("");
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const profile = useQuery({
     queryKey: ["my-profile", userId],
@@ -51,6 +54,18 @@ function MyPage() {
 
   useEffect(() => {
     if (profile.data) setPhone(profile.data.phone ?? "");
+    const path = profile.data?.avatar_path;
+    if (!path) {
+      setAvatarUrl(null);
+      return;
+    }
+    let alive = true;
+    void signAvatars([path]).then((map) => {
+      if (alive) setAvatarUrl(map.get(path) ?? null);
+    });
+    return () => {
+      alive = false;
+    };
   }, [profile.data]);
 
   const myPosts = useQuery({
@@ -109,6 +124,43 @@ function MyPage() {
     },
   });
 
+  const hostedActivities = useQuery({
+    queryKey: ["my-hosted-activities", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("activities")
+        .select("id, title, category, location, starts_at")
+        .eq("created_by", userId!)
+        .order("starts_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const myPhotos = useQuery({
+    queryKey: ["my-gallery", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("gallery_photos")
+        .select("id, title, shot_at, created_at, storage_path")
+        .eq("user_id", userId!)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      const rows = data ?? [];
+      if (rows.length === 0) return [] as ((typeof rows)[number] & { url: string | null })[];
+      const { data: signed } = await supabase.storage
+        .from("gallery")
+        .createSignedUrls(
+          rows.map((r) => r.storage_path),
+          60 * 60,
+        );
+      const map = new Map((signed ?? []).map((s) => [s.path ?? "", s.signedUrl]));
+      return rows.map((r) => ({ ...r, url: map.get(r.storage_path) ?? null }));
+    },
+  });
+
   const stardust = useQuery({
     queryKey: ["stardust", userId],
     enabled: Boolean(userId),
@@ -153,13 +205,40 @@ function MyPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const uploadAvatar = useMutation({
+    mutationFn: async (file: File) => {
+      const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+      const path = `${userId}/avatar.${ext}`;
+      const up = await supabase.storage
+        .from("avatars")
+        .upload(path, file, { upsert: true, contentType: file.type || "image/jpeg" });
+      if (up.error) throw up.error;
+      const { error } = await supabase
+        .from("profiles")
+        .update({ avatar_path: path })
+        .eq("id", userId!);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("프로필 사진이 저장되었습니다.");
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const changePw = useMutation({
     mutationFn: async () => {
+      const email = profile.data?.email;
+      if (!email) throw new Error("이메일 정보를 찾을 수 없습니다.");
+      const check = await supabase.auth.signInWithPassword({ email, password: currentPw });
+      if (check.error) throw new Error("현재 비밀번호가 올바르지 않습니다.");
       const { error } = await supabase.auth.updateUser({ password: pw });
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("비밀번호가 변경되었습니다.");
+      setCurrentPw("");
       setPw("");
       setPw2("");
     },
@@ -170,10 +249,35 @@ function MyPage() {
 
   return (
     <MemberShell eyebrow="My Record" title="마이페이지">
-      <div className="grid gap-10 lg:grid-cols-2">
+      <div className="max-w-2xl space-y-10">
         <section className="hairline rounded-lg bg-card/60 p-8">
           <p className="label-mono">Member Info</p>
-          <dl className="mt-6 space-y-5 font-mono text-sm">
+
+          <div className="mt-6 flex items-center gap-5">
+            <span className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-background">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={p?.full_name ?? ""} className="h-full w-full object-cover" />
+              ) : (
+                <span className="font-display text-2xl text-muted-foreground">
+                  {initialOf(p?.full_name ?? "?")}
+                </span>
+              )}
+            </span>
+            <label className="cursor-pointer rounded-sm border border-primary/40 px-4 py-2 text-sm text-primary transition-colors hover:bg-primary/10">
+              {uploadAvatar.isPending ? "업로드 중…" : "프로필 사진 변경"}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) uploadAvatar.mutate(f);
+                }}
+              />
+            </label>
+          </div>
+
+          <dl className="mt-8 space-y-5 font-mono text-sm">
             <Row k="NAME" v={p?.full_name ?? "—"} />
             <Row k="STUDENT ID" v={p?.student_id ?? "—"} />
             <Row k="EMAIL" v={p?.email ?? "—"} />
@@ -208,6 +312,10 @@ function MyPage() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              if (!currentPw) {
+                toast.error("현재 비밀번호를 입력해 주세요.");
+                return;
+              }
               if (pw.length < 8) {
                 toast.error("비밀번호는 8자 이상이어야 합니다.");
                 return;
@@ -222,9 +330,18 @@ function MyPage() {
           >
             <input
               type="password"
+              value={currentPw}
+              onChange={(e) => setCurrentPw(e.target.value)}
+              placeholder="현재 비밀번호"
+              autoComplete="current-password"
+              className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
+            />
+            <input
+              type="password"
               value={pw}
               onChange={(e) => setPw(e.target.value)}
               placeholder="새 비밀번호 (8자 이상)"
+              autoComplete="new-password"
               className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
             />
             <input
@@ -232,6 +349,7 @@ function MyPage() {
               value={pw2}
               onChange={(e) => setPw2(e.target.value)}
               placeholder="새 비밀번호 확인"
+              autoComplete="new-password"
               className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
             />
             <button
@@ -359,6 +477,67 @@ function MyPage() {
             </ul>
           )}
         </div>
+      </section>
+
+      <section className="mt-16">
+        <p className="label-mono">My Hosted Activities · {hostedActivities.data?.length ?? 0}</p>
+        {(hostedActivities.data?.length ?? 0) === 0 ? (
+          <p className="mt-6 font-mono text-sm text-muted-foreground">개설한 활동이 없습니다.</p>
+        ) : (
+          <ul className="mt-6 border-t border-border">
+            {hostedActivities.data!.map((a) => (
+              <li key={a.id} className="border-b border-border">
+                <Link
+                  to="/activities/$activityId"
+                  params={{ activityId: a.id }}
+                  className="flex flex-wrap items-center gap-x-5 gap-y-1 py-4 transition-colors hover:text-primary"
+                >
+                  <span className="label-mono">{a.category}</span>
+                  <span className="text-sm">{a.title}</span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {formatDateTime(a.starts_at)}
+                  </span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {a.location ?? "—"}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="mt-16">
+        <p className="label-mono">My Gallery · {myPhotos.data?.length ?? 0}</p>
+        {(myPhotos.data?.length ?? 0) === 0 ? (
+          <p className="mt-6 font-mono text-sm text-muted-foreground">올린 사진이 없습니다.</p>
+        ) : (
+          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {myPhotos.data!.map((ph) => (
+              <article
+                key={ph.id}
+                className="overflow-hidden rounded-lg border border-border bg-card/60"
+              >
+                <div className="aspect-[4/3] w-full overflow-hidden bg-background">
+                  {ph.url ? (
+                    <img
+                      src={ph.url}
+                      alt={ph.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : null}
+                </div>
+                <div className="p-4">
+                  <h3 className="font-display text-base font-semibold">{ph.title}</h3>
+                  <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+                    {ph.shot_at ?? formatDate(ph.created_at)}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="mt-16">
