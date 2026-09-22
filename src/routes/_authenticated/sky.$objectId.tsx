@@ -5,7 +5,15 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { SkyForm, emptySky, KIND_LABEL, type SkyFormState, type SkyKind } from "@/components/sky-form";
+import {
+  SkyForm,
+  emptySky,
+  KIND_LABEL,
+  SCALE_LABEL,
+  scaleOfKind,
+  type SkyFormState,
+  type SkyScale,
+} from "@/components/sky-form";
 
 export const Route = createFileRoute("/_authenticated/sky/$objectId")({
   head: () => ({
