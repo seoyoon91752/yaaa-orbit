@@ -43,6 +43,13 @@
       "when": 1790094751711,
       "tag": "0005_equipment_rentals_room_reservations",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790095142491,
+      "tag": "0006_activities_and_celestial_catalog",
+      "breakpoints": true
     }
   ]
 }

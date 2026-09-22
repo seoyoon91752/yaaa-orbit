@@ -14,6 +14,134 @@ export type Database = {
   }
   public: {
     Tables: {
+      activities: {
+        Row: {
+          apply_deadline: string
+          capacity: number | null
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          ends_at: string | null
+          id: string
+          location: string | null
+          starts_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          apply_deadline: string
+          capacity?: number | null
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          location?: string | null
+          starts_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          apply_deadline?: string
+          capacity?: number | null
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          location?: string | null
+          starts_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      activity_signups: {
+        Row: {
+          activity_id: string
+          attended: boolean
+          attended_at: string | null
+          created_at: string
+          id: string
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          activity_id: string
+          attended?: boolean
+          attended_at?: string | null
+          created_at?: string
+          id?: string
+          user_id: string
+          user_name: string
+        }
+        Update: {
+          activity_id?: string
+          attended?: boolean
+          attended_at?: string | null
+          created_at?: string
+          id?: string
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_signups_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "activities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      celestial_objects: {
+        Row: {
+          best_season: string | null
+          created_at: string
+          description: string | null
+          direction: string | null
+          id: string
+          image_url: string | null
+          kind: Database["public"]["Enums"]["celestial_kind"]
+          latin_name: string | null
+          magnitude: string | null
+          name: string
+          summary: string | null
+          updated_at: string
+        }
+        Insert: {
+          best_season?: string | null
+          created_at?: string
+          description?: string | null
+          direction?: string | null
+          id?: string
+          image_url?: string | null
+          kind: Database["public"]["Enums"]["celestial_kind"]
+          latin_name?: string | null
+          magnitude?: string | null
+          name: string
+          summary?: string | null
+          updated_at?: string
+        }
+        Update: {
+          best_season?: string | null
+          created_at?: string
+          description?: string | null
+          direction?: string | null
+          id?: string
+          image_url?: string | null
+          kind?: Database["public"]["Enums"]["celestial_kind"]
+          latin_name?: string | null
+          magnitude?: string | null
+          name?: string
+          summary?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       equipment: {
         Row: {
           category: string
@@ -353,6 +481,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      activity_signup_counts: {
+        Args: never
+        Returns: {
+          activity_id: string
+          signup_count: number
+        }[]
+      }
       admin_exists: { Args: never; Returns: boolean }
       claim_first_admin: { Args: never; Returns: boolean }
       claim_membership: {
@@ -404,6 +539,7 @@ export type Database = {
     Enums: {
       app_role: "admin" | "member" | "officer"
       board_kind: "notice" | "free"
+      celestial_kind: "constellation" | "star" | "nebula" | "cluster"
       equipment_status: "available" | "rented" | "maintenance" | "broken"
       member_status: "verified" | "pending" | "rejected"
       rental_status:
@@ -541,6 +677,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "member", "officer"],
       board_kind: ["notice", "free"],
+      celestial_kind: ["constellation", "star", "nebula", "cluster"],
       equipment_status: ["available", "rented", "maintenance", "broken"],
       member_status: ["verified", "pending", "rejected"],
       rental_status: [
