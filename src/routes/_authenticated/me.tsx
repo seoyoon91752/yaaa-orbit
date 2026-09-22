@@ -216,6 +216,42 @@ function MyPage() {
         </section>
       </div>
 
+      <section className="mt-16">
+        <p className="label-mono">My Activities · {myActivities.data?.length ?? 0}</p>
+        {(myActivities.data?.length ?? 0) === 0 ? (
+          <p className="mt-6 font-mono text-sm text-muted-foreground">신청한 활동이 없습니다.</p>
+        ) : (
+          <ul className="mt-6 border-t border-border">
+            {myActivities.data!.map((s) => (
+              <li key={s.id} className="border-b border-border py-4">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                  <span className="label-mono">{s.activities?.category ?? "—"}</span>
+                  {s.activities ? (
+                    <Link
+                      to="/activities/$activityId"
+                      params={{ activityId: s.activities.id }}
+                      className="text-sm transition-colors hover:text-primary"
+                    >
+                      {s.activities.title}
+                    </Link>
+                  ) : (
+                    <span className="text-sm">삭제된 활동</span>
+                  )}
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {s.activities ? formatDateTime(s.activities.starts_at) : "—"}
+                  </span>
+                  <span
+                    className={`font-mono text-xs ${s.attended ? "text-primary" : "text-muted-foreground"}`}
+                  >
+                    {s.attended ? "출석 확인됨" : "출석 미확인"}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       <section className="mt-16 grid gap-10 lg:grid-cols-2">
         <div>
           <p className="label-mono">My Rentals · {myRentals.data?.length ?? 0}</p>
