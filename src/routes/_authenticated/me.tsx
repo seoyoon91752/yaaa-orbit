@@ -311,21 +311,20 @@ function MyPage() {
             </div>
             <div>
               <p className="label-mono mb-2">연락처</p>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <input
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="010-0000-0000"
-                  className="min-w-0 flex-1 rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
-                />
-                <button
-                  onClick={() => savePhone.mutate()}
-                  className="shrink-0 rounded-sm border border-primary/40 px-5 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10"
-                >
-                  저장
-                </button>
-              </div>
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="010-0000-0000"
+                className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
+              />
             </div>
+            <button
+              onClick={() => savePhone.mutate()}
+              disabled={savePhone.isPending}
+              className="w-full rounded-sm border border-primary/40 px-5 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10 disabled:opacity-50 sm:w-auto"
+            >
+              {savePhone.isPending ? "저장 중…" : "저장"}
+            </button>
           </div>
         </section>
 
