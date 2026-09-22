@@ -13,7 +13,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedMeRouteImport } from './routes/_authenticated/me'
+import { Route as AuthenticatedBoardBoardIndexRouteImport } from './routes/_authenticated/board.$board.index'
+import { Route as AuthenticatedBoardBoardPostIdRouteImport } from './routes/_authenticated/board.$board.$postId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,23 +38,53 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMeRoute = AuthenticatedMeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedBoardBoardIndexRoute =
+  AuthenticatedBoardBoardIndexRouteImport.update({
+    id: '/board/$board/',
+    path: '/board/$board/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedBoardBoardPostIdRoute =
+  AuthenticatedBoardBoardPostIdRouteImport.update({
+    id: '/board/$board/$postId',
+    path: '/board/$board/$postId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/me': typeof AuthenticatedMeRoute
+  '/board/$board/$postId': typeof AuthenticatedBoardBoardPostIdRoute
+  '/board/$board/': typeof AuthenticatedBoardBoardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/me': typeof AuthenticatedMeRoute
+  '/board/$board/$postId': typeof AuthenticatedBoardBoardPostIdRoute
+  '/board/$board': typeof AuthenticatedBoardBoardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -58,20 +92,44 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/me': typeof AuthenticatedMeRoute
+  '/_authenticated/board/$board/$postId': typeof AuthenticatedBoardBoardPostIdRoute
+  '/_authenticated/board/$board/': typeof AuthenticatedBoardBoardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/admin' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/admin'
+    | '/calendar'
+    | '/dashboard'
+    | '/me'
+    | '/board/$board/$postId'
+    | '/board/$board/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/admin' | '/dashboard'
+  to:
+    | '/'
+    | '/auth'
+    | '/admin'
+    | '/calendar'
+    | '/dashboard'
+    | '/me'
+    | '/board/$board/$postId'
+    | '/board/$board'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/admin'
+    | '/_authenticated/calendar'
     | '/_authenticated/dashboard'
+    | '/_authenticated/me'
+    | '/_authenticated/board/$board/$postId'
+    | '/_authenticated/board/$board/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -110,6 +168,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/calendar': {
+      id: '/_authenticated/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof AuthenticatedCalendarRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -117,17 +182,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/me': {
+      id: '/_authenticated/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof AuthenticatedMeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/board/$board/': {
+      id: '/_authenticated/board/$board/'
+      path: '/board/$board'
+      fullPath: '/board/$board/'
+      preLoaderRoute: typeof AuthenticatedBoardBoardIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/board/$board/$postId': {
+      id: '/_authenticated/board/$board/$postId'
+      path: '/board/$board/$postId'
+      fullPath: '/board/$board/$postId'
+      preLoaderRoute: typeof AuthenticatedBoardBoardPostIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedMeRoute: typeof AuthenticatedMeRoute
+  AuthenticatedBoardBoardPostIdRoute: typeof AuthenticatedBoardBoardPostIdRoute
+  AuthenticatedBoardBoardIndexRoute: typeof AuthenticatedBoardBoardIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedMeRoute: AuthenticatedMeRoute,
+  AuthenticatedBoardBoardPostIdRoute: AuthenticatedBoardBoardPostIdRoute,
+  AuthenticatedBoardBoardIndexRoute: AuthenticatedBoardBoardIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

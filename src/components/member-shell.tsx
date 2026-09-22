@@ -5,11 +5,11 @@ import { StarField } from "@/components/star-field";
 import { useMembership, useSession } from "@/hooks/use-session";
 
 const NAV = [
-  { to: "/dashboard", label: "부원 홈" },
-  { to: "/board/notice", label: "공지사항" },
-  { to: "/board/free", label: "자유게시판" },
-  { to: "/calendar", label: "일정" },
-  { to: "/me", label: "마이페이지" },
+  { to: "/dashboard", label: "부원 홈", match: "/dashboard" },
+  { to: "/board/$board", params: { board: "notice" }, label: "공지사항", match: "/board/notice" },
+  { to: "/board/$board", params: { board: "free" }, label: "자유게시판", match: "/board/free" },
+  { to: "/calendar", label: "일정", match: "/calendar" },
+  { to: "/me", label: "마이페이지", match: "/me" },
 ] as const;
 
 /** Shared chrome for member-only pages; blocks unverified members. */
