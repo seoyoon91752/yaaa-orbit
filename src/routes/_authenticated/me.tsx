@@ -166,6 +166,54 @@ function MyPage() {
         </section>
       </div>
 
+      <section className="mt-16 grid gap-10 lg:grid-cols-2">
+        <div>
+          <p className="label-mono">My Rentals · {myRentals.data?.length ?? 0}</p>
+          {(myRentals.data?.length ?? 0) === 0 ? (
+            <p className="mt-6 font-mono text-sm text-muted-foreground">대여 내역이 없습니다.</p>
+          ) : (
+            <ul className="mt-6 border-t border-border">
+              {myRentals.data!.map((r) => (
+                <li key={r.id} className="border-b border-border py-4">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                    <span className="font-mono text-xs text-primary">
+                      {RENTAL_LABEL[r.status as keyof typeof RENTAL_LABEL]}
+                    </span>
+                    <span className="text-sm">{r.equipment?.name ?? "—"}</span>
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {formatDate(r.start_date)} → {formatDate(r.end_date)}
+                    </span>
+                  </div>
+                  {r.return_note && (
+                    <p className="mt-1 font-mono text-xs text-gold">특이사항: {r.return_note}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div>
+          <p className="label-mono">My Bookings · {myBookings.data?.length ?? 0}</p>
+          {(myBookings.data?.length ?? 0) === 0 ? (
+            <p className="mt-6 font-mono text-sm text-muted-foreground">예약 내역이 없습니다.</p>
+          ) : (
+            <ul className="mt-6 border-t border-border">
+              {myBookings.data!.map((b) => (
+                <li key={b.id} className="border-b border-border py-4">
+                  <p className="font-mono text-xs text-muted-foreground">
+                    {formatDateTime(b.starts_at)} – {new Date(b.ends_at).toTimeString().slice(0, 5)}
+                  </p>
+                  <p className="mt-1 text-sm">
+                    {b.purpose} · {b.headcount}명
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
+
       <section className="mt-16">
         <p className="label-mono">My Posts · {myPosts.data?.length ?? 0}</p>
         {(myPosts.data?.length ?? 0) === 0 ? (
