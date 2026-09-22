@@ -65,7 +65,9 @@ export function MemberShell({
           </nav>
         </div>
 
-        <main className="mx-auto max-w-6xl px-6 py-14">
+        <CoordinateLine />
+
+        <main className="mx-auto max-w-6xl px-6 pt-10 pb-14">
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-6">
             <div className="min-w-0">
               <p className="label-mono">{eyebrow}</p>
@@ -73,6 +75,7 @@ export function MemberShell({
             </div>
             {actions}
           </div>
+
 
           {isLoading ? (
             <p className="mt-12 font-mono text-sm text-muted-foreground">LOADING…</p>
