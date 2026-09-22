@@ -34,18 +34,18 @@ export function SiteHeader() {
               >
                 부원 홈
               </Link>
-              <Link
-                to="/dashboard"
-                className="rounded-sm border border-primary/40 px-3 py-2 text-primary transition-colors hover:bg-primary/10"
-              >
-                부원 전용 공간 →
-              </Link>
               <button
                 onClick={signOut}
                 className="rounded-sm border border-border px-3 py-2 text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
               >
                 로그아웃
               </button>
+              <Link
+                to="/dashboard"
+                className="rounded-sm border border-primary/40 px-3 py-2 text-primary transition-colors hover:bg-primary/10"
+              >
+                부원 전용 공간 →
+              </Link>
             </>
           ) : (
             <Link
