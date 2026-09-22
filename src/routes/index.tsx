@@ -33,7 +33,7 @@ export const Route = createFileRoute("/")({
 const FACTS = [
   { label: "창립", value: "1985", sub: "올해로 41주년" },
   { label: "소속", value: "중앙동아리", sub: "연세대학교" },
-  { label: "가입 대상", value: "전공·학년 무관", sub: "누구나" },
+  { label: "가입 대상", value: "전공 무관", sub: "학년도 무관, 누구나" },
 ];
 
 const FAQ = [
@@ -124,9 +124,9 @@ function Home() {
         </section>
 
         {/* 소개 — 보더 없이 여백으로만 구분, 오른쪽으로 밀린 본문 */}
-        <section className="mx-auto max-w-6xl px-6 pt-28 pb-16 sm:pt-40">
-          <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
-            <h2 className="text-[1.75rem] leading-[1.35] sm:text-[2.25rem]">
+        <section className="mx-auto max-w-6xl px-6 pt-24 pb-16 sm:pt-32">
+          <div className="grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-20">
+            <h2 className="text-[1.5rem] leading-[1.45] sm:text-[1.9rem]">
               관측에 필요한 건 전공이 아니라,
               <br />
               하늘을 향한 호기심입니다.
