@@ -71,7 +71,7 @@ function Home() {
 
         {/* Hero */}
         <section className="mx-auto max-w-6xl px-6 pt-24 pb-28 sm:pt-32">
-          <div className="grid items-center gap-16 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="grid items-center gap-10 md:grid-cols-[1.1fr_0.9fr] md:gap-12 lg:gap-16">
             <div>
               <Reveal>
                 <p className="label-mono">Yonsei Amateur Astronomy Association · Est. 1985</p>
@@ -108,7 +108,7 @@ function Home() {
             </div>
 
             <Reveal delay={200}>
-              <div className="mx-auto aspect-square w-full max-w-sm lg:max-w-none">
+              <div className="mx-auto aspect-square w-full max-w-xs sm:max-w-sm md:max-w-none">
                 <ConstellationArt />
               </div>
             </Reveal>
