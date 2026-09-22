@@ -108,7 +108,7 @@ function Home() {
             </div>
 
             <Reveal delay={200}>
-              <div className="mx-auto aspect-square w-full max-w-xs sm:max-w-sm md:max-w-none">
+              <div className="mx-auto aspect-square w-full max-w-xs sm:max-w-sm md:-mt-16 md:max-w-none lg:-mt-24">
                 <ConstellationArt />
               </div>
             </Reveal>
@@ -122,8 +122,10 @@ function Home() {
                   className="flex min-h-36 flex-col justify-center bg-background/70 px-6 py-7 backdrop-blur-sm"
                 >
                   <dt className="label-mono">{f.label}</dt>
-                  <dd className="mt-3 font-display text-2xl font-semibold">{f.value}</dd>
-                  <dd className="mt-1 font-mono text-xs text-muted-foreground">{f.sub}</dd>
+                  <dd className="mt-2.5 font-display text-2xl leading-tight font-semibold">
+                    {f.value}
+                  </dd>
+                  <dd className="mt-2.5 font-mono text-xs text-muted-foreground">{f.sub}</dd>
                 </div>
               ))}
             </dl>
