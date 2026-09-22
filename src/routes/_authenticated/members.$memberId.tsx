@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell } from "@/components/member-shell";
 import { formatDate, formatDateTime } from "@/lib/format";
-import { initialOf } from "@/lib/avatars";
+import { ConstellationAvatar } from "@/components/constellation-avatar";
 import { useMembers } from "./members.index";
 
 export const Route = createFileRoute("/_authenticated/members/$memberId")({
@@ -72,7 +72,7 @@ function MemberDetail() {
           {member?.avatar_url ? (
             <img src={member.avatar_url} alt={name} className="h-full w-full object-cover" />
           ) : (
-            <span className="font-display text-2xl text-muted-foreground">{initialOf(name)}</span>
+            <ConstellationAvatar seed={memberId ?? name} />
           )}
         </span>
         <div>
