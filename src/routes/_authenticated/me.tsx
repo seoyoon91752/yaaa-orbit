@@ -54,7 +54,10 @@ function MyPage() {
   });
 
   useEffect(() => {
-    if (profile.data) setPhone(profile.data.phone ?? "");
+    if (profile.data) {
+      setPhone(profile.data.phone ?? "");
+      setDepartment(profile.data.department ?? "");
+    }
     const path = profile.data?.avatar_path;
     if (!path) {
       setAvatarUrl(null);
