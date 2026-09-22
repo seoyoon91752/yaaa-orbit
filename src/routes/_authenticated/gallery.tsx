@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
 import { formatDateTime } from "@/lib/format";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { SheetStrip } from "@/components/sheet-strip";
 
 export const Route = createFileRoute("/_authenticated/gallery")({
   head: () => ({
@@ -129,9 +130,18 @@ function GalleryPage() {
         </button>
       }
     >
-      <p className="font-mono text-xs text-muted-foreground">
-        REWARD · 사진 1장 업로드마다 별가루 1개 (하루 최대 3개)
-      </p>
+      <SheetStrip
+        items={[
+          { label: "Frames", value: String(rows.length), accent: "primary" },
+          { label: "Contributors", value: String(new Set(rows.map((r) => r.user_name)).size) },
+          {
+            label: "Latest",
+            value: rows[0] ? (rows[0].shot_at ?? formatDateTime(rows[0].created_at)) : "—",
+          },
+          { label: "Reward", value: "1 / 사진", accent: "gold" },
+        ]}
+        note="REWARD · 사진 1장 업로드마다 별가루 1개 (하루 최대 3개)"
+      />
 
       {photos.isLoading ? (
         <p className="mt-10 font-mono text-sm text-muted-foreground">불러오는 중…</p>
@@ -141,13 +151,16 @@ function GalleryPage() {
         </p>
       ) : (
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {rows.map((p) => (
+          {rows.map((p, i) => (
             <button
               key={p.id}
               onClick={() => setActive(p)}
               className="group overflow-hidden rounded-lg border border-border bg-card/60 text-left transition-colors hover:border-primary/40"
             >
-              <div className="aspect-[4/3] w-full overflow-hidden bg-background">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-background">
+                <span className="absolute top-2 left-2 z-10 rounded-sm border border-border bg-background/85 px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+                  P-{String(rows.length - i).padStart(3, "0")}
+                </span>
                 {p.url ? (
                   <img
                     src={p.url}
