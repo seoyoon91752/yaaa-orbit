@@ -117,8 +117,12 @@ function SkyDetail() {
       {o && (
         <div className="hairline mt-6 rounded-lg bg-card/60 p-8">
           <div className="flex flex-wrap items-center gap-3">
+            <span className="rounded-sm border border-border px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
+              {SCALE_LABEL[(o.scale ?? "solar") as SkyScale]}
+            </span>
             <span className="rounded-sm border border-primary/40 bg-primary/10 px-2.5 py-1 font-mono text-[11px] text-primary">
-              {KIND_LABEL[o.kind as SkyKind]}
+              {KIND_LABEL[o.kind_code] ?? o.kind_code}
+              {o.subtype ? ` · ${o.subtype}` : ""}
             </span>
             {o.latin_name && (
               <span className="font-mono text-xs text-muted-foreground">{o.latin_name}</span>
