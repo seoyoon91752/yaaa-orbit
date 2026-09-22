@@ -10,6 +10,7 @@ import { SiteHeader } from "@/components/site-header";
 import { StarField } from "@/components/star-field";
 import { Reveal } from "@/components/reveal";
 import { ConstellationArt } from "@/components/constellation-art";
+import { SkyTicker } from "@/components/sky-ticker";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -61,180 +62,202 @@ const FAQ = [
 
 function Home() {
   return (
-    <div className="relative min-h-screen">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[120vh]">
+    <div className="grain relative min-h-screen overflow-hidden">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[130vh]">
         <StarField />
+        <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_-10%,transparent_35%,var(--background)_100%)]" />
       </div>
 
       <div className="relative z-10">
         <SiteHeader />
 
-        {/* Hero */}
-        <section className="mx-auto max-w-6xl px-6 pt-24 pb-28 sm:pt-32">
-          <div className="grid items-center gap-10 md:grid-cols-[1.1fr_0.9fr] md:gap-12 lg:gap-16">
-            <div>
-              <Reveal>
-                <p className="label-mono">Yonsei Amateur Astronomy Association · Est. 1985</p>
-              </Reveal>
-              <Reveal delay={80}>
-                <h1 className="mt-8 font-display text-5xl leading-[1.05] font-bold sm:text-7xl">
-                  밤하늘을 기록하는
-                  <br />
-                  <span className="text-primary">관측자들</span>
-                </h1>
-              </Reveal>
-              <Reveal delay={160}>
-                <p className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground">
-                  YAAA는 연세대학교 중앙동아리로, 전공과 학년에 관계없이 모인 부원들이 함께 별을
-                  관측하고 기록합니다. 이 공간은 부원들의 공지와 소통을 위한 전용 페이지입니다.
+        {/* Hero — wordmark first */}
+        <section className="mx-auto max-w-[110rem] px-6 pt-16 sm:px-10 sm:pt-24">
+          <Reveal>
+            <div className="flex flex-wrap items-baseline justify-between gap-4">
+              <p className="label-mono">(01) Yonsei Amateur Astronomical Association</p>
+              <p className="label-mono">Est. 1985 — Seoul</p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={80}>
+            <h1 className="wordmark mt-10 flex justify-between text-foreground select-none">
+              {["Y", "A", "A", "A"].map((c, i) => (
+                <span key={i} className={i === 3 ? "text-primary" : undefined}>
+                  {c}
+                </span>
+              ))}
+            </h1>
+          </Reveal>
+
+          <Reveal delay={140}>
+            <div className="mt-10 grid gap-10 border-t border-border pt-8 md:grid-cols-[1fr_auto] md:items-start">
+              <div className="max-w-xl">
+                <p className="font-display text-xl leading-snug font-medium sm:text-2xl">
+                  밤하늘을 기록하는 관측자들.
                 </p>
-              </Reveal>
-              <Reveal delay={240}>
-                <div className="mt-12 flex flex-wrap gap-3">
+                <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
+                  YAAA는 연세대학교 중앙동아리로, 전공과 학년에 관계없이 모인 부원들이 함께 별을
+                  관측하고 기록합니다. 이 페이지는 부원들의 공지와 소통을 위한 전용 공간입니다.
+                </p>
+                <div className="mt-9 flex flex-wrap items-center gap-6">
                   <Link
                     to="/auth"
-                    className="glow-cyan rounded-sm bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                    className="group inline-flex items-center gap-4 border-b border-primary/50 pb-1.5 text-sm text-primary"
                   >
                     부원 로그인 / 가입
+                    <span className="transition-transform group-hover:translate-x-1">→</span>
                   </Link>
                   <a
                     href="#faq"
-                    className="rounded-sm border border-border px-6 py-3 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                    className="inline-flex items-center gap-4 border-b border-border pb-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     자주 묻는 질문
                   </a>
                 </div>
-              </Reveal>
-            </div>
+              </div>
 
-            <Reveal delay={200}>
-              <div className="mx-auto aspect-square w-full max-w-xs sm:max-w-sm md:-mt-16 md:max-w-none lg:-mt-24">
+              <div className="hidden w-64 shrink-0 md:block lg:w-80">
                 <ConstellationArt />
               </div>
-            </Reveal>
-          </div>
-
-          <Reveal delay={320}>
-            <dl className="mt-24 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
-              {FACTS.map((f) => (
-                <div
-                  key={f.label}
-                  className="flex min-h-36 flex-col justify-center bg-background/70 px-6 py-7 backdrop-blur-sm"
-                >
-                  <dt className="label-mono">{f.label}</dt>
-                  <dd className="mt-2.5 font-display text-2xl leading-tight font-semibold">
-                    {f.value}
-                  </dd>
-                  <dd className="mt-2.5 font-mono text-xs text-muted-foreground">{f.sub}</dd>
-                </div>
-              ))}
-            </dl>
+            </div>
           </Reveal>
         </section>
 
+        <div className="mt-20">
+          <SkyTicker />
+        </div>
+
+        {/* Facts */}
+        <section className="mx-auto max-w-[110rem] px-6 sm:px-10">
+          <dl className="grid divide-border border-b border-border sm:grid-cols-3 sm:divide-x">
+            {FACTS.map((f, i) => (
+              <Reveal key={f.label} delay={i * 80}>
+                <div className="flex min-h-40 flex-col justify-between px-1 py-9 sm:px-8">
+                  <dt className="label-mono">
+                    {String(i + 1).padStart(2, "0")} · {f.label}
+                  </dt>
+                  <div>
+                    <dd className="font-display text-3xl leading-none font-semibold tracking-tight">
+                      {f.value}
+                    </dd>
+                    <dd className="mt-3 font-mono text-xs text-muted-foreground">{f.sub}</dd>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </dl>
+        </section>
+
         {/* About */}
-        <section className="border-t border-border">
-          <div className="mx-auto max-w-6xl px-6 py-28">
+        <section className="mx-auto max-w-[110rem] px-6 py-32 sm:px-10">
+          <div className="grid gap-14 lg:grid-cols-[18rem_1fr]">
             <Reveal>
-              <p className="label-mono">01 — About</p>
+              <p className="label-mono lg:sticky lg:top-28">(02) About</p>
             </Reveal>
-            <div className="mt-10 grid gap-16 lg:grid-cols-[1fr_1.1fr]">
+            <div>
               <Reveal>
-                <h2 className="text-3xl leading-tight font-semibold sm:text-4xl">
+                <h2 className="max-w-3xl font-display text-[clamp(1.9rem,4vw,3.4rem)] leading-[1.08] font-semibold tracking-tight">
                   관측에 필요한 건 전공이 아니라,
                   <br />
-                  하늘을 향한 호기심입니다.
+                  <span className="text-muted-foreground">하늘을 향한 호기심입니다.</span>
                 </h2>
               </Reveal>
               <Reveal delay={120}>
-                <div className="space-y-8">
-                  <p className="leading-relaxed text-muted-foreground">
-                    1985년 창립 이래 YAAA는 캠퍼스와 교외 관측지를 오가며 성운·성단·행성 관측과
-                    천체사진 촬영을 이어오고 있습니다. 대형 중앙동아리답게 매 학기 신입 부원을
-                    맞이하며, 전공·학년의 경계 없이 함께 장비를 다루고 기록을 남깁니다.
-                  </p>
-                  <ul className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
-                    {[
-                      { icon: Telescope, t: "정기 관측", d: "교내·교외 관측회" },
-                      { icon: Users, t: "부원 교육", d: "장비 · 성도 기초" },
-                      { icon: CalendarDays, t: "세미나", d: "천체물리 스터디" },
-                    ].map(({ icon: Icon, t, d }) => (
-                      <li key={t} className="bg-card px-5 py-6">
-                        <Icon className="h-4 w-4 text-gold" strokeWidth={1.5} />
-                        <p className="mt-4 text-sm font-medium">{t}</p>
-                        <p className="mt-1 font-mono text-xs text-muted-foreground">{d}</p>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <p className="mt-12 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                  1985년 창립 이래 YAAA는 캠퍼스와 교외 관측지를 오가며 성운·성단·행성 관측과
+                  천체사진 촬영을 이어오고 있습니다. 매 학기 신입 부원을 맞이하며, 전공·학년의 경계
+                  없이 함께 장비를 다루고 기록을 남깁니다.
+                </p>
+              </Reveal>
+              <Reveal delay={200}>
+                <ul className="mt-16 divide-y divide-border border-y border-border">
+                  {[
+                    { icon: Telescope, t: "정기 관측", d: "교내 · 교외 관측회", n: "I" },
+                    { icon: Users, t: "부원 교육", d: "장비 · 성도 기초", n: "II" },
+                    { icon: CalendarDays, t: "세미나", d: "천체물리 스터디", n: "III" },
+                  ].map(({ icon: Icon, t, d, n }) => (
+                    <li
+                      key={t}
+                      className="group flex items-center gap-6 py-7 transition-colors hover:text-primary"
+                    >
+                      <span className="w-8 font-mono text-xs text-muted-foreground">{n}</span>
+                      <Icon
+                        className="h-4 w-4 text-gold transition-transform group-hover:-translate-y-0.5"
+                        strokeWidth={1.5}
+                      />
+                      <span className="font-display text-xl font-medium tracking-tight">{t}</span>
+                      <span className="ml-auto font-mono text-xs text-muted-foreground">{d}</span>
+                    </li>
+                  ))}
+                </ul>
               </Reveal>
             </div>
           </div>
         </section>
 
-        {/* Location */}
-        <section className="border-t border-border">
-          <div className="mx-auto max-w-6xl px-6 py-28">
+        {/* Clubroom */}
+        <section className="mx-auto max-w-[110rem] px-6 pb-32 sm:px-10">
+          <div className="grid gap-14 lg:grid-cols-[18rem_1fr]">
             <Reveal>
-              <p className="label-mono">02 — Clubroom</p>
+              <p className="label-mono lg:sticky lg:top-28">(03) Clubroom</p>
             </Reveal>
-            <div className="mt-10 grid gap-12 lg:grid-cols-2">
+            <div className="grid gap-12 lg:grid-cols-2">
               <Reveal>
-                <h2 className="text-3xl font-semibold sm:text-4xl">동아리방 안내</h2>
-                <p className="mt-6 max-w-md leading-relaxed text-muted-foreground">
+                <h2 className="font-display text-[clamp(1.7rem,3vw,2.6rem)] leading-tight font-semibold tracking-tight">
+                  동아리방 안내
+                </h2>
+                <p className="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
                   학기 중 평일 상시 개방됩니다. 관측 장비 대여와 반납, 정기 모임이 이곳에서
                   이루어집니다.
                 </p>
+                <MapPin className="mt-10 h-5 w-5 text-primary" strokeWidth={1.5} />
               </Reveal>
               <Reveal delay={120}>
-                <div className="hairline rounded-lg bg-card/60 p-8">
-                  <MapPin className="h-5 w-5 text-primary" strokeWidth={1.5} />
-                  <dl className="mt-8 space-y-6 font-mono text-sm">
-                    {[
-                      ["LOCATION", "연세대학교 신촌캠퍼스 학생회관"],
-                      ["ROOM", "동아리방 (YAAA)"],
-                      ["OPEN", "학기 중 평일 상시"],
-                      ["CONTACT", "인스타그램 DM"],
-                    ].map(([k, v]) => (
-                      <div key={k} className="flex gap-6 border-b border-border/60 pb-4">
-                        <dt className="label-mono w-28 shrink-0">{k}</dt>
-                        <dd className="text-foreground">{v}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
-                    정확한 호실과 개방 시간은 운영진 공지를 따릅니다.
-                  </p>
-                </div>
+                <dl className="divide-y divide-border border-t border-border font-mono text-sm">
+                  {[
+                    ["LOCATION", "연세대학교 신촌캠퍼스 학생회관"],
+                    ["ROOM", "동아리방 (YAAA)"],
+                    ["OPEN", "학기 중 평일 상시"],
+                    ["CONTACT", "인스타그램 DM"],
+                  ].map(([k, v]) => (
+                    <div key={k} className="flex gap-6 py-5">
+                      <dt className="label-mono w-28 shrink-0">{k}</dt>
+                      <dd className="text-foreground">{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
+                  정확한 호실과 개방 시간은 운영진 공지를 따릅니다.
+                </p>
               </Reveal>
             </div>
           </div>
         </section>
 
         {/* FAQ */}
-        <section id="faq" className="border-t border-border scroll-mt-20">
-          <div className="mx-auto max-w-6xl px-6 py-28">
+        <section id="faq" className="mx-auto max-w-[110rem] scroll-mt-24 px-6 pb-32 sm:px-10">
+          <div className="grid gap-14 lg:grid-cols-[18rem_1fr]">
             <Reveal>
-              <p className="label-mono">03 — FAQ</p>
-              <h2 className="mt-8 text-3xl font-semibold sm:text-4xl">자주 묻는 질문</h2>
+              <p className="label-mono lg:sticky lg:top-28">(04) FAQ</p>
             </Reveal>
             <Reveal delay={100}>
-              <Accordion type="single" collapsible className="mt-12 border-t border-border">
+              <Accordion type="single" collapsible className="border-t border-border">
                 {FAQ.map((item, i) => (
                   <AccordionItem
                     key={item.q}
                     value={`item-${i}`}
                     className="border-b border-border"
                   >
-                    <AccordionTrigger className="gap-6 py-6 text-left text-base hover:no-underline">
+                    <AccordionTrigger className="gap-6 py-7 text-left text-base hover:no-underline data-[state=open]:text-primary">
                       <span className="flex gap-6">
-                        <span className="font-mono text-xs text-primary">
+                        <span className="font-mono text-xs text-muted-foreground">
                           {String(i + 1).padStart(2, "0")}
                         </span>
                         {item.q}
                       </span>
                     </AccordionTrigger>
-                    <AccordionContent className="pb-6 pl-[3.25rem] text-sm leading-relaxed text-muted-foreground">
+                    <AccordionContent className="pb-7 pl-[3.25rem] text-sm leading-relaxed text-muted-foreground">
                       {item.a}
                     </AccordionContent>
                   </AccordionItem>
@@ -244,38 +267,44 @@ function Home() {
           </div>
         </section>
 
-        {/* Social + footer */}
+        {/* Footer */}
         <footer className="border-t border-border">
-          <div className="mx-auto max-w-6xl px-6 py-24">
+          <div className="mx-auto max-w-[110rem] px-6 py-20 sm:px-10">
             <Reveal>
-              <p className="label-mono">04 — Channels</p>
-              <div className="mt-10 flex flex-wrap items-center gap-3">
-                <a
-                  href="https://instagram.com/yaaa_yonsei"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hairline inline-flex items-center gap-3 rounded-sm px-5 py-3 text-sm transition-colors hover:border-gold/50 hover:text-gold"
-                >
-                  <Instagram className="h-4 w-4" strokeWidth={1.5} />
-                  Instagram
-                  <span className="font-mono text-xs text-muted-foreground">@yaaa_yonsei</span>
-                </a>
-                <Link
-                  to="/auth"
-                  className="hairline inline-flex items-center gap-3 rounded-sm px-5 py-3 text-sm transition-colors hover:border-primary/50 hover:text-primary"
-                >
-                  부원 전용 공간 →
-                </Link>
+              <div className="flex flex-wrap items-center justify-between gap-6">
+                <p className="label-mono">(05) Channels</p>
+                <div className="flex flex-wrap items-center gap-8">
+                  <a
+                    href="https://instagram.com/yaaa_yonsei"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-3 border-b border-border pb-1.5 text-sm transition-colors hover:border-gold/60 hover:text-gold"
+                  >
+                    <Instagram className="h-4 w-4" strokeWidth={1.5} />
+                    Instagram
+                    <span className="font-mono text-xs text-muted-foreground">@yaaa_yonsei</span>
+                  </a>
+                  <Link
+                    to="/auth"
+                    className="inline-flex items-center gap-3 border-b border-primary/50 pb-1.5 text-sm text-primary"
+                  >
+                    부원 전용 공간 →
+                  </Link>
+                </div>
               </div>
             </Reveal>
 
-            <div className="mt-20 flex flex-wrap items-end justify-between gap-6 border-t border-border pt-8">
-              <p className="font-display text-3xl font-bold tracking-[0.2em] text-muted-foreground/40">
-                YAAA
-              </p>
+            <p className="wordmark mt-20 flex justify-between text-muted-foreground/15 select-none">
+              {["Y", "A", "A", "A"].map((c, i) => (
+                <span key={i}>{c}</span>
+              ))}
+            </p>
+
+            <div className="mt-10 flex flex-wrap items-end justify-between gap-4 border-t border-border pt-7">
               <p className="font-mono text-xs text-muted-foreground">
-                연세 아마추어 천문회 · Yonsei University · Since 1985
+                연세 아마추어 천문회 · Yonsei University
               </p>
+              <p className="font-mono text-xs text-muted-foreground">Since 1985</p>
             </div>
           </div>
         </footer>
