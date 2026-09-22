@@ -264,7 +264,7 @@ function ActivityDetail() {
             </div>
           </div>
 
-          {isOfficer && (
+          {(isAdmin || a.created_by === userId) && (
             <section className="mt-14">
               <p className="label-mono">Signups · {signups.data?.length ?? 0}</p>
               {(signups.data?.length ?? 0) === 0 ? (
