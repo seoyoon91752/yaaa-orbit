@@ -4,7 +4,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatDateTime } from "@/lib/format";
+
+const RENTAL_LABEL: Record<string, string> = {
+  pending: "대기중",
+  approved: "승인됨",
+  rejected: "거절됨",
+  returned: "반납완료",
+  cancelled: "취소됨",
+};
 
 export const Route = createFileRoute("/_authenticated/me")({
   head: () => ({
@@ -54,6 +62,34 @@ function MyPage() {
         .select("id, board, title, created_at, view_count")
         .eq("author_id", userId!)
         .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const myRentals = useQuery({
+    queryKey: ["my-rentals", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("equipment_rentals")
+        .select("id, start_date, end_date, status, return_note, equipment(name)")
+        .eq("user_id", userId!)
+        .order("start_date", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const myBookings = useQuery({
+    queryKey: ["my-reservations", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("room_reservations")
+        .select("id, starts_at, ends_at, purpose, headcount")
+        .eq("user_id", userId!)
+        .order("starts_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },
@@ -165,6 +201,54 @@ function MyPage() {
           </form>
         </section>
       </div>
+
+      <section className="mt-16 grid gap-10 lg:grid-cols-2">
+        <div>
+          <p className="label-mono">My Rentals · {myRentals.data?.length ?? 0}</p>
+          {(myRentals.data?.length ?? 0) === 0 ? (
+            <p className="mt-6 font-mono text-sm text-muted-foreground">대여 내역이 없습니다.</p>
+          ) : (
+            <ul className="mt-6 border-t border-border">
+              {myRentals.data!.map((r) => (
+                <li key={r.id} className="border-b border-border py-4">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                    <span className="font-mono text-xs text-primary">
+                      {RENTAL_LABEL[r.status as keyof typeof RENTAL_LABEL]}
+                    </span>
+                    <span className="text-sm">{r.equipment?.name ?? "—"}</span>
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {formatDate(r.start_date)} → {formatDate(r.end_date)}
+                    </span>
+                  </div>
+                  {r.return_note && (
+                    <p className="mt-1 font-mono text-xs text-gold">특이사항: {r.return_note}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div>
+          <p className="label-mono">My Bookings · {myBookings.data?.length ?? 0}</p>
+          {(myBookings.data?.length ?? 0) === 0 ? (
+            <p className="mt-6 font-mono text-sm text-muted-foreground">예약 내역이 없습니다.</p>
+          ) : (
+            <ul className="mt-6 border-t border-border">
+              {myBookings.data!.map((b) => (
+                <li key={b.id} className="border-b border-border py-4">
+                  <p className="font-mono text-xs text-muted-foreground">
+                    {formatDateTime(b.starts_at)} – {new Date(b.ends_at).toTimeString().slice(0, 5)}
+                  </p>
+                  <p className="mt-1 text-sm">
+                    {b.purpose} · {b.headcount}명
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
 
       <section className="mt-16">
         <p className="label-mono">My Posts · {myPosts.data?.length ?? 0}</p>

@@ -9,6 +9,8 @@ const NAV = [
   { to: "/board/$board", params: { board: "notice" }, label: "공지사항", match: "/board/notice" },
   { to: "/board/$board", params: { board: "free" }, label: "자유게시판", match: "/board/free" },
   { to: "/calendar", label: "일정", match: "/calendar" },
+  { to: "/equipment", label: "장비 대여", match: "/equipment" },
+  { to: "/room", label: "동아리방 예약", match: "/room" },
   { to: "/me", label: "마이페이지", match: "/me" },
 ] as const;
 

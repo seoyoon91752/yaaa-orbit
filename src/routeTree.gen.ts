@@ -15,7 +15,9 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authenticated/equipment'
 import { Route as AuthenticatedMeRouteImport } from './routes/_authenticated/me'
+import { Route as AuthenticatedRoomRouteImport } from './routes/_authenticated/room'
 import { Route as AuthenticatedBoardBoardIndexRouteImport } from './routes/_authenticated/board.$board.index'
 import { Route as AuthenticatedBoardBoardPostIdRouteImport } from './routes/_authenticated/board.$board.$postId'
 
@@ -48,9 +50,19 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedEquipmentRoute = AuthenticatedEquipmentRouteImport.update({
+  id: '/equipment',
+  path: '/equipment',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedMeRoute = AuthenticatedMeRouteImport.update({
   id: '/me',
   path: '/me',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRoomRoute = AuthenticatedRoomRouteImport.update({
+  id: '/room',
+  path: '/room',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedBoardBoardIndexRoute =
@@ -72,7 +84,9 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/equipment': typeof AuthenticatedEquipmentRoute
   '/me': typeof AuthenticatedMeRoute
+  '/room': typeof AuthenticatedRoomRoute
   '/board/$board/$postId': typeof AuthenticatedBoardBoardPostIdRoute
   '/board/$board/': typeof AuthenticatedBoardBoardIndexRoute
 }
@@ -82,7 +96,9 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/equipment': typeof AuthenticatedEquipmentRoute
   '/me': typeof AuthenticatedMeRoute
+  '/room': typeof AuthenticatedRoomRoute
   '/board/$board/$postId': typeof AuthenticatedBoardBoardPostIdRoute
   '/board/$board': typeof AuthenticatedBoardBoardIndexRoute
 }
@@ -94,7 +110,9 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/equipment': typeof AuthenticatedEquipmentRoute
   '/_authenticated/me': typeof AuthenticatedMeRoute
+  '/_authenticated/room': typeof AuthenticatedRoomRoute
   '/_authenticated/board/$board/$postId': typeof AuthenticatedBoardBoardPostIdRoute
   '/_authenticated/board/$board/': typeof AuthenticatedBoardBoardIndexRoute
 }
@@ -106,7 +124,9 @@ export interface FileRouteTypes {
     | '/admin'
     | '/calendar'
     | '/dashboard'
+    | '/equipment'
     | '/me'
+    | '/room'
     | '/board/$board/$postId'
     | '/board/$board/'
   fileRoutesByTo: FileRoutesByTo
@@ -116,7 +136,9 @@ export interface FileRouteTypes {
     | '/admin'
     | '/calendar'
     | '/dashboard'
+    | '/equipment'
     | '/me'
+    | '/room'
     | '/board/$board/$postId'
     | '/board/$board'
   id:
@@ -127,7 +149,9 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/calendar'
     | '/_authenticated/dashboard'
+    | '/_authenticated/equipment'
     | '/_authenticated/me'
+    | '/_authenticated/room'
     | '/_authenticated/board/$board/$postId'
     | '/_authenticated/board/$board/'
   fileRoutesById: FileRoutesById
@@ -182,11 +206,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/equipment': {
+      id: '/_authenticated/equipment'
+      path: '/equipment'
+      fullPath: '/equipment'
+      preLoaderRoute: typeof AuthenticatedEquipmentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/me': {
       id: '/_authenticated/me'
       path: '/me'
       fullPath: '/me'
       preLoaderRoute: typeof AuthenticatedMeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/room': {
+      id: '/_authenticated/room'
+      path: '/room'
+      fullPath: '/room'
+      preLoaderRoute: typeof AuthenticatedRoomRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/board/$board/': {
@@ -210,7 +248,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedEquipmentRoute: typeof AuthenticatedEquipmentRoute
   AuthenticatedMeRoute: typeof AuthenticatedMeRoute
+  AuthenticatedRoomRoute: typeof AuthenticatedRoomRoute
   AuthenticatedBoardBoardPostIdRoute: typeof AuthenticatedBoardBoardPostIdRoute
   AuthenticatedBoardBoardIndexRoute: typeof AuthenticatedBoardBoardIndexRoute
 }
@@ -219,7 +259,9 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedEquipmentRoute: AuthenticatedEquipmentRoute,
   AuthenticatedMeRoute: AuthenticatedMeRoute,
+  AuthenticatedRoomRoute: AuthenticatedRoomRoute,
   AuthenticatedBoardBoardPostIdRoute: AuthenticatedBoardBoardPostIdRoute,
   AuthenticatedBoardBoardIndexRoute: AuthenticatedBoardBoardIndexRoute,
 }

@@ -14,6 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
+      equipment: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          name: string
+          note: string | null
+          status: Database["public"]["Enums"]["equipment_status"]
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          name: string
+          note?: string | null
+          status?: Database["public"]["Enums"]["equipment_status"]
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          name?: string
+          note?: string | null
+          status?: Database["public"]["Enums"]["equipment_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      equipment_rentals: {
+        Row: {
+          created_at: string
+          end_date: string
+          equipment_id: string
+          id: string
+          purpose: string
+          return_note: string | null
+          returned_at: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          start_date: string
+          status: Database["public"]["Enums"]["rental_status"]
+          updated_at: string
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          equipment_id: string
+          id?: string
+          purpose: string
+          return_note?: string | null
+          returned_at?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          start_date: string
+          status?: Database["public"]["Enums"]["rental_status"]
+          updated_at?: string
+          user_id: string
+          user_name: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          equipment_id?: string
+          id?: string
+          purpose?: string
+          return_note?: string | null
+          returned_at?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["rental_status"]
+          updated_at?: string
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_rentals_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           category: string
@@ -166,6 +255,42 @@ export type Database = {
         }
         Relationships: []
       }
+      room_reservations: {
+        Row: {
+          created_at: string
+          ends_at: string
+          headcount: number
+          id: string
+          purpose: string
+          starts_at: string
+          updated_at: string
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          headcount?: number
+          id?: string
+          purpose: string
+          starts_at: string
+          updated_at?: string
+          user_id: string
+          user_name: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          headcount?: number
+          id?: string
+          purpose?: string
+          starts_at?: string
+          updated_at?: string
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
       roster: {
         Row: {
           cohort: string | null
@@ -261,12 +386,32 @@ export type Database = {
       increment_post_view: { Args: { _post_id: string }; Returns: undefined }
       is_officer: { Args: { _user_id: string }; Returns: boolean }
       is_verified_member: { Args: { _user_id: string }; Returns: boolean }
+      list_room_slots: {
+        Args: { _from: string; _to: string }
+        Returns: {
+          can_manage: boolean
+          ends_at: string
+          headcount: number
+          id: string
+          is_mine: boolean
+          purpose: string
+          starts_at: string
+          user_name: string
+        }[]
+      }
       norm_text: { Args: { _v: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "member" | "officer"
       board_kind: "notice" | "free"
+      equipment_status: "available" | "rented" | "maintenance" | "broken"
       member_status: "verified" | "pending" | "rejected"
+      rental_status:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "returned"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -396,7 +541,15 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "member", "officer"],
       board_kind: ["notice", "free"],
+      equipment_status: ["available", "rented", "maintenance", "broken"],
       member_status: ["verified", "pending", "rejected"],
+      rental_status: [
+        "pending",
+        "approved",
+        "rejected",
+        "returned",
+        "cancelled",
+      ],
     },
   },
 } as const
