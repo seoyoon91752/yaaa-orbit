@@ -23,7 +23,13 @@ export const Route = createFileRoute("/_authenticated/equipment")({
 });
 
 type EquipmentStatus = "available" | "rented" | "maintenance" | "broken";
-type RentalStatus = "pending" | "approved" | "rejected" | "returned" | "cancelled";
+type RentalStatus =
+  | "pending"
+  | "approved"
+  | "return_requested"
+  | "rejected"
+  | "returned"
+  | "cancelled";
 
 type EquipmentRow = {
   id: string;
@@ -43,6 +49,7 @@ type RentalRow = {
   purpose: string;
   status: RentalStatus;
   return_note: string | null;
+  returned_at: string | null;
   created_at: string;
 };
 
@@ -64,7 +71,8 @@ const STATUS_CLASS: Record<EquipmentStatus, string> = {
 
 const RENTAL_LABEL: Record<RentalStatus, string> = {
   pending: "대기중",
-  approved: "승인됨",
+  approved: "대여중",
+  return_requested: "반납확인 대기",
   rejected: "거절됨",
   returned: "반납완료",
   cancelled: "취소됨",
@@ -73,10 +81,28 @@ const RENTAL_LABEL: Record<RentalStatus, string> = {
 const RENTAL_CLASS: Record<RentalStatus, string> = {
   pending: "text-gold",
   approved: "text-primary",
+  return_requested: "text-gold",
   rejected: "text-destructive",
   returned: "text-muted-foreground",
   cancelled: "text-muted-foreground",
 };
+
+const todayStr = () => {
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
+
+function isOverdue(r: { status: RentalStatus; end_date: string }) {
+  return (
+    (r.status === "approved" || r.status === "return_requested") && r.end_date < todayStr()
+  );
+}
+
+function overdueDays(end: string) {
+  const ms = new Date(todayStr()).getTime() - new Date(end).getTime();
+  return Math.max(0, Math.round(ms / 86400000));
+}
 
 function friendlyError(e: unknown) {
   const msg = e instanceof Error ? e.message : String(e);
