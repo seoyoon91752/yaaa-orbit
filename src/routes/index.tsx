@@ -74,15 +74,19 @@ function Home() {
           <div className="grid items-center gap-10 md:grid-cols-[1.1fr_0.9fr] md:gap-12 lg:gap-16">
             <div>
               <Reveal>
-                <p className="label-mono">Yonsei Amateur Astronomy Association · Est. 1985</p>
+                <p className="font-display text-base font-semibold tracking-tight sm:text-lg">
+                  밤하늘을 기록하는 <span className="text-primary">관측자들</span>
+                </p>
               </Reveal>
               <Reveal delay={80}>
-                <h1 className="mt-8 font-display text-5xl leading-[1.05] font-bold sm:text-7xl">
-                  밤하늘을 기록하는
-                  <br />
-                  <span className="text-primary">관측자들</span>
+                <h1 className="mt-6 font-display text-6xl leading-[1] font-bold sm:text-8xl">
+                  YAAA
                 </h1>
+                <p className="label-mono mt-4">
+                  Yonsei Amateur Astronomy Association · Est. 1985
+                </p>
               </Reveal>
+
               <Reveal delay={160}>
                 <p className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground">
                   YAAA는 연세대학교 중앙동아리로, 전공과 학년에 관계없이 모인 부원들이 함께 별을
