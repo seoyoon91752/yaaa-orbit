@@ -74,18 +74,19 @@ function Home() {
           <div className="grid items-center gap-10 md:grid-cols-[1.1fr_0.9fr] md:gap-12 lg:gap-16">
             <div>
               <Reveal>
-                <p className="font-display text-base font-semibold tracking-tight sm:text-lg">
+                <p className="label-mono">
                   밤하늘을 기록하는 <span className="text-primary">관측자들</span>
                 </p>
               </Reveal>
               <Reveal delay={80}>
-                <h1 className="mt-6 font-display text-6xl leading-[1] font-bold sm:text-8xl">
+                <h1 className="mt-6 font-display text-7xl leading-[1] font-bold sm:text-9xl">
                   YAAA
                 </h1>
-                <p className="label-mono mt-4">
+                <p className="mt-4 font-display text-base font-semibold tracking-tight sm:text-lg">
                   Yonsei Amateur Astronomy Association · Est. 1985
                 </p>
               </Reveal>
+
 
               <Reveal delay={160}>
                 <p className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground">
