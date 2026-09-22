@@ -33,6 +33,7 @@ function MyPage() {
   const { userId } = useMemberContext();
   const queryClient = useQueryClient();
   const [phone, setPhone] = useState("");
+  const [department, setDepartment] = useState("");
   const [currentPw, setCurrentPw] = useState("");
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
@@ -53,7 +54,10 @@ function MyPage() {
   });
 
   useEffect(() => {
-    if (profile.data) setPhone(profile.data.phone ?? "");
+    if (profile.data) {
+      setPhone(profile.data.phone ?? "");
+      setDepartment(profile.data.department ?? "");
+    }
     const path = profile.data?.avatar_path;
     if (!path) {
       setAvatarUrl(null);
@@ -194,13 +198,14 @@ function MyPage() {
     mutationFn: async () => {
       const { error } = await supabase
         .from("profiles")
-        .update({ phone: phone.trim() || null })
+        .update({ phone: phone.trim() || null, department: department.trim() || null })
         .eq("id", userId!);
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("연락처가 저장되었습니다.");
+      toast.success("정보가 저장되었습니다.");
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["members"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -291,21 +296,35 @@ function MyPage() {
             문의해 주세요.
           </p>
 
-          <div className="mt-8 border-t border-border pt-6">
-            <p className="label-mono mb-2">연락처</p>
-            <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 space-y-6 border-t border-border pt-6">
+            <div>
+              <p className="label-mono mb-2">학과</p>
               <input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="010-0000-0000"
-                className="min-w-0 flex-1 rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+                placeholder="예) 천문우주학과"
+                className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
               />
-              <button
-                onClick={() => savePhone.mutate()}
-                className="shrink-0 rounded-sm border border-primary/40 px-5 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10"
-              >
-                저장
-              </button>
+              <p className="mt-2 text-xs text-muted-foreground">
+                입력한 학과는 부원 프로필 명단에 표시됩니다.
+              </p>
+            </div>
+            <div>
+              <p className="label-mono mb-2">연락처</p>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="010-0000-0000"
+                  className="min-w-0 flex-1 rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
+                />
+                <button
+                  onClick={() => savePhone.mutate()}
+                  className="shrink-0 rounded-sm border border-primary/40 px-5 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10"
+                >
+                  저장
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -479,8 +498,8 @@ function MyPage() {
         )}
       </section>
 
-      <section className="hairline mt-16 rounded-lg bg-card/60 p-8">
-        <p className="label-mono">My Gallery · {myPhotos.data?.length ?? 0}</p>
+      <p className="label-mono mt-16">My Gallery · {myPhotos.data?.length ?? 0}</p>
+      <section className="hairline mt-4 rounded-lg bg-card/60 p-8">
         {(myPhotos.data?.length ?? 0) === 0 ? (
           <p className="mt-6 font-mono text-sm text-muted-foreground">올린 사진이 없습니다.</p>
         ) : (
