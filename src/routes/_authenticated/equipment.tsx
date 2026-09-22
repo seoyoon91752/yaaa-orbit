@@ -23,7 +23,13 @@ export const Route = createFileRoute("/_authenticated/equipment")({
 });
 
 type EquipmentStatus = "available" | "rented" | "maintenance" | "broken";
-type RentalStatus = "pending" | "approved" | "rejected" | "returned" | "cancelled";
+type RentalStatus =
+  | "pending"
+  | "approved"
+  | "return_requested"
+  | "rejected"
+  | "returned"
+  | "cancelled";
 
 type EquipmentRow = {
   id: string;
@@ -43,8 +49,18 @@ type RentalRow = {
   purpose: string;
   status: RentalStatus;
   return_note: string | null;
+  returned_at: string | null;
   created_at: string;
 };
+
+const todayStr = () => {
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
+
+const isOverdue = (r: { status: RentalStatus; end_date: string }) =>
+  (r.status === "approved" || r.status === "return_requested") && r.end_date < todayStr();
 
 const CATEGORIES = ["망원경", "삼각대", "카메라", "아이피스", "기타"];
 
