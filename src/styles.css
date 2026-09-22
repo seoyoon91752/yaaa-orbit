@@ -115,7 +115,8 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
+    font-weight: 400;
   }
 
   ::selection {
@@ -126,8 +127,8 @@
 @utility label-mono {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-transform: none;
   color: var(--muted-foreground);
 }
 
@@ -136,8 +137,7 @@
 }
 
 @utility glow-cyan {
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 22%, transparent),
-    0 0 40px -18px color-mix(in oklab, var(--primary) 70%, transparent);
+  box-shadow: none;
 }
 
 @utility reveal {
