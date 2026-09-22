@@ -260,12 +260,6 @@ function Home() {
                   Instagram
                   <span className="font-mono text-xs text-muted-foreground">@yaaa_yonsei</span>
                 </a>
-                <Link
-                  to="/auth"
-                  className="hairline inline-flex items-center gap-3 rounded-sm px-5 py-3 text-sm transition-colors hover:border-primary/50 hover:text-primary"
-                >
-                  부원 전용 공간 →
-                </Link>
               </div>
             </Reveal>
 
