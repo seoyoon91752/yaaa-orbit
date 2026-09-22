@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
+import { SheetStrip } from "@/components/sheet-strip";
 import { formatDate } from "@/lib/format";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -262,7 +263,7 @@ function EquipmentPage() {
           },
           {
             label: "Pending",
-            value: String((rentals.data ?? []).filter((r) => r.status === "requested").length),
+            value: String((rentals.data ?? []).filter((r) => r.status === "pending").length),
           },
         ]}
       />
