@@ -274,6 +274,12 @@ function EquipmentPage() {
 
   const nameOf = (id: string) => items.data?.find((i) => i.id === id)?.name ?? "—";
   const myRentals = (rentals.data ?? []).filter((r) => r.user_id === userId);
+  const overdueAll = (rentals.data ?? []).filter(isOverdue);
+  const myOverdue = myRentals.filter(isOverdue);
+  const returnWaiting = (rentals.data ?? []).filter((r) => r.status === "return_requested");
+  const returnLog = (rentals.data ?? [])
+    .filter((r) => r.status === "returned")
+    .sort((a, b) => (b.returned_at ?? "").localeCompare(a.returned_at ?? ""));
 
   return (
     <MemberShell
@@ -382,6 +388,30 @@ function EquipmentPage() {
         )}
       </section>
 
+      {(overdueAll.length > 0 || returnWaiting.length > 0) && isOfficer && (
+        <div className="mt-12 rounded-lg border border-destructive/40 bg-destructive/5 p-6">
+          <p className="label-mono text-destructive">Officer Alert</p>
+          <ul className="mt-3 space-y-1 font-mono text-sm text-destructive">
+            {overdueAll.length > 0 && (
+              <li>미반납 연체 장비 {overdueAll.length}건 — 대여자에게 반납을 요청해 주세요.</li>
+            )}
+            {returnWaiting.length > 0 && (
+              <li>반납 확인 대기 {returnWaiting.length}건 — 장비 상태를 확인하고 처리해 주세요.</li>
+            )}
+          </ul>
+        </div>
+      )}
+
+      {!isOfficer && myOverdue.length > 0 && (
+        <div className="mt-12 rounded-lg border border-destructive/40 bg-destructive/5 p-6">
+          <p className="label-mono text-destructive">Overdue</p>
+          <p className="mt-3 font-mono text-sm text-destructive">
+            반납 예정일이 지난 대여가 {myOverdue.length}건 있습니다. 장비를 반납하고 “반납하기”를 눌러
+            주세요.
+          </p>
+        </div>
+      )}
+
       <section className="mt-16">
         <p className="label-mono">
           {isOfficer ? `All Rentals · ${rentals.data?.length ?? 0}` : `My Rentals · ${myRentals.length}`}
@@ -403,7 +433,17 @@ function EquipmentPage() {
                   {isOfficer && (
                     <span className="font-mono text-xs text-muted-foreground">{r.user_name}</span>
                   )}
+                  {isOverdue(r) && (
+                    <span className="rounded-sm border border-destructive/40 bg-destructive/10 px-2 py-0.5 font-mono text-[11px] text-destructive">
+                      연체 D+{overdueDays(r.end_date)}
+                    </span>
+                  )}
                 </div>
+                {isOverdue(r) && (
+                  <p className="mt-2 font-mono text-xs text-destructive">
+                    반납 예정일이 지났습니다. 즉시 반납해 주세요.
+                  </p>
+                )}
                 <p className="mt-2 text-sm text-muted-foreground">{r.purpose}</p>
                 {r.return_note && (
                   <p className="mt-2 font-mono text-xs text-gold">특이사항: {r.return_note}</p>
@@ -425,15 +465,26 @@ function EquipmentPage() {
                       </button>
                     </>
                   )}
-                  {isOfficer && r.status === "approved" && (
+                  {r.user_id === userId && r.status === "approved" && (
                     <button
                       onClick={() => {
                         const note = prompt("반납 특이사항 (파손 · 분실 등, 없으면 비워두세요)") ?? "";
+                        requestReturn.mutate({ id: r.id, note });
+                      }}
+                      className="rounded-sm border border-primary/40 px-3 py-1.5 text-xs text-primary hover:bg-primary/10"
+                    >
+                      반납하기
+                    </button>
+                  )}
+                  {isOfficer && r.status === "return_requested" && (
+                    <button
+                      onClick={() => {
+                        const note = prompt("반납 확인 메모 (파손 · 분실 등, 없으면 비워두세요)") ?? "";
                         setRentalStatus.mutate({ id: r.id, status: "returned", note });
                       }}
                       className="rounded-sm border border-gold/40 px-3 py-1.5 text-xs text-gold hover:bg-gold/10"
                     >
-                      반납 완료
+                      반납 확인
                     </button>
                   )}
                   {r.user_id === userId && r.status === "pending" && (
