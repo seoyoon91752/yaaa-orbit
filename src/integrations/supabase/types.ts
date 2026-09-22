@@ -14,16 +14,138 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["member_status"]
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["member_status"]
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["member_status"]
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      roster: {
+        Row: {
+          cohort: string | null
+          created_at: string
+          department: string | null
+          full_name: string
+          id: string
+          note: string | null
+          phone: string | null
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          cohort?: string | null
+          created_at?: string
+          department?: string | null
+          full_name: string
+          id?: string
+          note?: string | null
+          phone?: string | null
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          cohort?: string | null
+          created_at?: string
+          department?: string | null
+          full_name?: string
+          id?: string
+          note?: string | null
+          phone?: string | null
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      admin_exists: { Args: never; Returns: boolean }
+      claim_first_admin: { Args: never; Returns: boolean }
+      claim_membership: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["member_status"]
+          student_id: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      norm_text: { Args: { _v: string }; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "member"
+      member_status: "verified" | "pending" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +272,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "member"],
+      member_status: ["verified", "pending", "rejected"],
+    },
   },
 } as const
