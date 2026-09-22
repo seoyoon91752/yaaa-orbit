@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
 import { formatDate, formatDateTime } from "@/lib/format";
+import { initialOf, signAvatars } from "@/lib/avatars";
 
 const RENTAL_LABEL: Record<string, string> = {
   pending: "대기중",
