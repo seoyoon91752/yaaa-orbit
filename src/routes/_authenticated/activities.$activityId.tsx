@@ -131,6 +131,7 @@ function ActivityDetail() {
           ends_at: form.ends_at ? new Date(form.ends_at).toISOString() : null,
           apply_deadline: new Date(form.apply_deadline).toISOString(),
           capacity: form.capacity ? Number(form.capacity) : null,
+          stardust_reward: form.stardust_reward ? Number(form.stardust_reward) : 1,
         })
         .eq("id", activityId);
       if (error) throw error;
