@@ -5,7 +5,15 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { SkyForm, emptySky, KIND_LABEL, type SkyFormState, type SkyKind } from "@/components/sky-form";
+import {
+  SkyForm,
+  emptySky,
+  KIND_LABEL,
+  SCALE_LABEL,
+  scaleOfKind,
+  type SkyFormState,
+  type SkyScale,
+} from "@/components/sky-form";
 
 export const Route = createFileRoute("/_authenticated/sky/$objectId")({
   head: () => ({
@@ -57,7 +65,11 @@ function SkyDetail() {
       const { error } = await supabase
         .from("celestial_objects")
         .update({
-          kind: form.kind,
+          scale: form.scale,
+          kind_code: form.kind_code,
+          subtype: form.subtype.trim() || null,
+          ra: form.ra.trim() || null,
+          decl: form.decl.trim() || null,
           name: form.name.trim(),
           latin_name: form.latin_name.trim() || null,
           summary: form.summary.trim() || null,
@@ -105,8 +117,12 @@ function SkyDetail() {
       {o && (
         <div className="hairline mt-6 rounded-lg bg-card/60 p-8">
           <div className="flex flex-wrap items-center gap-3">
+            <span className="rounded-sm border border-border px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
+              {SCALE_LABEL[(o.scale ?? "solar") as SkyScale]}
+            </span>
             <span className="rounded-sm border border-primary/40 bg-primary/10 px-2.5 py-1 font-mono text-[11px] text-primary">
-              {KIND_LABEL[o.kind as SkyKind]}
+              {KIND_LABEL[o.kind_code] ?? o.kind_code}
+              {o.subtype ? ` · ${o.subtype}` : ""}
             </span>
             {o.latin_name && (
               <span className="font-mono text-xs text-muted-foreground">{o.latin_name}</span>
@@ -125,6 +141,8 @@ function SkyDetail() {
           {o.summary && <p className="mt-6 text-lg leading-relaxed">{o.summary}</p>}
 
           <dl className="mt-6 space-y-4 font-mono text-sm">
+            <Row k="RA" v={o.ra ?? "—"} />
+            <Row k="DEC" v={o.decl ?? "—"} />
             <Row k="SEASON" v={o.best_season ?? "—"} />
             <Row k="DIRECTION" v={o.direction ?? "—"} />
             <Row k="MAGNITUDE" v={o.magnitude ?? "—"} />
@@ -142,7 +160,11 @@ function SkyDetail() {
                 onClick={() => {
                   setForm({
                     id: o.id,
-                    kind: o.kind as SkyKind,
+                    scale: scaleOfKind(o.kind_code),
+                    kind_code: o.kind_code,
+                    subtype: o.subtype ?? "",
+                    ra: o.ra ?? "",
+                    decl: o.decl ?? "",
                     name: o.name,
                     latin_name: o.latin_name ?? "",
                     summary: o.summary ?? "",
