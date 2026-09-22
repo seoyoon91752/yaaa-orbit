@@ -801,10 +801,6 @@ export type Database = {
         Args: { _metric: string; _user_id: string }
         Returns: number
       }
-      request_rental_return: {
-        Args: { _note?: string; _rental_id: string }
-        Returns: undefined
-      }
     }
     Enums: {
       app_role: "admin" | "member" | "officer"
@@ -815,7 +811,6 @@ export type Database = {
       rental_status:
         | "pending"
         | "approved"
-        | "return_requested"
         | "rejected"
         | "returned"
         | "cancelled"
@@ -954,7 +949,6 @@ export const Constants = {
       rental_status: [
         "pending",
         "approved",
-        "return_requested",
         "rejected",
         "returned",
         "cancelled",
