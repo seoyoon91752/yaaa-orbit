@@ -195,7 +195,10 @@ function EquipmentPage() {
         reviewed_by: userId,
         reviewed_at: new Date().toISOString(),
         ...(status === "returned"
-          ? { returned_at: new Date().toISOString(), return_note: note?.trim() || null }
+          ? {
+              returned_at: new Date().toISOString(),
+              ...(note?.trim() ? { return_note: note.trim() } : {}),
+            }
           : {}),
       };
       const { error } = await supabase.from("equipment_rentals").update(patch).eq("id", id);
@@ -203,6 +206,21 @@ function EquipmentPage() {
     },
     onSuccess: () => {
       toast.success("대여 상태가 변경되었습니다.");
+      invalidate();
+    },
+    onError: (e) => toast.error(friendlyError(e)),
+  });
+
+  const requestReturn = useMutation({
+    mutationFn: async ({ id, note }: { id: string; note: string }) => {
+      const { error } = await supabase.rpc("request_rental_return", {
+        _rental_id: id,
+        _note: note.trim() || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("반납 신청이 접수되었습니다. 임원진 확인 후 완료 처리됩니다.");
       invalidate();
     },
     onError: (e) => toast.error(friendlyError(e)),
