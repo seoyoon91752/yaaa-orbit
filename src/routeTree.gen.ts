@@ -22,6 +22,7 @@ import { Route as AuthenticatedRoomRouteImport } from './routes/_authenticated/r
 import { Route as AuthenticatedUniverseRouteImport } from './routes/_authenticated/universe'
 import { Route as AuthenticatedActivitiesIndexRouteImport } from './routes/_authenticated/activities.index'
 import { Route as AuthenticatedActivitiesActivityIdRouteImport } from './routes/_authenticated/activities.$activityId'
+import { Route as AuthenticatedMembersIndexRouteImport } from './routes/_authenticated/members.index'
 import { Route as AuthenticatedSkyIndexRouteImport } from './routes/_authenticated/sky.index'
 import { Route as AuthenticatedSkyObjectIdRouteImport } from './routes/_authenticated/sky.$objectId'
 import { Route as AuthenticatedBoardBoardIndexRouteImport } from './routes/_authenticated/board.$board.index'
@@ -93,6 +94,12 @@ const AuthenticatedActivitiesActivityIdRoute =
     path: '/activities/$activityId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedMembersIndexRoute =
+  AuthenticatedMembersIndexRouteImport.update({
+    id: '/members/',
+    path: '/members/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSkyIndexRoute = AuthenticatedSkyIndexRouteImport.update({
   id: '/sky/',
   path: '/sky/',
@@ -131,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/activities/$activityId': typeof AuthenticatedActivitiesActivityIdRoute
   '/sky/$objectId': typeof AuthenticatedSkyObjectIdRoute
   '/activities/': typeof AuthenticatedActivitiesIndexRoute
+  '/members/': typeof AuthenticatedMembersIndexRoute
   '/sky/': typeof AuthenticatedSkyIndexRoute
   '/board/$board/$postId': typeof AuthenticatedBoardBoardPostIdRoute
   '/board/$board/': typeof AuthenticatedBoardBoardIndexRoute
@@ -149,6 +157,7 @@ export interface FileRoutesByTo {
   '/activities/$activityId': typeof AuthenticatedActivitiesActivityIdRoute
   '/sky/$objectId': typeof AuthenticatedSkyObjectIdRoute
   '/activities': typeof AuthenticatedActivitiesIndexRoute
+  '/members': typeof AuthenticatedMembersIndexRoute
   '/sky': typeof AuthenticatedSkyIndexRoute
   '/board/$board/$postId': typeof AuthenticatedBoardBoardPostIdRoute
   '/board/$board': typeof AuthenticatedBoardBoardIndexRoute
@@ -169,6 +178,7 @@ export interface FileRoutesById {
   '/_authenticated/activities/$activityId': typeof AuthenticatedActivitiesActivityIdRoute
   '/_authenticated/sky/$objectId': typeof AuthenticatedSkyObjectIdRoute
   '/_authenticated/activities/': typeof AuthenticatedActivitiesIndexRoute
+  '/_authenticated/members/': typeof AuthenticatedMembersIndexRoute
   '/_authenticated/sky/': typeof AuthenticatedSkyIndexRoute
   '/_authenticated/board/$board/$postId': typeof AuthenticatedBoardBoardPostIdRoute
   '/_authenticated/board/$board/': typeof AuthenticatedBoardBoardIndexRoute
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/activities/$activityId'
     | '/sky/$objectId'
     | '/activities/'
+    | '/members/'
     | '/sky/'
     | '/board/$board/$postId'
     | '/board/$board/'
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/activities/$activityId'
     | '/sky/$objectId'
     | '/activities'
+    | '/members'
     | '/sky'
     | '/board/$board/$postId'
     | '/board/$board'
@@ -226,6 +238,7 @@ export interface FileRouteTypes {
     | '/_authenticated/activities/$activityId'
     | '/_authenticated/sky/$objectId'
     | '/_authenticated/activities/'
+    | '/_authenticated/members/'
     | '/_authenticated/sky/'
     | '/_authenticated/board/$board/$postId'
     | '/_authenticated/board/$board/'
@@ -330,6 +343,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedActivitiesActivityIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/members/': {
+      id: '/_authenticated/members/'
+      path: '/members'
+      fullPath: '/members/'
+      preLoaderRoute: typeof AuthenticatedMembersIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/sky/': {
       id: '/_authenticated/sky/'
       path: '/sky'
@@ -373,6 +393,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedActivitiesActivityIdRoute: typeof AuthenticatedActivitiesActivityIdRoute
   AuthenticatedSkyObjectIdRoute: typeof AuthenticatedSkyObjectIdRoute
   AuthenticatedActivitiesIndexRoute: typeof AuthenticatedActivitiesIndexRoute
+  AuthenticatedMembersIndexRoute: typeof AuthenticatedMembersIndexRoute
   AuthenticatedSkyIndexRoute: typeof AuthenticatedSkyIndexRoute
   AuthenticatedBoardBoardPostIdRoute: typeof AuthenticatedBoardBoardPostIdRoute
   AuthenticatedBoardBoardIndexRoute: typeof AuthenticatedBoardBoardIndexRoute
@@ -391,6 +412,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedActivitiesActivityIdRoute,
   AuthenticatedSkyObjectIdRoute: AuthenticatedSkyObjectIdRoute,
   AuthenticatedActivitiesIndexRoute: AuthenticatedActivitiesIndexRoute,
+  AuthenticatedMembersIndexRoute: AuthenticatedMembersIndexRoute,
   AuthenticatedSkyIndexRoute: AuthenticatedSkyIndexRoute,
   AuthenticatedBoardBoardPostIdRoute: AuthenticatedBoardBoardPostIdRoute,
   AuthenticatedBoardBoardIndexRoute: AuthenticatedBoardBoardIndexRoute,
