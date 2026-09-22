@@ -1,0 +1,206 @@
+import { useEffect, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { MemberShell, useMemberContext } from "@/components/member-shell";
+import { formatDate } from "@/lib/format";
+
+export const Route = createFileRoute("/_authenticated/me")({
+  head: () => ({
+    meta: [
+      { title: "마이페이지 — YAAA 연세 아마추어 천문회" },
+      { name: "description", content: "YAAA 부원 개인 정보와 작성한 글 모아보기." },
+      { property: "og:title", content: "마이페이지 — YAAA" },
+      { property: "og:description", content: "YAAA 부원 개인 정보 관리." },
+      { property: "og:type", content: "profile" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: MyPage,
+});
+
+function MyPage() {
+  const { userId } = useMemberContext();
+  const queryClient = useQueryClient();
+  const [phone, setPhone] = useState("");
+  const [pw, setPw] = useState("");
+  const [pw2, setPw2] = useState("");
+
+  const profile = useQuery({
+    queryKey: ["my-profile", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId!)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  useEffect(() => {
+    if (profile.data) setPhone(profile.data.phone ?? "");
+  }, [profile.data]);
+
+  const myPosts = useQuery({
+    queryKey: ["my-posts", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("id, board, title, created_at, view_count")
+        .eq("author_id", userId!)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const savePhone = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ phone: phone.trim() || null })
+        .eq("id", userId!);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("연락처가 저장되었습니다.");
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const changePw = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.auth.updateUser({ password: pw });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("비밀번호가 변경되었습니다.");
+      setPw("");
+      setPw2("");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const p = profile.data;
+
+  return (
+    <MemberShell eyebrow="My Record" title="마이페이지">
+      <div className="grid gap-10 lg:grid-cols-2">
+        <section className="hairline rounded-lg bg-card/60 p-8">
+          <p className="label-mono">Member Info</p>
+          <dl className="mt-6 space-y-5 font-mono text-sm">
+            <Row k="NAME" v={p?.full_name ?? "—"} />
+            <Row k="STUDENT ID" v={p?.student_id ?? "—"} />
+            <Row k="EMAIL" v={p?.email ?? "—"} />
+            <Row k="JOINED" v={p?.created_at ? formatDate(p.created_at) : "—"} />
+          </dl>
+          <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
+            이름과 학번은 부원 명부 기준 정보로 본인이 수정할 수 없습니다. 정정이 필요하면 운영진에게
+            문의해 주세요.
+          </p>
+
+          <div className="mt-8 border-t border-border pt-6">
+            <p className="label-mono mb-2">연락처</p>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="010-0000-0000"
+                className="min-w-0 flex-1 rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
+              />
+              <button
+                onClick={() => savePhone.mutate()}
+                className="shrink-0 rounded-sm border border-primary/40 px-5 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10"
+              >
+                저장
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section className="hairline rounded-lg bg-card/60 p-8">
+          <p className="label-mono">Password</p>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (pw.length < 8) {
+                toast.error("비밀번호는 8자 이상이어야 합니다.");
+                return;
+              }
+              if (pw !== pw2) {
+                toast.error("비밀번호가 일치하지 않습니다.");
+                return;
+              }
+              changePw.mutate();
+            }}
+            className="mt-6 space-y-3"
+          >
+            <input
+              type="password"
+              value={pw}
+              onChange={(e) => setPw(e.target.value)}
+              placeholder="새 비밀번호 (8자 이상)"
+              className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
+            />
+            <input
+              type="password"
+              value={pw2}
+              onChange={(e) => setPw2(e.target.value)}
+              placeholder="새 비밀번호 확인"
+              className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
+            />
+            <button
+              type="submit"
+              disabled={changePw.isPending}
+              className="rounded-sm border border-border px-5 py-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground disabled:opacity-60"
+            >
+              비밀번호 변경
+            </button>
+          </form>
+        </section>
+      </div>
+
+      <section className="mt-16">
+        <p className="label-mono">My Posts · {myPosts.data?.length ?? 0}</p>
+        {(myPosts.data?.length ?? 0) === 0 ? (
+          <p className="mt-6 font-mono text-sm text-muted-foreground">작성한 글이 없습니다.</p>
+        ) : (
+          <ul className="mt-6 border-t border-border">
+            {myPosts.data!.map((post) => (
+              <li key={post.id} className="border-b border-border">
+                <Link
+                  to="/board/$board/$postId"
+                  params={{ board: post.board, postId: post.id }}
+                  className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-5 py-5 transition-colors hover:text-primary"
+                >
+                  <span className="label-mono">
+                    {post.board === "notice" ? "NOTICE" : "FREE"}
+                  </span>
+                  <span className="truncate text-base">{post.title}</span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {formatDate(post.created_at)}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </MemberShell>
+  );
+}
+
+function Row({ k, v }: { k: string; v: string }) {
+  return (
+    <div className="flex gap-5 border-b border-border/60 pb-3">
+      <dt className="label-mono w-28 shrink-0">{k}</dt>
+      <dd className="min-w-0 break-words text-foreground">{v}</dd>
+    </div>
+  );
+}
