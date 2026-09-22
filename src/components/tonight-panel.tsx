@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useMemberContext } from "@/components/member-shell";
 import { daySeed, hhmm, moonPhase, sunTimes } from "@/lib/sky-today";
 
-/** Drafting-table almanac: moon phase dial, sun times, one object worth观 tonight. */
+/** Drafting-table almanac: moon phase dial, sun times, and one object to observe tonight. */
 export function TonightPanel() {
   const { profile } = useMemberContext();
   const now = useMemo(() => new Date(), []);
