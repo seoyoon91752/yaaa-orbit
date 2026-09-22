@@ -18,6 +18,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authenticated/equipment'
 import { Route as AuthenticatedMeRouteImport } from './routes/_authenticated/me'
 import { Route as AuthenticatedRoomRouteImport } from './routes/_authenticated/room'
+import { Route as AuthenticatedUniverseRouteImport } from './routes/_authenticated/universe'
 import { Route as AuthenticatedActivitiesIndexRouteImport } from './routes/_authenticated/activities.index'
 import { Route as AuthenticatedActivitiesActivityIdRouteImport } from './routes/_authenticated/activities.$activityId'
 import { Route as AuthenticatedSkyIndexRouteImport } from './routes/_authenticated/sky.index'
@@ -69,6 +70,11 @@ const AuthenticatedRoomRoute = AuthenticatedRoomRouteImport.update({
   path: '/room',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedUniverseRoute = AuthenticatedUniverseRouteImport.update({
+  id: '/universe',
+  path: '/universe',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedActivitiesIndexRoute =
   AuthenticatedActivitiesIndexRouteImport.update({
     id: '/activities/',
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/me': typeof AuthenticatedMeRoute
   '/room': typeof AuthenticatedRoomRoute
+  '/universe': typeof AuthenticatedUniverseRoute
   '/activities/$activityId': typeof AuthenticatedActivitiesActivityIdRoute
   '/sky/$objectId': typeof AuthenticatedSkyObjectIdRoute
   '/activities/': typeof AuthenticatedActivitiesIndexRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/me': typeof AuthenticatedMeRoute
   '/room': typeof AuthenticatedRoomRoute
+  '/universe': typeof AuthenticatedUniverseRoute
   '/activities/$activityId': typeof AuthenticatedActivitiesActivityIdRoute
   '/sky/$objectId': typeof AuthenticatedSkyObjectIdRoute
   '/activities': typeof AuthenticatedActivitiesIndexRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/_authenticated/equipment': typeof AuthenticatedEquipmentRoute
   '/_authenticated/me': typeof AuthenticatedMeRoute
   '/_authenticated/room': typeof AuthenticatedRoomRoute
+  '/_authenticated/universe': typeof AuthenticatedUniverseRoute
   '/_authenticated/activities/$activityId': typeof AuthenticatedActivitiesActivityIdRoute
   '/_authenticated/sky/$objectId': typeof AuthenticatedSkyObjectIdRoute
   '/_authenticated/activities/': typeof AuthenticatedActivitiesIndexRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | '/equipment'
     | '/me'
     | '/room'
+    | '/universe'
     | '/activities/$activityId'
     | '/sky/$objectId'
     | '/activities/'
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | '/equipment'
     | '/me'
     | '/room'
+    | '/universe'
     | '/activities/$activityId'
     | '/sky/$objectId'
     | '/activities'
@@ -199,6 +210,7 @@ export interface FileRouteTypes {
     | '/_authenticated/equipment'
     | '/_authenticated/me'
     | '/_authenticated/room'
+    | '/_authenticated/universe'
     | '/_authenticated/activities/$activityId'
     | '/_authenticated/sky/$objectId'
     | '/_authenticated/activities/'
@@ -278,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRoomRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/universe': {
+      id: '/_authenticated/universe'
+      path: '/universe'
+      fullPath: '/universe'
+      preLoaderRoute: typeof AuthenticatedUniverseRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/activities/': {
       id: '/_authenticated/activities/'
       path: '/activities'
@@ -330,6 +349,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedEquipmentRoute: typeof AuthenticatedEquipmentRoute
   AuthenticatedMeRoute: typeof AuthenticatedMeRoute
   AuthenticatedRoomRoute: typeof AuthenticatedRoomRoute
+  AuthenticatedUniverseRoute: typeof AuthenticatedUniverseRoute
   AuthenticatedActivitiesActivityIdRoute: typeof AuthenticatedActivitiesActivityIdRoute
   AuthenticatedSkyObjectIdRoute: typeof AuthenticatedSkyObjectIdRoute
   AuthenticatedActivitiesIndexRoute: typeof AuthenticatedActivitiesIndexRoute
@@ -345,6 +365,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEquipmentRoute: AuthenticatedEquipmentRoute,
   AuthenticatedMeRoute: AuthenticatedMeRoute,
   AuthenticatedRoomRoute: AuthenticatedRoomRoute,
+  AuthenticatedUniverseRoute: AuthenticatedUniverseRoute,
   AuthenticatedActivitiesActivityIdRoute:
     AuthenticatedActivitiesActivityIdRoute,
   AuthenticatedSkyObjectIdRoute: AuthenticatedSkyObjectIdRoute,
