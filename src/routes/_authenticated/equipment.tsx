@@ -548,6 +548,10 @@ function EquipmentPage() {
                 toast.error("기간과 사용 목적을 모두 입력해 주세요.");
                 return;
               }
+              if (req.start < todayStr()) {
+                toast.error("지난 날짜는 선택할 수 없습니다.");
+                return;
+              }
               if (req.end < req.start) {
                 toast.error("반납 예정일은 시작일 이후여야 합니다.");
                 return;
@@ -669,11 +673,13 @@ function Field({
   value,
   onChange,
   type = "text",
+  min,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   type?: string;
+  min?: string;
 }) {
   return (
     <div>
@@ -681,6 +687,7 @@ function Field({
       <input
         type={type}
         value={value}
+        min={min}
         onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
       />
