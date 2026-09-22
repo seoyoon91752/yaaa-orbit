@@ -9,6 +9,7 @@ import {
 import { SiteHeader } from "@/components/site-header";
 import { StarField } from "@/components/star-field";
 import { Reveal } from "@/components/reveal";
+import { ConstellationArt } from "@/components/constellation-art";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -70,43 +71,56 @@ function Home() {
 
         {/* Hero */}
         <section className="mx-auto max-w-6xl px-6 pt-24 pb-28 sm:pt-32">
-          <Reveal>
-            <p className="label-mono">Yonsei Amateur Astronomy Association · Est. 1985</p>
-          </Reveal>
-          <Reveal delay={80}>
-            <h1 className="mt-8 font-display text-5xl leading-[1.05] font-bold sm:text-7xl">
-              밤하늘을 기록하는
-              <br />
-              <span className="text-primary">41년째의</span> 관측자들
-            </h1>
-          </Reveal>
-          <Reveal delay={160}>
-            <p className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground">
-              YAAA는 연세대학교 중앙동아리로, 전공과 학년에 관계없이 모인 부원들이 함께 별을
-              관측하고 기록합니다. 이 공간은 부원들의 공지와 소통을 위한 전용 페이지입니다.
-            </p>
-          </Reveal>
-          <Reveal delay={240}>
-            <div className="mt-12 flex flex-wrap gap-3">
-              <Link
-                to="/auth"
-                className="glow-cyan rounded-sm bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-              >
-                부원 로그인 / 가입
-              </Link>
-              <a
-                href="#faq"
-                className="rounded-sm border border-border px-6 py-3 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
-              >
-                자주 묻는 질문
-              </a>
+          <div className="grid items-center gap-16 lg:grid-cols-[1.15fr_0.85fr]">
+            <div>
+              <Reveal>
+                <p className="label-mono">Yonsei Amateur Astronomy Association · Est. 1985</p>
+              </Reveal>
+              <Reveal delay={80}>
+                <h1 className="mt-8 font-display text-5xl leading-[1.05] font-bold sm:text-7xl">
+                  밤하늘을 기록하는
+                  <br />
+                  <span className="text-primary">관측자들</span>
+                </h1>
+              </Reveal>
+              <Reveal delay={160}>
+                <p className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground">
+                  YAAA는 연세대학교 중앙동아리로, 전공과 학년에 관계없이 모인 부원들이 함께 별을
+                  관측하고 기록합니다. 이 공간은 부원들의 공지와 소통을 위한 전용 페이지입니다.
+                </p>
+              </Reveal>
+              <Reveal delay={240}>
+                <div className="mt-12 flex flex-wrap gap-3">
+                  <Link
+                    to="/auth"
+                    className="glow-cyan rounded-sm bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                  >
+                    부원 로그인 / 가입
+                  </Link>
+                  <a
+                    href="#faq"
+                    className="rounded-sm border border-border px-6 py-3 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                  >
+                    자주 묻는 질문
+                  </a>
+                </div>
+              </Reveal>
             </div>
-          </Reveal>
+
+            <Reveal delay={200}>
+              <div className="mx-auto aspect-square w-full max-w-sm lg:max-w-none">
+                <ConstellationArt />
+              </div>
+            </Reveal>
+          </div>
 
           <Reveal delay={320}>
             <dl className="mt-24 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
               {FACTS.map((f) => (
-                <div key={f.label} className="bg-background/70 px-6 py-7 backdrop-blur-sm">
+                <div
+                  key={f.label}
+                  className="flex min-h-36 flex-col justify-center bg-background/70 px-6 py-7 backdrop-blur-sm"
+                >
                   <dt className="label-mono">{f.label}</dt>
                   <dd className="mt-3 font-display text-2xl font-semibold">{f.value}</dd>
                   <dd className="mt-1 font-mono text-xs text-muted-foreground">{f.sub}</dd>
@@ -125,9 +139,9 @@ function Home() {
             <div className="mt-10 grid gap-16 lg:grid-cols-[1fr_1.1fr]">
               <Reveal>
                 <h2 className="text-3xl leading-tight font-semibold sm:text-4xl">
-                  아마추어라는 말은
+                  관측에 필요한 건 전공이 아니라,
                   <br />
-                  태도를 뜻하지, 수준을 뜻하지 않습니다.
+                  하늘을 향한 호기심입니다.
                 </h2>
               </Reveal>
               <Reveal delay={120}>
