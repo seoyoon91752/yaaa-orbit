@@ -114,7 +114,10 @@ function ActivityDetail() {
         .eq("id", id);
       if (error) throw error;
     },
-    onSuccess: invalidate,
+    onSuccess: (_d, v) => {
+      if (v.attended) toast.success("출석 확인 · 별가루가 지급되었습니다.");
+      invalidate();
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -131,6 +134,7 @@ function ActivityDetail() {
           ends_at: form.ends_at ? new Date(form.ends_at).toISOString() : null,
           apply_deadline: new Date(form.apply_deadline).toISOString(),
           capacity: form.capacity ? Number(form.capacity) : null,
+          stardust_reward: form.stardust_reward ? Number(form.stardust_reward) : 1,
         })
         .eq("id", activityId);
       if (error) throw error;
@@ -188,6 +192,7 @@ function ActivityDetail() {
                 k="SIGNUPS"
                 v={`${signups.data?.length ?? 0}${a.capacity ? ` / ${a.capacity}` : ""}`}
               />
+              <Row k="STARDUST" v={`출석 시 별가루 ${a.stardust_reward ?? 1}개`} />
             </dl>
 
             {a.description && (
@@ -237,6 +242,7 @@ function ActivityDetail() {
                         ends_at: a.ends_at ? toLocalInput(a.ends_at) : "",
                         apply_deadline: toLocalInput(a.apply_deadline),
                         capacity: a.capacity ? String(a.capacity) : "",
+                        stardust_reward: String(a.stardust_reward ?? 1),
                       });
                       setFormOpen(true);
                     }}

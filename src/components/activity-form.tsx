@@ -10,6 +10,7 @@ export type ActivityFormState = {
   ends_at: string;
   apply_deadline: string;
   capacity: string;
+  stardust_reward: string;
 };
 
 export const emptyActivity: ActivityFormState = {
@@ -22,6 +23,7 @@ export const emptyActivity: ActivityFormState = {
   ends_at: "",
   apply_deadline: "",
   capacity: "",
+  stardust_reward: "1",
 };
 
 export const ACTIVITY_CATEGORIES = ["관측회", "번개 관측", "세미나", "정기모임", "기타"];
@@ -106,6 +108,15 @@ export function ActivityForm({
           value={form.capacity}
           onChange={(e) => setForm({ ...form, capacity: e.target.value })}
           className={inputClass}
+        />
+      </Labeled>
+      <Labeled label="출석 시 지급할 별가루">
+        <input
+          type="number"
+          min={0}
+          value={form.stardust_reward}
+          onChange={(e) => setForm({ ...form, stardust_reward: e.target.value })}
+          className={`${inputClass} font-mono`}
         />
       </Labeled>
       <Labeled label="설명">

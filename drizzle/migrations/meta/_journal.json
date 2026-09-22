@@ -57,6 +57,13 @@
       "when": 1790095911774,
       "tag": "0007_celestial_scale_taxonomy_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790096192150,
+      "tag": "0008_stardust_and_collection",
+      "breakpoints": true
     }
   ]
 }
