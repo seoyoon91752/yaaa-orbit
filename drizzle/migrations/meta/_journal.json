@@ -113,6 +113,13 @@
       "when": 1790111428808,
       "tag": "0015_rental_return_requested_enum",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1790111443260,
+      "tag": "0016_rental_return_request_rpc",
+      "breakpoints": true
     }
   ]
 }
