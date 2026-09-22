@@ -64,6 +64,8 @@ function Dashboard() {
         <Stat label="Email" value={profile?.email ?? "—"} />
       </div>
 
+      {data?.isOfficer && <RentalAlert />}
+
       <TonightPanel />
 
       <UniversePreview />
@@ -87,6 +89,41 @@ function Dashboard() {
         )}
       </div>
     </MemberShell>
+  );
+}
+
+function RentalAlert() {
+  const { data } = useQuery({
+    queryKey: ["officer-rental-alert"],
+    queryFn: async () => {
+      const today = new Date().toISOString().slice(0, 10);
+      const { data, error } = await supabase
+        .from("equipment_rentals")
+        .select("id, status, end_date")
+        .in("status", ["approved", "return_requested"]);
+      if (error) throw error;
+      const rows = data ?? [];
+      return {
+        overdue: rows.filter((r) => r.end_date < today).length,
+        waiting: rows.filter((r) => r.status === "return_requested").length,
+      };
+    },
+  });
+
+  if (!data || (data.overdue === 0 && data.waiting === 0)) return null;
+
+  return (
+    <Link
+      to="/equipment"
+      className="mt-12 block rounded-lg border border-destructive/40 bg-destructive/5 p-6 transition-colors hover:bg-destructive/10"
+    >
+      <p className="label-mono text-destructive">Equipment Alert</p>
+      <p className="mt-3 font-mono text-sm text-destructive">
+        {data.overdue > 0 && `미반납 연체 ${data.overdue}건`}
+        {data.overdue > 0 && data.waiting > 0 && " · "}
+        {data.waiting > 0 && `반납 확인 대기 ${data.waiting}건`} — 장비 대여 탭에서 확인하세요.
+      </p>
+    </Link>
   );
 }
 

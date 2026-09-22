@@ -23,7 +23,13 @@ export const Route = createFileRoute("/_authenticated/equipment")({
 });
 
 type EquipmentStatus = "available" | "rented" | "maintenance" | "broken";
-type RentalStatus = "pending" | "approved" | "rejected" | "returned" | "cancelled";
+type RentalStatus =
+  | "pending"
+  | "approved"
+  | "return_requested"
+  | "rejected"
+  | "returned"
+  | "cancelled";
 
 type EquipmentRow = {
   id: string;
@@ -43,6 +49,7 @@ type RentalRow = {
   purpose: string;
   status: RentalStatus;
   return_note: string | null;
+  returned_at: string | null;
   created_at: string;
 };
 
@@ -64,7 +71,8 @@ const STATUS_CLASS: Record<EquipmentStatus, string> = {
 
 const RENTAL_LABEL: Record<RentalStatus, string> = {
   pending: "대기중",
-  approved: "승인됨",
+  approved: "대여중",
+  return_requested: "반납확인 대기",
   rejected: "거절됨",
   returned: "반납완료",
   cancelled: "취소됨",
@@ -73,10 +81,28 @@ const RENTAL_LABEL: Record<RentalStatus, string> = {
 const RENTAL_CLASS: Record<RentalStatus, string> = {
   pending: "text-gold",
   approved: "text-primary",
+  return_requested: "text-gold",
   rejected: "text-destructive",
   returned: "text-muted-foreground",
   cancelled: "text-muted-foreground",
 };
+
+const todayStr = () => {
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
+
+function isOverdue(r: { status: RentalStatus; end_date: string }) {
+  return (
+    (r.status === "approved" || r.status === "return_requested") && r.end_date < todayStr()
+  );
+}
+
+function overdueDays(end: string) {
+  const ms = new Date(todayStr()).getTime() - new Date(end).getTime();
+  return Math.max(0, Math.round(ms / 86400000));
+}
 
 function friendlyError(e: unknown) {
   const msg = e instanceof Error ? e.message : String(e);
@@ -117,7 +143,7 @@ function EquipmentPage() {
       const { data, error } = await supabase
         .from("equipment_rentals")
         .select(
-          "id, equipment_id, user_id, user_name, start_date, end_date, purpose, status, return_note, created_at",
+          "id, equipment_id, user_id, user_name, start_date, end_date, purpose, status, return_note, returned_at, created_at",
         )
         .order("start_date", { ascending: false });
       if (error) throw error;
@@ -169,7 +195,10 @@ function EquipmentPage() {
         reviewed_by: userId,
         reviewed_at: new Date().toISOString(),
         ...(status === "returned"
-          ? { returned_at: new Date().toISOString(), return_note: note?.trim() || null }
+          ? {
+              returned_at: new Date().toISOString(),
+              ...(note?.trim() ? { return_note: note.trim() } : {}),
+            }
           : {}),
       };
       const { error } = await supabase.from("equipment_rentals").update(patch).eq("id", id);
@@ -177,6 +206,21 @@ function EquipmentPage() {
     },
     onSuccess: () => {
       toast.success("대여 상태가 변경되었습니다.");
+      invalidate();
+    },
+    onError: (e) => toast.error(friendlyError(e)),
+  });
+
+  const requestReturn = useMutation({
+    mutationFn: async ({ id, note }: { id: string; note: string }) => {
+      const { error } = await supabase.rpc("request_rental_return", {
+        _rental_id: id,
+        ...(note.trim() ? { _note: note.trim() } : {}),
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("반납 신청이 접수되었습니다. 임원진 확인 후 완료 처리됩니다.");
       invalidate();
     },
     onError: (e) => toast.error(friendlyError(e)),
@@ -230,6 +274,12 @@ function EquipmentPage() {
 
   const nameOf = (id: string) => items.data?.find((i) => i.id === id)?.name ?? "—";
   const myRentals = (rentals.data ?? []).filter((r) => r.user_id === userId);
+  const overdueAll = (rentals.data ?? []).filter(isOverdue);
+  const myOverdue = myRentals.filter(isOverdue);
+  const returnWaiting = (rentals.data ?? []).filter((r) => r.status === "return_requested");
+  const returnLog = (rentals.data ?? [])
+    .filter((r) => r.status === "returned")
+    .sort((a, b) => (b.returned_at ?? "").localeCompare(a.returned_at ?? ""));
 
   return (
     <MemberShell
@@ -338,6 +388,30 @@ function EquipmentPage() {
         )}
       </section>
 
+      {(overdueAll.length > 0 || returnWaiting.length > 0) && isOfficer && (
+        <div className="mt-12 rounded-lg border border-destructive/40 bg-destructive/5 p-6">
+          <p className="label-mono text-destructive">Officer Alert</p>
+          <ul className="mt-3 space-y-1 font-mono text-sm text-destructive">
+            {overdueAll.length > 0 && (
+              <li>미반납 연체 장비 {overdueAll.length}건 — 대여자에게 반납을 요청해 주세요.</li>
+            )}
+            {returnWaiting.length > 0 && (
+              <li>반납 확인 대기 {returnWaiting.length}건 — 장비 상태를 확인하고 처리해 주세요.</li>
+            )}
+          </ul>
+        </div>
+      )}
+
+      {!isOfficer && myOverdue.length > 0 && (
+        <div className="mt-12 rounded-lg border border-destructive/40 bg-destructive/5 p-6">
+          <p className="label-mono text-destructive">Overdue</p>
+          <p className="mt-3 font-mono text-sm text-destructive">
+            반납 예정일이 지난 대여가 {myOverdue.length}건 있습니다. 장비를 반납하고 “반납하기”를 눌러
+            주세요.
+          </p>
+        </div>
+      )}
+
       <section className="mt-16">
         <p className="label-mono">
           {isOfficer ? `All Rentals · ${rentals.data?.length ?? 0}` : `My Rentals · ${myRentals.length}`}
@@ -359,7 +433,17 @@ function EquipmentPage() {
                   {isOfficer && (
                     <span className="font-mono text-xs text-muted-foreground">{r.user_name}</span>
                   )}
+                  {isOverdue(r) && (
+                    <span className="rounded-sm border border-destructive/40 bg-destructive/10 px-2 py-0.5 font-mono text-[11px] text-destructive">
+                      연체 D+{overdueDays(r.end_date)}
+                    </span>
+                  )}
                 </div>
+                {isOverdue(r) && (
+                  <p className="mt-2 font-mono text-xs text-destructive">
+                    반납 예정일이 지났습니다. 즉시 반납해 주세요.
+                  </p>
+                )}
                 <p className="mt-2 text-sm text-muted-foreground">{r.purpose}</p>
                 {r.return_note && (
                   <p className="mt-2 font-mono text-xs text-gold">특이사항: {r.return_note}</p>
@@ -381,15 +465,26 @@ function EquipmentPage() {
                       </button>
                     </>
                   )}
-                  {isOfficer && r.status === "approved" && (
+                  {r.user_id === userId && r.status === "approved" && (
                     <button
                       onClick={() => {
                         const note = prompt("반납 특이사항 (파손 · 분실 등, 없으면 비워두세요)") ?? "";
+                        requestReturn.mutate({ id: r.id, note });
+                      }}
+                      className="rounded-sm border border-primary/40 px-3 py-1.5 text-xs text-primary hover:bg-primary/10"
+                    >
+                      반납하기
+                    </button>
+                  )}
+                  {isOfficer && r.status === "return_requested" && (
+                    <button
+                      onClick={() => {
+                        const note = prompt("반납 확인 메모 (파손 · 분실 등, 없으면 비워두세요)") ?? "";
                         setRentalStatus.mutate({ id: r.id, status: "returned", note });
                       }}
                       className="rounded-sm border border-gold/40 px-3 py-1.5 text-xs text-gold hover:bg-gold/10"
                     >
-                      반납 완료
+                      반납 확인
                     </button>
                   )}
                   {r.user_id === userId && r.status === "pending" && (
@@ -408,6 +503,36 @@ function EquipmentPage() {
           </ul>
         )}
       </section>
+
+      {isOfficer && (
+        <section className="mt-16">
+          <p className="label-mono">Return Log · {returnLog.length}</p>
+          {returnLog.length === 0 ? (
+            <p className="mt-6 font-mono text-sm text-muted-foreground">반납 기록이 없습니다.</p>
+          ) : (
+            <ul className="mt-6 border-t border-border">
+              {returnLog.map((r) => (
+                <li key={r.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-border py-4">
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {r.returned_at ? formatDate(r.returned_at) : "—"}
+                  </span>
+                  <span className="font-display text-base">{nameOf(r.equipment_id)}</span>
+                  <span className="font-mono text-xs text-muted-foreground">{r.user_name}</span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {formatDate(r.start_date)} → {formatDate(r.end_date)}
+                  </span>
+                  {r.returned_at && r.returned_at.slice(0, 10) > r.end_date && (
+                    <span className="font-mono text-xs text-destructive">연체 반납</span>
+                  )}
+                  {r.return_note && (
+                    <span className="font-mono text-xs text-gold">특이사항: {r.return_note}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
       <Dialog open={Boolean(requestFor)} onOpenChange={(o) => !o && setRequestFor(null)}>
         <DialogContent className="border-border bg-card">
