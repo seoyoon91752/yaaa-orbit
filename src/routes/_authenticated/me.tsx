@@ -32,8 +32,10 @@ function MyPage() {
   const { userId } = useMemberContext();
   const queryClient = useQueryClient();
   const [phone, setPhone] = useState("");
+  const [currentPw, setCurrentPw] = useState("");
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const profile = useQuery({
     queryKey: ["my-profile", userId],
@@ -190,13 +192,40 @@ function MyPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const uploadAvatar = useMutation({
+    mutationFn: async (file: File) => {
+      const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+      const path = `${userId}/avatar.${ext}`;
+      const up = await supabase.storage
+        .from("avatars")
+        .upload(path, file, { upsert: true, contentType: file.type || "image/jpeg" });
+      if (up.error) throw up.error;
+      const { error } = await supabase
+        .from("profiles")
+        .update({ avatar_path: path })
+        .eq("id", userId!);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("프로필 사진이 저장되었습니다.");
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const changePw = useMutation({
     mutationFn: async () => {
+      const email = profile.data?.email;
+      if (!email) throw new Error("이메일 정보를 찾을 수 없습니다.");
+      const check = await supabase.auth.signInWithPassword({ email, password: currentPw });
+      if (check.error) throw new Error("현재 비밀번호가 올바르지 않습니다.");
       const { error } = await supabase.auth.updateUser({ password: pw });
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("비밀번호가 변경되었습니다.");
+      setCurrentPw("");
       setPw("");
       setPw2("");
     },
