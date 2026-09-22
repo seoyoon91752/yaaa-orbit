@@ -61,6 +61,10 @@ function AuthPage() {
         toast.error("이름과 학번을 모두 입력해 주세요.");
         return;
       }
+      if (!phone.trim()) {
+        toast.error("연락처를 입력해 주세요.");
+        return;
+      }
     }
 
     setBusy(true);
