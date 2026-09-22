@@ -56,6 +56,7 @@ function MyPage() {
   useEffect(() => {
     if (profile.data) {
       setDepartment(profile.data.department ?? "");
+      setPhone(profile.data.phone ?? "");
     }
     const path = profile.data?.avatar_path;
     if (!path) {
