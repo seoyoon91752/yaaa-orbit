@@ -135,7 +135,7 @@ function EquipmentPage() {
       const { data, error } = await supabase
         .from("equipment_rentals")
         .select(
-          "id, equipment_id, user_id, user_name, start_date, end_date, purpose, status, return_note, created_at",
+          "id, equipment_id, user_id, user_name, start_date, end_date, purpose, status, return_note, returned_at, created_at",
         )
         .order("start_date", { ascending: false });
       if (error) throw error;
