@@ -74,15 +74,7 @@ function Dashboard() {
                 </div>
               )}
 
-              {status === "verified" && (
-                <div className="mt-8 hairline rounded-lg bg-card/60 p-8">
-                  <p className="label-mono">Notice</p>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                    인증이 완료되었습니다. 게시판 · 관측 캘린더 · 마이페이지는 2단계에서
-                    추가됩니다.
-                  </p>
-                </div>
-              )}
+              {status === "verified" && <UpcomingEvents />}
 
               <div className="mt-10 flex flex-wrap gap-3">
                 {data?.isAdmin && (
