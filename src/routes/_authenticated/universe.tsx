@@ -354,6 +354,96 @@ function UniversePage() {
   );
 }
 
+const METRIC_LABEL: Record<string, string> = {
+  attendance: "활동 출석",
+  collection: "천체 수집",
+  gallery: "갤러리 업로드",
+  writing: "게시글 · 댓글",
+};
+
+function QuestBoard({ userId }: { userId: string | null }) {
+  const queryClient = useQueryClient();
+
+  const quests = useQuery({
+    queryKey: ["my-quests", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("my_quests");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const claim = useMutation({
+    mutationFn: async (questId: string) => {
+      const { error } = await supabase.rpc("claim_quest", { _quest_id: questId });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("퀘스트 보상을 받았습니다.");
+      queryClient.invalidateQueries({ queryKey: ["my-quests", userId] });
+      queryClient.invalidateQueries({ queryKey: ["stardust", userId] });
+      queryClient.invalidateQueries({ queryKey: ["stardust-ledger", userId] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const rows = quests.data ?? [];
+
+  return (
+    <section className="mt-16">
+      <p className="label-mono">Quest · {rows.length}</p>
+      {rows.length === 0 ? (
+        <p className="mt-6 font-mono text-sm text-muted-foreground">등록된 퀘스트가 없습니다.</p>
+      ) : (
+        <ul className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
+          {rows.map((q) => {
+            const pct = Math.min(100, Math.round((q.progress / q.goal) * 100));
+            const done = q.progress >= q.goal;
+            return (
+              <li key={q.id} className="bg-card p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="label-mono">{METRIC_LABEL[q.metric] ?? q.metric}</p>
+                    <p className="mt-2 font-display text-lg font-semibold">{q.title}</p>
+                    {q.description && (
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                        {q.description}
+                      </p>
+                    )}
+                  </div>
+                  <span className="shrink-0 font-mono text-xs text-gold">+{q.reward}</span>
+                </div>
+
+                <div className="mt-5 h-1 w-full bg-border">
+                  <div className="h-1 bg-primary" style={{ width: `${pct}%` }} />
+                </div>
+                <div className="mt-3 flex items-center justify-between gap-3">
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {Math.min(q.progress, q.goal)} / {q.goal}
+                  </span>
+                  {q.claimed ? (
+                    <span className="font-mono text-xs text-muted-foreground">수령 완료</span>
+                  ) : (
+                    <button
+                      disabled={!done || claim.isPending}
+                      onClick={() => claim.mutate(q.id)}
+                      className="rounded-sm border border-primary/40 px-4 py-1.5 font-mono text-xs text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:border-border disabled:text-muted-foreground"
+                    >
+                      {done ? "별가루 받기" : "진행 중"}
+                    </button>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+
 function ObjectMark({
   kind,
   rarity,
