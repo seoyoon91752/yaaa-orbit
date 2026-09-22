@@ -504,6 +504,36 @@ function EquipmentPage() {
         )}
       </section>
 
+      {isOfficer && (
+        <section className="mt-16">
+          <p className="label-mono">Return Log · {returnLog.length}</p>
+          {returnLog.length === 0 ? (
+            <p className="mt-6 font-mono text-sm text-muted-foreground">반납 기록이 없습니다.</p>
+          ) : (
+            <ul className="mt-6 border-t border-border">
+              {returnLog.map((r) => (
+                <li key={r.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-border py-4">
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {r.returned_at ? formatDate(r.returned_at) : "—"}
+                  </span>
+                  <span className="font-display text-base">{nameOf(r.equipment_id)}</span>
+                  <span className="font-mono text-xs text-muted-foreground">{r.user_name}</span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {formatDate(r.start_date)} → {formatDate(r.end_date)}
+                  </span>
+                  {r.returned_at && r.returned_at.slice(0, 10) > r.end_date && (
+                    <span className="font-mono text-xs text-destructive">연체 반납</span>
+                  )}
+                  {r.return_note && (
+                    <span className="font-mono text-xs text-gold">특이사항: {r.return_note}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
       <Dialog open={Boolean(requestFor)} onOpenChange={(o) => !o && setRequestFor(null)}>
         <DialogContent className="border-border bg-card">
           <DialogHeader>
