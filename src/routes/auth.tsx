@@ -75,7 +75,11 @@ function AuthPage() {
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/dashboard`,
-            data: { full_name: fullName.trim(), student_id: studentId.trim() },
+            data: {
+              full_name: fullName.trim(),
+              student_id: studentId.trim(),
+              phone: phone.trim(),
+            },
           },
         });
         if (error) throw error;
