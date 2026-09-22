@@ -512,7 +512,7 @@ function MyPage() {
         )}
       </section>
 
-      <section className="hairline mt-16 rounded-lg bg-card/60 p-8">
+      <section className="mt-16">
         <p className="label-mono">My Posts · {myPosts.data?.length ?? 0}</p>
         {(myPosts.data?.length ?? 0) === 0 ? (
           <p className="mt-6 font-mono text-sm text-muted-foreground">작성한 글이 없습니다.</p>
