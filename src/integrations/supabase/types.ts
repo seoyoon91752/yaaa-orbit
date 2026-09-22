@@ -25,6 +25,7 @@ export type Database = {
           ends_at: string | null
           id: string
           location: string | null
+          stardust_reward: number
           starts_at: string
           title: string
           updated_at: string
@@ -39,6 +40,7 @@ export type Database = {
           ends_at?: string | null
           id?: string
           location?: string | null
+          stardust_reward?: number
           starts_at: string
           title: string
           updated_at?: string
@@ -53,6 +55,7 @@ export type Database = {
           ends_at?: string | null
           id?: string
           location?: string | null
+          stardust_reward?: number
           starts_at?: string
           title?: string
           updated_at?: string
@@ -470,6 +473,91 @@ export type Database = {
         }
         Relationships: []
       }
+      stardust_balances: {
+        Row: {
+          balance: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      stardust_ledger: {
+        Row: {
+          activity_id: string | null
+          amount: number
+          created_at: string
+          id: string
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          activity_id?: string | null
+          amount: number
+          created_at?: string
+          id?: string
+          reason: string
+          user_id: string
+        }
+        Update: {
+          activity_id?: string | null
+          amount?: number
+          created_at?: string
+          id?: string
+          reason?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stardust_ledger_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "activities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_celestial_objects: {
+        Row: {
+          id: string
+          object_id: string
+          obtained_at: string
+          rarity: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          object_id: string
+          obtained_at?: string
+          rarity?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          object_id?: string
+          obtained_at?: string
+          rarity?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_celestial_objects_object_id_fkey"
+            columns: ["object_id"]
+            isOneToOne: false
+            referencedRelation: "celestial_objects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -525,6 +613,29 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      draw_celestial: {
+        Args: never
+        Returns: {
+          balance: number
+          kind_code: string
+          latin_name: string
+          name: string
+          object_id: string
+          rarity: string
+          scale: string
+          subtype: string
+          summary: string
+        }[]
+      }
+      grant_stardust: {
+        Args: {
+          _activity_id?: string
+          _amount: number
+          _reason: string
+          _user_id: string
+        }
+        Returns: number
       }
       has_role: {
         Args: {
