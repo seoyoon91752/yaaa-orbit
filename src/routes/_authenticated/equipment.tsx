@@ -90,6 +90,7 @@ const RENTAL_LABEL: Record<RentalStatus, string> = {
 const RENTAL_CLASS: Record<RentalStatus, string> = {
   pending: "text-gold",
   approved: "text-primary",
+  return_requested: "text-gold",
   rejected: "text-destructive",
   returned: "text-muted-foreground",
   cancelled: "text-muted-foreground",
