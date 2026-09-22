@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
 import { formatDate } from "@/lib/format";
-import { SheetStrip } from "@/components/sheet-strip";
 
 const PAGE_SIZE = 10;
 
