@@ -35,7 +35,7 @@ type ActivityRow = {
 };
 
 function ActivitiesPage() {
-  const { userId, isOfficer } = useMemberContext();
+  const { userId, profile, isOfficer } = useMemberContext();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<"ongoing" | "done">("ongoing");
   const [form, setForm] = useState<ActivityFormState>(emptyActivity);
@@ -121,7 +121,7 @@ function ActivitiesPage() {
       const { error } = await supabase.from("activity_signups").insert({
         activity_id: activityId,
         user_id: userId!,
-        user_name: "",
+        user_name: profile?.full_name ?? "부원",
       });
       if (error) throw error;
     },
