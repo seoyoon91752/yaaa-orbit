@@ -212,6 +212,21 @@ function EquipmentPage() {
     onError: (e) => toast.error(friendlyError(e)),
   });
 
+  const requestReturn = useMutation({
+    mutationFn: async ({ id, note }: { id: string; note: string }) => {
+      const { error } = await supabase.rpc("request_rental_return", {
+        _rental_id: id,
+        _note: note.trim() || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("반납 신청이 접수되었습니다. 임원진 확인을 기다려 주세요.");
+      invalidate();
+    },
+    onError: (e) => toast.error(friendlyError(e)),
+  });
+
   const saveItem = useMutation({
     mutationFn: async () => {
       const payload = {
