@@ -28,7 +28,10 @@ function Dashboard() {
 
   async function bootstrapAdmin() {
     const { data: ok, error } = await supabase.rpc("claim_first_admin");
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     if (ok) {
       toast.success("관리자 권한이 부여되었습니다.");
       queryClient.invalidateQueries({ queryKey: ["membership"] });
