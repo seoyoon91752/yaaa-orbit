@@ -92,19 +92,19 @@ function BoardList() {
     >
       <SheetStrip
         items={[
-          { label: "Posts", value: String(data?.count ?? 0), accent: "primary" },
-          { label: "Page", value: `${page + 1} / ${totalPages}` },
+          {
+            label: "New posts",
+            value: newCount.data === undefined ? "—" : String(newCount.data),
+            accent: "primary",
+          },
           {
             label: "Latest",
             value: data?.rows[0] ? formatDate(data.rows[0].created_at) : "—",
-          },
-          {
-            label: "Write access",
-            value: kind === "notice" ? "임원진 이상" : "모든 부원",
             accent: "gold",
           },
         ]}
       />
+
 
       {open && canWrite && (
         <form
