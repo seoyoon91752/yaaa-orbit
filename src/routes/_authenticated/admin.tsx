@@ -158,7 +158,10 @@ function QuestSection() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (!form.title.trim()) return toast.error("제목을 입력하세요.");
+          if (!form.title.trim()) {
+            toast.error("제목을 입력하세요.");
+            return;
+          }
           add.mutate();
         }}
         className="mt-8 grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto_auto_auto]"
