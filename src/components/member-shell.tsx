@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { StarField } from "@/components/star-field";
