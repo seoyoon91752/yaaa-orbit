@@ -564,12 +564,14 @@ function EquipmentPage() {
               label="대여 시작일"
               type="date"
               value={req.start}
+              min={todayStr()}
               onChange={(v) => setReq({ ...req, start: v })}
             />
             <Field
               label="반납 예정일"
               type="date"
               value={req.end}
+              min={req.start || todayStr()}
               onChange={(v) => setReq({ ...req, end: v })}
             />
             <div>
