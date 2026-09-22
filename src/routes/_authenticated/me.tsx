@@ -194,18 +194,33 @@ function MyPage() {
     },
   });
 
-  const savePhone = useMutation({
+  const saveDepartment = useMutation({
     mutationFn: async () => {
       const { error } = await supabase
         .from("profiles")
-        .update({ department: department.trim() || null, phone: phone.trim() || null })
+        .update({ department: department.trim() || null })
         .eq("id", userId!);
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("정보가 저장되었습니다.");
+      toast.success("학과가 저장되었습니다.");
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
       queryClient.invalidateQueries({ queryKey: ["members"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const savePhone = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ phone: phone.trim() || null })
+        .eq("id", userId!);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("연락처가 저장되었습니다.");
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
