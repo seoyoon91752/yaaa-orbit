@@ -28,12 +28,6 @@ export function SiteHeader() {
         <nav className="flex items-center gap-1 text-sm">
           {session ? (
             <>
-              <Link
-                to="/dashboard"
-                className="rounded-sm px-3 py-2 text-muted-foreground transition-colors hover:text-foreground"
-              >
-                부원 홈
-              </Link>
               <button
                 onClick={signOut}
                 className="rounded-sm border border-border px-3 py-2 text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
