@@ -198,13 +198,14 @@ function MyPage() {
     mutationFn: async () => {
       const { error } = await supabase
         .from("profiles")
-        .update({ phone: phone.trim() || null })
+        .update({ phone: phone.trim() || null, department: department.trim() || null })
         .eq("id", userId!);
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("연락처가 저장되었습니다.");
+      toast.success("정보가 저장되었습니다.");
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["members"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
