@@ -6,8 +6,8 @@
 
 /*
  * YAAA — Yonsei Amateur Astronomy Association
- * Observatory-grade dark design system. Single dark palette.
- * Accents: cold cyan (instrument) + warm gold (starlight). Used sparingly.
+ * Blueprint drafting system: paper-white ground, technical blue ink.
+ * Thin rules, grid paper, monospace annotation labels.
  */
 
 @theme inline {
@@ -16,8 +16,8 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --font-display: "Space Grotesk", "IBM Plex Sans KR", sans-serif;
-  --font-sans: "IBM Plex Sans KR", "Space Grotesk", sans-serif;
+  --font-display: "Chakra Petch", "IBM Plex Sans KR", sans-serif;
+  --font-sans: "IBM Plex Sans KR", "Chakra Petch", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
   --color-background: var(--background);
