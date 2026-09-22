@@ -93,5 +93,6 @@ export function useMemberContext() {
     userId: session?.user.id ?? null,
     profile: data?.profile ?? null,
     isAdmin: Boolean(data?.isAdmin),
+    isOfficer: Boolean(data?.isOfficer),
   };
 }

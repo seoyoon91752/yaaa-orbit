@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_authenticated/board/$board/$postId")({
 function PostDetail() {
   const { board, postId } = useParams({ from: "/_authenticated/board/$board/$postId" });
   const kind = board === "notice" ? "notice" : "free";
-  const { userId, profile, isAdmin } = useMemberContext();
+  const { userId, profile, isAdmin, isOfficer } = useMemberContext();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -120,8 +120,8 @@ function PostDetail() {
 
   const data = post.data;
   const owner = Boolean(data && userId && data.author_id === userId);
-  const canEdit = owner;
-  const canDelete = owner || isAdmin;
+  const canEdit = owner || (kind === "notice" && isOfficer);
+  const canDelete = canEdit || isAdmin;
 
   return (
     <MemberShell

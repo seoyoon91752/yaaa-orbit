@@ -259,11 +259,12 @@ export type Database = {
         Returns: boolean
       }
       increment_post_view: { Args: { _post_id: string }; Returns: undefined }
+      is_officer: { Args: { _user_id: string }; Returns: boolean }
       is_verified_member: { Args: { _user_id: string }; Returns: boolean }
       norm_text: { Args: { _v: string }; Returns: string }
     }
     Enums: {
-      app_role: "admin" | "member"
+      app_role: "admin" | "member" | "officer"
       board_kind: "notice" | "free"
       member_status: "verified" | "pending" | "rejected"
     }
@@ -393,7 +394,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "member"],
+      app_role: ["admin", "member", "officer"],
       board_kind: ["notice", "free"],
       member_status: ["verified", "pending", "rejected"],
     },

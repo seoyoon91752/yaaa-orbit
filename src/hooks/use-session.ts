@@ -48,10 +48,11 @@ export function useMembership(enabled: boolean) {
 
       const { data: roles } = await supabase.from("user_roles").select("role");
       const isAdmin = (roles ?? []).some((r) => r.role === "admin");
+      const isOfficer = isAdmin || (roles ?? []).some((r) => r.role === "officer");
 
       const { data: anyAdmin } = await supabase.rpc("admin_exists");
 
-      return { profile, isAdmin, adminExists: Boolean(anyAdmin) };
+      return { profile, isAdmin, isOfficer, adminExists: Boolean(anyAdmin) };
     },
   });
 }

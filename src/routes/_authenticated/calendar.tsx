@@ -45,7 +45,7 @@ const emptyForm = {
 };
 
 function CalendarPage() {
-  const { userId, isAdmin } = useMemberContext();
+  const { userId, isOfficer } = useMemberContext();
   const queryClient = useQueryClient();
   const today = new Date();
   const [cursor, setCursor] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
@@ -131,7 +131,7 @@ function CalendarPage() {
       eyebrow="Observation Schedule"
       title="일정 캘린더"
       actions={
-        isAdmin ? (
+        isOfficer ? (
           <button
             onClick={() => {
               setForm(emptyForm);
@@ -231,7 +231,7 @@ function CalendarPage() {
                   {selected.description}
                 </p>
               )}
-              {isAdmin && (
+              {isOfficer && (
                 <div className="flex gap-2 pt-2">
                   <button
                     onClick={() => {
