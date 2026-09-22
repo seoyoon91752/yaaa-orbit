@@ -114,7 +114,20 @@ function QuestSection() {
   });
 
   const update = useMutation({
-    mutationFn: async ({ id, patch }: { id: string; patch: Record<string, unknown> }) => {
+    mutationFn: async ({
+      id,
+      patch,
+    }: {
+      id: string;
+      patch: {
+        title?: string;
+        description?: string | null;
+        metric?: string;
+        goal?: number;
+        reward?: number;
+        active?: boolean;
+      };
+    }) => {
       const { error } = await supabase.from("quests").update(patch).eq("id", id);
       if (error) throw error;
     },
