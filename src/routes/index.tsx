@@ -74,10 +74,11 @@ function Home() {
           <div className="grid items-center gap-10 md:grid-cols-[1.1fr_0.9fr] md:gap-12 lg:gap-16">
             <div>
               <Reveal>
-                <p className="label-mono">
+                <p className="label-mono font-display text-xs tracking-[0.2em] sm:text-sm">
                   밤하늘을 기록하는 <span className="text-primary">관측자들</span>
                 </p>
               </Reveal>
+
               <Reveal delay={80}>
                 <h1 className="mt-6 font-display text-7xl leading-[1] font-bold sm:text-9xl">
                   YAAA
