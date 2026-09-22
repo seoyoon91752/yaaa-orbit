@@ -192,7 +192,6 @@ function ActivityDetail() {
                 k="SIGNUPS"
                 v={`${signups.data?.length ?? 0}${a.capacity ? ` / ${a.capacity}` : ""}`}
               />
-              <Row k="STARDUST" v={`출석 시 별가루 ${a.stardust_reward ?? 1}개`} />
             </dl>
 
             {a.description && (
