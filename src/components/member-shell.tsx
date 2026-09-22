@@ -11,6 +11,7 @@ const NAV = [
   { to: "/calendar", label: "일정", match: "/calendar" },
   { to: "/activities", label: "활동", match: "/activities" },
   { to: "/sky", label: "천체 정보", match: "/sky" },
+  { to: "/universe", label: "나의 우주", match: "/universe" },
   { to: "/equipment", label: "장비 대여", match: "/equipment" },
   { to: "/room", label: "동아리방 예약", match: "/room" },
   { to: "/me", label: "마이페이지", match: "/me" },
