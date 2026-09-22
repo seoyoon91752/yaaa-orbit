@@ -72,7 +72,7 @@ function MemberDetail() {
           {member?.avatar_url ? (
             <img src={member.avatar_url} alt={name} className="h-full w-full object-cover" />
           ) : (
-            <span className="font-display text-2xl text-muted-foreground">{initialOf(name)}</span>
+            <ConstellationAvatar seed={memberId ?? name} />
           )}
         </span>
         <div>
