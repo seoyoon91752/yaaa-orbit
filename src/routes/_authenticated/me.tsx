@@ -196,7 +196,7 @@ function MyPage() {
     mutationFn: async () => {
       const { error } = await supabase
         .from("profiles")
-        .update({ department: department.trim() || null })
+        .update({ department: department.trim() || null, phone: phone.trim() || null })
         .eq("id", userId!);
       if (error) throw error;
     },
