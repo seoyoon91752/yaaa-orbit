@@ -163,15 +163,14 @@ function EquipmentPage() {
       status: RentalStatus;
       note?: string;
     }) => {
-      const patch: Record<string, unknown> = {
+      const patch = {
         status,
         reviewed_by: userId,
         reviewed_at: new Date().toISOString(),
+        ...(status === "returned"
+          ? { returned_at: new Date().toISOString(), return_note: note?.trim() || null }
+          : {}),
       };
-      if (status === "returned") {
-        patch.returned_at = new Date().toISOString();
-        patch.return_note = note?.trim() || null;
-      }
       const { error } = await supabase.from("equipment_rentals").update(patch).eq("id", id);
       if (error) throw error;
     },
