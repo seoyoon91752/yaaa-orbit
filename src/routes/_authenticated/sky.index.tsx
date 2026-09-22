@@ -5,15 +5,27 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { SkyForm, emptySky, KIND_LABEL, type SkyFormState, type SkyKind } from "@/components/sky-form";
+import {
+  SkyForm,
+  emptySky,
+  KIND_LABEL,
+  SCALE_KINDS,
+  SCALE_LABEL,
+  SCALE_LIST,
+  type SkyFormState,
+  type SkyScale,
+} from "@/components/sky-form";
 
 export const Route = createFileRoute("/_authenticated/sky/")({
   head: () => ({
     meta: [
       { title: "천체 정보 — YAAA 연세 아마추어 천문회" },
-      { name: "description", content: "별자리 · 별 · 성운 · 성단을 정리한 YAAA 별 백과사전." },
+      {
+        name: "description",
+        content: "태양계부터 은하 이상 규모까지 규모 · 종류별로 정리한 YAAA 별 백과사전.",
+      },
       { property: "og:title", content: "천체 정보 — YAAA" },
-      { property: "og:description", content: "관측 시기와 방향까지 정리한 천체 백과사전." },
+      { property: "og:description", content: "적경 · 적위 좌표까지 정리한 천체 백과사전." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -23,19 +35,21 @@ export const Route = createFileRoute("/_authenticated/sky/")({
 
 type SkyRow = {
   id: string;
-  kind: SkyKind;
+  scale: string;
+  kind_code: string;
+  subtype: string | null;
   name: string;
   latin_name: string | null;
   summary: string | null;
-  image_url: string | null;
-  best_season: string | null;
-  direction: string | null;
+  ra: string | null;
+  decl: string | null;
 };
 
 function SkyIndex() {
   const { isOfficer } = useMemberContext();
   const queryClient = useQueryClient();
-  const [kind, setKind] = useState<SkyKind | "all">("all");
+  const [scale, setScale] = useState<SkyScale>("solar");
+  const [kind, setKind] = useState<string>("all");
   const [q, setQ] = useState("");
   const [form, setForm] = useState<SkyFormState>(emptySky);
   const [formOpen, setFormOpen] = useState(false);
@@ -45,8 +59,7 @@ function SkyIndex() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("celestial_objects")
-        .select("id, kind, name, latin_name, summary, image_url, best_season, direction")
-        .order("kind")
+        .select("id, scale, kind_code, subtype, name, latin_name, summary, ra, decl")
         .order("name");
       if (error) throw error;
       return (data ?? []) as SkyRow[];
@@ -57,17 +70,21 @@ function SkyIndex() {
     const needle = q.trim().toLowerCase();
     return (objects.data ?? []).filter(
       (o) =>
-        (kind === "all" || o.kind === kind) &&
+        o.scale === scale &&
+        (kind === "all" || o.kind_code === kind) &&
         (!needle ||
           o.name.toLowerCase().includes(needle) ||
           (o.latin_name ?? "").toLowerCase().includes(needle)),
     );
-  }, [objects.data, kind, q]);
+  }, [objects.data, scale, kind, q]);
 
   const create = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("celestial_objects").insert({
-        kind: form.kind,
+        kind: "star",
+        scale: form.scale,
+        kind_code: form.kind_code,
+        subtype: form.subtype.trim() || null,
         name: form.name.trim(),
         latin_name: form.latin_name.trim() || null,
         summary: form.summary.trim() || null,
@@ -76,6 +93,8 @@ function SkyIndex() {
         best_season: form.best_season.trim() || null,
         direction: form.direction.trim() || null,
         magnitude: form.magnitude.trim() || null,
+        ra: form.ra.trim() || null,
+        decl: form.decl.trim() || null,
       });
       if (error) throw error;
     },
@@ -88,8 +107,6 @@ function SkyIndex() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const tabs: (SkyKind | "all")[] = ["all", "constellation", "star", "nebula", "cluster"];
-
   return (
     <MemberShell
       eyebrow="Celestial Catalog"
@@ -98,7 +115,7 @@ function SkyIndex() {
         isOfficer ? (
           <button
             onClick={() => {
-              setForm(emptySky);
+              setForm({ ...emptySky, scale, kind_code: SCALE_KINDS[scale][0]! });
               setFormOpen(true);
             }}
             className="shrink-0 rounded-sm border border-primary/40 px-4 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10"
@@ -108,16 +125,35 @@ function SkyIndex() {
         ) : null
       }
     >
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-wrap gap-2">
+        {SCALE_LIST.map((s) => (
+          <button
+            key={s}
+            onClick={() => {
+              setScale(s);
+              setKind("all");
+            }}
+            className={`rounded-sm border px-5 py-2.5 font-mono text-xs transition-colors ${
+              scale === s
+                ? "border-primary/50 bg-primary/10 text-primary"
+                : "border-border text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {SCALE_LABEL[s]}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-wrap gap-2">
-          {tabs.map((k) => (
+          {["all", ...SCALE_KINDS[scale]].map((k) => (
             <button
               key={k}
               onClick={() => setKind(k)}
-              className={`rounded-sm border px-4 py-2 font-mono text-xs transition-colors ${
+              className={`rounded-sm border px-3.5 py-1.5 font-mono text-[11px] transition-colors ${
                 kind === k
-                  ? "border-primary/50 bg-primary/10 text-primary"
-                  : "border-border text-muted-foreground hover:text-foreground"
+                  ? "border-gold/50 bg-gold/10 text-gold"
+                  : "border-border/70 text-muted-foreground hover:text-foreground"
               }`}
             >
               {k === "all" ? "전체" : KIND_LABEL[k]}
@@ -128,7 +164,7 @@ function SkyIndex() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="이름으로 검색"
-          className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50 sm:w-64"
+          className="w-full shrink-0 rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50 sm:w-56"
         />
       </div>
 
@@ -143,7 +179,10 @@ function SkyIndex() {
               params={{ objectId: o.id }}
               className="group flex flex-col bg-card/60 p-7 transition-colors hover:bg-primary/5"
             >
-              <span className="label-mono">{KIND_LABEL[o.kind]}</span>
+              <span className="label-mono">
+                {KIND_LABEL[o.kind_code] ?? o.kind_code}
+                {o.subtype ? ` · ${o.subtype}` : ""}
+              </span>
               <h3 className="mt-3 font-display text-xl font-semibold transition-colors group-hover:text-primary">
                 {o.name}
               </h3>
@@ -156,7 +195,7 @@ function SkyIndex() {
                 </p>
               )}
               <p className="mt-5 font-mono text-[11px] text-muted-foreground">
-                {o.best_season ?? "—"} · {o.direction ?? "—"}
+                RA {o.ra ?? "—"} · DEC {o.decl ?? "—"}
               </p>
             </Link>
           ))}
