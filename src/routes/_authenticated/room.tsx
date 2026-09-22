@@ -178,29 +178,35 @@ function RoomPage() {
     onError: (e) => toast.error(friendlyError(e)),
   });
 
-  const shift = (n: number) => setDay(new Date(day.getTime() + n * 24 * 60 * 60 * 1000));
+  const shiftMonth = (n: number) =>
+    setMonth(new Date(month.getFullYear(), month.getMonth() + n, 1));
+
+  const openDay = (d: Date) => {
+    setDay(d);
+    setSlotsOpen(true);
+  };
 
   return (
     <MemberShell eyebrow="Clubroom Booking" title="동아리방 예약">
       <div className="flex items-center justify-between">
         <p className="font-display text-2xl font-semibold">
-          {dateKey(day).replace(/-/g, ".")}
+          {month.getFullYear()}. {String(month.getMonth() + 1).padStart(2, "0")}
         </p>
         <div className="flex gap-2">
           <button
-            onClick={() => shift(-1)}
+            onClick={() => shiftMonth(-1)}
             className="h-9 w-9 rounded-sm border border-border font-mono text-xs text-muted-foreground hover:text-foreground"
           >
             ←
           </button>
           <button
-            onClick={() => setDay(new Date(today.getFullYear(), today.getMonth(), today.getDate()))}
+            onClick={() => setMonth(new Date(today.getFullYear(), today.getMonth(), 1))}
             className="rounded-sm border border-border px-3 font-mono text-xs text-muted-foreground hover:text-foreground"
           >
             TODAY
           </button>
           <button
-            onClick={() => shift(1)}
+            onClick={() => shiftMonth(1)}
             className="h-9 w-9 rounded-sm border border-border font-mono text-xs text-muted-foreground hover:text-foreground"
           >
             →
@@ -208,45 +214,97 @@ function RoomPage() {
         </div>
       </div>
 
-      <ul className="mt-8 overflow-hidden rounded-lg border border-border">
-        {HOURS.map((h) => {
-          const taken = byHour.get(h);
-          const label = `${String(h).padStart(2, "0")}:00`;
+      <div className="mt-8 grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-border bg-border">
+        {["일", "월", "화", "수", "목", "금", "토"].map((w) => (
+          <div key={w} className="bg-background px-2 py-2 text-center font-mono text-[11px] text-muted-foreground">
+            {w}
+          </div>
+        ))}
+        {monthCells.map((cell, i) => {
+          if (!cell) return <div key={`e${i}`} className="min-h-24 bg-background/40" />;
+          const key = dateKey(cell);
+          const info = bookedHoursByDate.get(key);
+          const isToday = key === dateKey(today);
           return (
-            <li key={h} className="border-b border-border last:border-b-0">
-              <button
-                onClick={() => {
-                  if (taken) {
-                    setDetail(taken);
-                    return;
-                  }
-                  setForm({ hour: h, duration: 1, purpose: "", headcount: "2" });
-                  setFormOpen(true);
-                }}
-                className={`flex w-full items-center gap-5 px-5 py-4 text-left transition-colors ${
-                  taken
-                    ? taken.is_mine
-                      ? "bg-primary/10 text-primary hover:bg-primary/15"
-                      : "bg-muted/30 text-muted-foreground"
-                    : "bg-card/40 hover:bg-primary/10"
+            <button
+              key={key}
+              onClick={() => openDay(cell)}
+              className="min-h-24 bg-card/40 p-2 text-left transition-colors hover:bg-primary/10"
+            >
+              <span
+                className={`font-mono text-xs ${
+                  isToday ? "text-primary" : cell.getDay() === 0 ? "text-destructive/80" : "text-muted-foreground"
                 }`}
               >
-                <span className="font-mono text-xs opacity-80">{label}</span>
-                <span className="min-w-0 flex-1 truncate text-sm">
-                  {taken
-                    ? taken.can_manage
-                      ? `${taken.user_name} · ${taken.purpose}`
-                      : "예약됨"
-                    : "예약 가능"}
+                {String(cell.getDate()).padStart(2, "0")}
+              </span>
+              {info ? (
+                <span
+                  className={`mt-2 block rounded-sm px-1.5 py-1 font-mono text-[10px] ${
+                    info.mine ? "bg-primary/15 text-primary" : "bg-muted/40 text-muted-foreground"
+                  }`}
+                >
+                  {info.count}h 예약
                 </span>
-                <span className="font-mono text-[11px] opacity-70">
-                  {taken ? "BOOKED" : "OPEN"}
-                </span>
-              </button>
-            </li>
+              ) : (
+                <span className="mt-2 block font-mono text-[10px] text-muted-foreground/50">OPEN</span>
+              )}
+            </button>
           );
         })}
-      </ul>
+      </div>
+
+      <p className="mt-4 font-mono text-[11px] text-muted-foreground">
+        날짜를 클릭하면 해당 날짜의 예약 가능 시간이 열립니다. · 운영 시간 09:00 – 24:00
+      </p>
+
+      <Dialog open={slotsOpen} onOpenChange={setSlotsOpen}>
+        <DialogContent className="max-h-[80vh] overflow-y-auto border-border bg-card">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl">
+              {dateKey(day).replace(/-/g, ".")} 예약 가능 시간
+            </DialogTitle>
+          </DialogHeader>
+          <ul className="overflow-hidden rounded-lg border border-border">
+            {HOURS.map((h) => {
+              const taken = byHour.get(h);
+              const label = `${String(h).padStart(2, "0")}:00`;
+              return (
+                <li key={h} className="border-b border-border last:border-b-0">
+                  <button
+                    onClick={() => {
+                      if (taken) {
+                        setDetail(taken);
+                        return;
+                      }
+                      setForm({ hour: h, duration: 1, purpose: "", headcount: "2" });
+                      setFormOpen(true);
+                    }}
+                    className={`flex w-full items-center gap-5 px-5 py-3 text-left transition-colors ${
+                      taken
+                        ? taken.is_mine
+                          ? "bg-primary/10 text-primary hover:bg-primary/15"
+                          : "bg-muted/30 text-muted-foreground"
+                        : "bg-card/40 hover:bg-primary/10"
+                    }`}
+                  >
+                    <span className="font-mono text-xs opacity-80">{label}</span>
+                    <span className="min-w-0 flex-1 truncate text-sm">
+                      {taken
+                        ? taken.can_manage
+                          ? `${taken.user_name} · ${taken.purpose}`
+                          : "예약됨"
+                        : "예약 가능"}
+                    </span>
+                    <span className="font-mono text-[11px] opacity-70">{taken ? "BOOKED" : "OPEN"}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </DialogContent>
+      </Dialog>
+
 
       <Dialog open={formOpen} onOpenChange={setFormOpen}>
         <DialogContent className="border-border bg-card">
