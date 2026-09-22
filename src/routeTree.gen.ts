@@ -16,6 +16,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authenticated/equipment'
+import { Route as AuthenticatedGalleryRouteImport } from './routes/_authenticated/gallery'
 import { Route as AuthenticatedMeRouteImport } from './routes/_authenticated/me'
 import { Route as AuthenticatedRoomRouteImport } from './routes/_authenticated/room'
 import { Route as AuthenticatedUniverseRouteImport } from './routes/_authenticated/universe'
@@ -58,6 +59,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 const AuthenticatedEquipmentRoute = AuthenticatedEquipmentRouteImport.update({
   id: '/equipment',
   path: '/equipment',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedGalleryRoute = AuthenticatedGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMeRoute = AuthenticatedMeRouteImport.update({
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
+  '/gallery': typeof AuthenticatedGalleryRoute
   '/me': typeof AuthenticatedMeRoute
   '/room': typeof AuthenticatedRoomRoute
   '/universe': typeof AuthenticatedUniverseRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
+  '/gallery': typeof AuthenticatedGalleryRoute
   '/me': typeof AuthenticatedMeRoute
   '/room': typeof AuthenticatedRoomRoute
   '/universe': typeof AuthenticatedUniverseRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/equipment': typeof AuthenticatedEquipmentRoute
+  '/_authenticated/gallery': typeof AuthenticatedGalleryRoute
   '/_authenticated/me': typeof AuthenticatedMeRoute
   '/_authenticated/room': typeof AuthenticatedRoomRoute
   '/_authenticated/universe': typeof AuthenticatedUniverseRoute
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/dashboard'
     | '/equipment'
+    | '/gallery'
     | '/me'
     | '/room'
     | '/universe'
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/dashboard'
     | '/equipment'
+    | '/gallery'
     | '/me'
     | '/room'
     | '/universe'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/_authenticated/calendar'
     | '/_authenticated/dashboard'
     | '/_authenticated/equipment'
+    | '/_authenticated/gallery'
     | '/_authenticated/me'
     | '/_authenticated/room'
     | '/_authenticated/universe'
@@ -274,6 +286,13 @@ declare module '@tanstack/react-router' {
       path: '/equipment'
       fullPath: '/equipment'
       preLoaderRoute: typeof AuthenticatedEquipmentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/gallery': {
+      id: '/_authenticated/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof AuthenticatedGalleryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/me': {
@@ -347,6 +366,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEquipmentRoute: typeof AuthenticatedEquipmentRoute
+  AuthenticatedGalleryRoute: typeof AuthenticatedGalleryRoute
   AuthenticatedMeRoute: typeof AuthenticatedMeRoute
   AuthenticatedRoomRoute: typeof AuthenticatedRoomRoute
   AuthenticatedUniverseRoute: typeof AuthenticatedUniverseRoute
@@ -363,6 +383,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEquipmentRoute: AuthenticatedEquipmentRoute,
+  AuthenticatedGalleryRoute: AuthenticatedGalleryRoute,
   AuthenticatedMeRoute: AuthenticatedMeRoute,
   AuthenticatedRoomRoute: AuthenticatedRoomRoute,
   AuthenticatedUniverseRoute: AuthenticatedUniverseRoute,

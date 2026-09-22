@@ -288,6 +288,39 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_photos: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          shot_at: string | null
+          storage_path: string
+          title: string
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          shot_at?: string | null
+          storage_path: string
+          title: string
+          user_id: string
+          user_name: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          shot_at?: string | null
+          storage_path?: string
+          title?: string
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
       post_comments: {
         Row: {
           author_id: string
