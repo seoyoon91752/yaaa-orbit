@@ -116,7 +116,7 @@ function BoardList() {
       }
     >
       {/* 왼쪽 세로선 캡션 */}
-      <div className="mb-10 border-l-2 border-primary/40 pl-4">
+      <div className="-mt-6 mb-8 border-l-2 border-primary/40 pl-4">
         <p className="font-mono text-xs tracking-[0.12em] text-muted-foreground">
           NEW POSTS{" "}
           <span className="text-primary">
