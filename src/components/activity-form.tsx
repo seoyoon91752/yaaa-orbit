@@ -10,6 +10,7 @@ export type ActivityFormState = {
   ends_at: string;
   apply_deadline: string;
   capacity: string;
+  stardust_reward: string;
 };
 
 export const emptyActivity: ActivityFormState = {
