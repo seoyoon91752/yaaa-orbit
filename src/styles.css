@@ -140,8 +140,24 @@
 }
 
 @utility glow-cyan {
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 22%, transparent),
-    0 0 40px -18px color-mix(in oklab, var(--primary) 70%, transparent);
+  box-shadow: 3px 3px 0 0 color-mix(in oklab, var(--primary) 22%, transparent);
+}
+
+@utility blueprint-panel {
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--background) 82%, transparent);
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in oklab, var(--primary) 7%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--primary) 7%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 22px 22px;
 }
 
 @utility reveal {
