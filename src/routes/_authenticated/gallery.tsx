@@ -130,18 +130,11 @@ function GalleryPage() {
         </button>
       }
     >
-      <SheetStrip
-        items={[
-          { label: "Frames", value: String(rows.length), accent: "primary" },
-          { label: "Contributors", value: String(new Set(rows.map((r) => r.user_name)).size) },
-          {
-            label: "Latest",
-            value: rows[0] ? (rows[0].shot_at ?? formatDateTime(rows[0].created_at)) : "—",
-          },
-          { label: "Reward", value: "1 / 사진", accent: "gold" },
-        ]}
-        note="REWARD · 사진 1장 업로드마다 별가루 1개 (하루 최대 3개)"
-      />
+      <p className="mb-10 font-mono text-xs text-muted-foreground">
+        REWARD · 사진 1장 업로드마다 별가루 1개 (하루 최대 3개)
+      </p>
+
+
 
       {photos.isLoading ? (
         <p className="mt-10 font-mono text-sm text-muted-foreground">불러오는 중…</p>

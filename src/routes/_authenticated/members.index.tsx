@@ -59,21 +59,6 @@ function MembersPage() {
 
   return (
     <MemberShell eyebrow="Member Directory" title="부원 프로필">
-      <SheetStrip
-        items={[
-          { label: "Members", value: String(members.data?.length ?? 0), accent: "primary" },
-          { label: "Listed", value: String(list.length) },
-          {
-            label: "Departments",
-            value: String(new Set((members.data ?? []).map((m) => m.department ?? "—")).size),
-          },
-          {
-            label: "With photo",
-            value: String((members.data ?? []).filter((m) => m.avatar_url).length),
-            accent: "gold",
-          },
-        ]}
-      />
 
       <input
         value={q}

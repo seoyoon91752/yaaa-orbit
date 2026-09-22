@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -50,6 +50,32 @@ function BoardList() {
     },
   });
 
+  // 마지막 접속 시각 (게시판별) — 화면 진입 시 이전 값을 읽고 현재 시각으로 갱신
+  const [since, setSince] = useState<string | null>(null);
+  useEffect(() => {
+    const key = `board-visit:${kind}`;
+    const prev = window.localStorage.getItem(key);
+    setSince(prev);
+    window.localStorage.setItem(key, new Date().toISOString());
+  }, [kind]);
+
+  const newCount = useQuery({
+    queryKey: ["posts-new", kind, since],
+    queryFn: async () => {
+      let q = supabase
+        .from("posts")
+        .select("id", { count: "exact", head: true })
+        .eq("board", kind);
+      if (since) q = q.gt("created_at", since);
+      const { count, error } = await q;
+      if (error) throw error;
+      return count ?? 0;
+    },
+    enabled: typeof window !== "undefined",
+  });
+
+
+
   const create = useMutation({
     mutationFn: async () => {
       if (!userId) throw new Error("로그인이 필요합니다.");
@@ -92,19 +118,19 @@ function BoardList() {
     >
       <SheetStrip
         items={[
-          { label: "Posts", value: String(data?.count ?? 0), accent: "primary" },
-          { label: "Page", value: `${page + 1} / ${totalPages}` },
+          {
+            label: "New posts",
+            value: newCount.data === undefined ? "—" : String(newCount.data),
+            accent: "primary",
+          },
           {
             label: "Latest",
             value: data?.rows[0] ? formatDate(data.rows[0].created_at) : "—",
-          },
-          {
-            label: "Write access",
-            value: kind === "notice" ? "임원진 이상" : "모든 부원",
             accent: "gold",
           },
         ]}
       />
+
 
       {open && canWrite && (
         <form

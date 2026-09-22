@@ -126,18 +126,6 @@ function SkyIndex() {
         ) : null
       }
     >
-      <SheetStrip
-        items={[
-          { label: "Catalog", value: String(objects.data?.length ?? 0), accent: "primary" },
-          {
-            label: SCALE_LABEL[scale],
-            value: String((objects.data ?? []).filter((o) => o.scale === scale).length),
-          },
-          { label: "Listed", value: String(filtered.length), accent: "gold" },
-          { label: "Kinds", value: String(SCALE_KINDS[scale].length) },
-        ]}
-        note="CATALOG · 규모 → 종류 순으로 분류된 천체 도감"
-      />
 
       <div className="flex flex-wrap gap-2">
         {SCALE_LIST.map((s) => (
