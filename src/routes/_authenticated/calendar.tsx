@@ -45,7 +45,7 @@ const emptyForm = {
 };
 
 function CalendarPage() {
-  const { userId, isAdmin } = useMemberContext();
+  const { userId, isOfficer } = useMemberContext();
   const queryClient = useQueryClient();
   const today = new Date();
   const [cursor, setCursor] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
