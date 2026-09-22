@@ -95,6 +95,20 @@ function MyPage() {
     },
   });
 
+  const myActivities = useQuery({
+    queryKey: ["my-activities", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("activity_signups")
+        .select("id, attended, created_at, activities(id, title, category, starts_at)")
+        .eq("user_id", userId!)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   const savePhone = useMutation({
     mutationFn: async () => {
       const { error } = await supabase
