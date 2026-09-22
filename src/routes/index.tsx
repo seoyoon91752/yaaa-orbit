@@ -129,8 +129,9 @@ function Home() {
               {FACTS.map((f) => (
                 <div
                   key={f.label}
-                  className="flex min-h-36 flex-col justify-center bg-background/70 px-6 py-7 backdrop-blur-sm"
+                  className="corner-marks flex min-h-36 flex-col justify-center bg-background/70 px-6 py-7 backdrop-blur-sm"
                 >
+
                   <dt className="label-mono">{f.label}</dt>
                   <dd className="mt-2.5 font-display text-2xl leading-tight font-semibold">
                     {f.value}
