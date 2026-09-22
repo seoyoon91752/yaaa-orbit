@@ -121,12 +121,13 @@ function Home() {
           </div>
 
           <Reveal delay={320}>
-            <dl className="mt-24 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
+            <dl className="mt-24 grid gap-3 sm:grid-cols-3">
               {FACTS.map((f) => (
                 <div
                   key={f.label}
-                  className="flex min-h-36 flex-col justify-center bg-background/70 px-6 py-7 backdrop-blur-sm"
+                  className="dashed-card flex min-h-36 flex-col justify-center rounded-lg bg-background/70 px-6 py-7 backdrop-blur-sm"
                 >
+
                   <dt className="label-mono">{f.label}</dt>
                   <dd className="mt-2.5 font-display text-2xl leading-tight font-semibold">
                     {f.value}
