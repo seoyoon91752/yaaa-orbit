@@ -34,7 +34,7 @@ export const Route = createFileRoute("/_authenticated/activities/$activityId")({
 
 function ActivityDetail() {
   const { activityId } = Route.useParams();
-  const { userId, profile, isOfficer } = useMemberContext();
+  const { userId, profile, isOfficer, isAdmin } = useMemberContext();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [form, setForm] = useState<ActivityFormState>(emptyActivity);
@@ -264,7 +264,7 @@ function ActivityDetail() {
             </div>
           </div>
 
-          {isOfficer && (
+          {(isAdmin || a.created_by === userId) && (
             <section className="mt-14">
               <p className="label-mono">Signups · {signups.data?.length ?? 0}</p>
               {(signups.data?.length ?? 0) === 0 ? (
