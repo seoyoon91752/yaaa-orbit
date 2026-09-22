@@ -44,7 +44,7 @@ export function MemberShell({
                 <Link
                   key={item.match}
                   to={item.to}
-                  params={"params" in item ? item.params : undefined}
+                  params={"params" in item ? item.params : {}}
                   className={`shrink-0 rounded-sm px-3 py-2 transition-colors ${
                     active
                       ? "bg-primary/10 text-primary"
