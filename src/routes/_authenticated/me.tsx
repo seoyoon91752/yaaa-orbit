@@ -479,7 +479,7 @@ function MyPage() {
         )}
       </section>
 
-      <section className="mt-16">
+      <section className="hairline mt-16 rounded-lg bg-card/60 p-8">
         <p className="label-mono">My Gallery · {myPhotos.data?.length ?? 0}</p>
         {(myPhotos.data?.length ?? 0) === 0 ? (
           <p className="mt-6 font-mono text-sm text-muted-foreground">올린 사진이 없습니다.</p>
