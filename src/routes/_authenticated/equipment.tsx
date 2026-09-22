@@ -216,7 +216,7 @@ function EquipmentPage() {
     mutationFn: async ({ id, note }: { id: string; note: string }) => {
       const { error } = await supabase.rpc("request_rental_return", {
         _rental_id: id,
-        _note: note.trim() || undefined,
+        _note: note.trim(),
       });
       if (error) throw error;
     },
