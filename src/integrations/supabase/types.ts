@@ -101,42 +101,57 @@ export type Database = {
         Row: {
           best_season: string | null
           created_at: string
+          decl: string | null
           description: string | null
           direction: string | null
           id: string
           image_url: string | null
           kind: Database["public"]["Enums"]["celestial_kind"]
+          kind_code: string
           latin_name: string | null
           magnitude: string | null
           name: string
+          ra: string | null
+          scale: string
+          subtype: string | null
           summary: string | null
           updated_at: string
         }
         Insert: {
           best_season?: string | null
           created_at?: string
+          decl?: string | null
           description?: string | null
           direction?: string | null
           id?: string
           image_url?: string | null
           kind: Database["public"]["Enums"]["celestial_kind"]
+          kind_code?: string
           latin_name?: string | null
           magnitude?: string | null
           name: string
+          ra?: string | null
+          scale?: string
+          subtype?: string | null
           summary?: string | null
           updated_at?: string
         }
         Update: {
           best_season?: string | null
           created_at?: string
+          decl?: string | null
           description?: string | null
           direction?: string | null
           id?: string
           image_url?: string | null
           kind?: Database["public"]["Enums"]["celestial_kind"]
+          kind_code?: string
           latin_name?: string | null
           magnitude?: string | null
           name?: string
+          ra?: string | null
+          scale?: string
+          subtype?: string | null
           summary?: string | null
           updated_at?: string
         }

@@ -50,6 +50,13 @@
       "when": 1790095142491,
       "tag": "0006_activities_and_celestial_catalog",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790095911774,
+      "tag": "0007_celestial_scale_taxonomy_columns",
+      "breakpoints": true
     }
   ]
 }
