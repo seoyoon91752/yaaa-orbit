@@ -80,7 +80,8 @@ const STATUS_CLASS: Record<EquipmentStatus, string> = {
 
 const RENTAL_LABEL: Record<RentalStatus, string> = {
   pending: "대기중",
-  approved: "승인됨",
+  approved: "대여중",
+  return_requested: "반납 확인 대기",
   rejected: "거절됨",
   returned: "반납완료",
   cancelled: "취소됨",
