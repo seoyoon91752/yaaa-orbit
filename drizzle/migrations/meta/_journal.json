@@ -71,6 +71,13 @@
       "when": 1790097303950,
       "tag": "0009_gallery_photos",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790097609745,
+      "tag": "0010_member_directory",
+      "breakpoints": true
     }
   ]
 }
