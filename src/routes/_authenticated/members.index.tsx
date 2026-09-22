@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell } from "@/components/member-shell";
 import { initialOf, signAvatars } from "@/lib/avatars";
+import { ConstellationAvatar } from "@/components/constellation-avatar";
 import { SheetStrip } from "@/components/sheet-strip";
 
 export const Route = createFileRoute("/_authenticated/members/")({
@@ -87,9 +88,7 @@ function MembersPage() {
                 {m.avatar_url ? (
                   <img src={m.avatar_url} alt={m.full_name} className="h-full w-full object-cover" />
                 ) : (
-                  <span className="font-display text-lg text-muted-foreground">
-                    {initialOf(m.full_name)}
-                  </span>
+                  <ConstellationAvatar seed={m.id} />
                 )}
               </span>
               <span className="min-w-0">

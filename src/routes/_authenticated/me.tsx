@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
 import { formatDate, formatDateTime } from "@/lib/format";
 import { initialOf, signAvatars } from "@/lib/avatars";
+import { ConstellationAvatar } from "@/components/constellation-avatar";
 
 const RENTAL_LABEL: Record<string, string> = {
   pending: "대기중",
@@ -281,9 +282,7 @@ function MyPage() {
               {avatarUrl ? (
                 <img src={avatarUrl} alt={p?.full_name ?? ""} className="h-full w-full object-cover" />
               ) : (
-                <span className="font-display text-2xl text-muted-foreground">
-                  {initialOf(p?.full_name ?? "?")}
-                </span>
+                <ConstellationAvatar seed={p?.id ?? "me"} />
               )}
             </span>
             <label className="cursor-pointer rounded-sm border border-primary/40 px-4 py-2 text-sm text-primary transition-colors hover:bg-primary/10">

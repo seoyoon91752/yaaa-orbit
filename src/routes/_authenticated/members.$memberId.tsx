@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { MemberShell } from "@/components/member-shell";
 import { formatDate, formatDateTime } from "@/lib/format";
 import { initialOf } from "@/lib/avatars";
+import { ConstellationAvatar } from "@/components/constellation-avatar";
 import { useMembers } from "./members.index";
 
 export const Route = createFileRoute("/_authenticated/members/$memberId")({
