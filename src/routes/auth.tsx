@@ -146,6 +146,14 @@ function AuthPage() {
                       mono
                       autoComplete="off"
                     />
+                    <Field
+                      label="연락처"
+                      value={phone}
+                      onChange={setPhone}
+                      placeholder="010-0000-0000"
+                      mono
+                      autoComplete="tel"
+                    />
                   </>
                 )}
                 <Field
