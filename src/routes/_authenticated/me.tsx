@@ -32,7 +32,6 @@ export const Route = createFileRoute("/_authenticated/me")({
 function MyPage() {
   const { userId } = useMemberContext();
   const queryClient = useQueryClient();
-  const [phone, setPhone] = useState("");
   const [department, setDepartment] = useState("");
   const [currentPw, setCurrentPw] = useState("");
   const [pw, setPw] = useState("");
