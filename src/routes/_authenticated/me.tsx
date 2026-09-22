@@ -33,6 +33,7 @@ function MyPage() {
   const { userId } = useMemberContext();
   const queryClient = useQueryClient();
   const [department, setDepartment] = useState("");
+  const [phone, setPhone] = useState("");
   const [currentPw, setCurrentPw] = useState("");
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
