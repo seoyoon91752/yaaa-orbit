@@ -141,6 +141,8 @@ function SkyDetail() {
           {o.summary && <p className="mt-6 text-lg leading-relaxed">{o.summary}</p>}
 
           <dl className="mt-6 space-y-4 font-mono text-sm">
+            <Row k="RA" v={o.ra ?? "—"} />
+            <Row k="DEC" v={o.decl ?? "—"} />
             <Row k="SEASON" v={o.best_season ?? "—"} />
             <Row k="DIRECTION" v={o.direction ?? "—"} />
             <Row k="MAGNITUDE" v={o.magnitude ?? "—"} />
