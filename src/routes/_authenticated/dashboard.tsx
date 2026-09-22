@@ -30,7 +30,6 @@ function Dashboard() {
   const profile = data?.profile;
 
   async function bootstrapAdmin() {
-    void 0;
     const { data: ok, error } = await supabase.rpc("claim_first_admin");
     if (error) {
       toast.error(error.message);
