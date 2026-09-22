@@ -52,9 +52,26 @@ function RoomPage() {
 
   const today = new Date();
   const [day, setDay] = useState(() => new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+  const [month, setMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
+  const [slotsOpen, setSlotsOpen] = useState(false);
   const [form, setForm] = useState({ hour: 9, duration: 1, purpose: "", headcount: "2" });
   const [formOpen, setFormOpen] = useState(false);
   const [detail, setDetail] = useState<Slot | null>(null);
+
+  const monthStart = new Date(month.getFullYear(), month.getMonth(), 1);
+  const monthEnd = new Date(month.getFullYear(), month.getMonth() + 1, 1);
+
+  const monthSlots = useQuery({
+    queryKey: ["room-slots", "month", `${month.getFullYear()}-${month.getMonth()}`],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("list_room_slots", {
+        _from: monthStart.toISOString(),
+        _to: monthEnd.toISOString(),
+      });
+      if (error) throw error;
+      return (data ?? []) as Slot[];
+    },
+  });
 
   const dayStart = new Date(day);
   const dayEnd = new Date(day.getTime() + 24 * 60 * 60 * 1000);
@@ -70,6 +87,40 @@ function RoomPage() {
       return (data ?? []) as Slot[];
     },
   });
+
+  const monthCells = useMemo(() => {
+    const first = new Date(month.getFullYear(), month.getMonth(), 1);
+    const lead = first.getDay();
+    const total = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+    const cells: (Date | null)[] = Array.from({ length: lead }, () => null);
+    for (let d = 1; d <= total; d += 1) cells.push(new Date(month.getFullYear(), month.getMonth(), d));
+    while (cells.length % 7 !== 0) cells.push(null);
+    return cells;
+  }, [month]);
+
+  const bookedHoursByDate = useMemo(() => {
+    const map = new Map<string, { count: number; mine: boolean }>();
+    for (const s of monthSlots.data ?? []) {
+      const start = new Date(s.starts_at);
+      const end = new Date(s.ends_at);
+      const cursor = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      while (cursor < end) {
+        const key = dateKey(cursor);
+        const dayEndAt = new Date(cursor.getTime() + 24 * 60 * 60 * 1000);
+        const overlapMs =
+          Math.min(end.getTime(), dayEndAt.getTime()) - Math.max(start.getTime(), cursor.getTime());
+        if (overlapMs > 0) {
+          const prev = map.get(key) ?? { count: 0, mine: false };
+          map.set(key, {
+            count: prev.count + Math.round(overlapMs / (60 * 60 * 1000)),
+            mine: prev.mine || s.is_mine,
+          });
+        }
+        cursor.setDate(cursor.getDate() + 1);
+      }
+    }
+    return map;
+  }, [monthSlots.data]);
 
   const byHour = useMemo(() => {
     const map = new Map<number, Slot>();
