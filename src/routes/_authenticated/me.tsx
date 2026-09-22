@@ -53,6 +53,18 @@ function MyPage() {
 
   useEffect(() => {
     if (profile.data) setPhone(profile.data.phone ?? "");
+    const path = profile.data?.avatar_path;
+    if (!path) {
+      setAvatarUrl(null);
+      return;
+    }
+    let alive = true;
+    void signAvatars([path]).then((map) => {
+      if (alive) setAvatarUrl(map.get(path) ?? null);
+    });
+    return () => {
+      alive = false;
+    };
   }, [profile.data]);
 
   const myPosts = useQuery({
@@ -236,10 +248,35 @@ function MyPage() {
 
   return (
     <MemberShell eyebrow="My Record" title="마이페이지">
-      <div className="grid gap-10 lg:grid-cols-2">
+      <div className="max-w-2xl space-y-10">
         <section className="hairline rounded-lg bg-card/60 p-8">
           <p className="label-mono">Member Info</p>
-          <dl className="mt-6 space-y-5 font-mono text-sm">
+
+          <div className="mt-6 flex items-center gap-5">
+            <span className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-background">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={p?.full_name ?? ""} className="h-full w-full object-cover" />
+              ) : (
+                <span className="font-display text-2xl text-muted-foreground">
+                  {initialOf(p?.full_name ?? "?")}
+                </span>
+              )}
+            </span>
+            <label className="cursor-pointer rounded-sm border border-primary/40 px-4 py-2 text-sm text-primary transition-colors hover:bg-primary/10">
+              {uploadAvatar.isPending ? "업로드 중…" : "프로필 사진 변경"}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) uploadAvatar.mutate(f);
+                }}
+              />
+            </label>
+          </div>
+
+          <dl className="mt-8 space-y-5 font-mono text-sm">
             <Row k="NAME" v={p?.full_name ?? "—"} />
             <Row k="STUDENT ID" v={p?.student_id ?? "—"} />
             <Row k="EMAIL" v={p?.email ?? "—"} />
@@ -274,6 +311,10 @@ function MyPage() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              if (!currentPw) {
+                toast.error("현재 비밀번호를 입력해 주세요.");
+                return;
+              }
               if (pw.length < 8) {
                 toast.error("비밀번호는 8자 이상이어야 합니다.");
                 return;
@@ -288,9 +329,18 @@ function MyPage() {
           >
             <input
               type="password"
+              value={currentPw}
+              onChange={(e) => setCurrentPw(e.target.value)}
+              placeholder="현재 비밀번호"
+              autoComplete="current-password"
+              className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
+            />
+            <input
+              type="password"
               value={pw}
               onChange={(e) => setPw(e.target.value)}
               placeholder="새 비밀번호 (8자 이상)"
+              autoComplete="new-password"
               className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
             />
             <input
@@ -298,6 +348,7 @@ function MyPage() {
               value={pw2}
               onChange={(e) => setPw2(e.target.value)}
               placeholder="새 비밀번호 확인"
+              autoComplete="new-password"
               className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
             />
             <button
