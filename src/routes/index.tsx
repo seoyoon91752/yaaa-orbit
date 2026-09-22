@@ -195,7 +195,7 @@ function Home() {
                 </p>
               </Reveal>
               <Reveal delay={120}>
-                <div className="hairline rounded-lg bg-card/60 p-8">
+                <div className="dashed-card rounded-lg bg-card/60 p-8">
                   <MapPin className="h-5 w-5 text-primary" strokeWidth={1.5} />
                   <dl className="mt-8 space-y-6 font-mono text-sm">
                     {[
