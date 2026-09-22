@@ -160,13 +160,14 @@ function Home() {
                     천체사진 촬영을 이어오고 있습니다. 대형 중앙동아리답게 매 학기 신입 부원을
                     맞이하며, 전공·학년의 경계 없이 함께 장비를 다루고 기록을 남깁니다.
                   </p>
-                  <ul className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
+                  <ul className="grid gap-3 sm:grid-cols-3">
                     {[
                       { icon: Telescope, t: "정기 관측", d: "교내·교외 관측회" },
                       { icon: Users, t: "부원 교육", d: "장비 · 성도 기초" },
                       { icon: CalendarDays, t: "세미나", d: "천체물리 스터디" },
                     ].map(({ icon: Icon, t, d }) => (
-                      <li key={t} className="bg-card px-5 py-6">
+                      <li key={t} className="dashed-card rounded-lg bg-card px-5 py-6">
+
                         <Icon className="h-4 w-4 text-gold" strokeWidth={1.5} />
                         <p className="mt-4 text-sm font-medium">{t}</p>
                         <p className="mt-1 font-mono text-xs text-muted-foreground">{d}</p>
