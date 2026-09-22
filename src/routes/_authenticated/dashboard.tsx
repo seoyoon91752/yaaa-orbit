@@ -48,7 +48,7 @@ function Dashboard() {
       eyebrow="Member Console"
       title={profile?.full_name ? `${profile.full_name} 님, 환영합니다` : "부원 홈"}
       actions={
-        data?.isAdmin || data?.isOfficer ? (
+        data?.isAdmin ? (
           <Link
             to="/admin"
             className="shrink-0 rounded-sm border border-primary/40 px-4 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10"
