@@ -267,6 +267,49 @@ function UniversePage() {
         가까워집니다.
       </p>
 
+      <section className="mt-16">
+        <p className="label-mono">Collected · {ownedCount}</p>
+        {placed.length === 0 ? (
+          <p className="mt-6 font-mono text-sm text-muted-foreground">
+            아직 수집한 천체가 없습니다.
+          </p>
+        ) : (
+          <ul className="mt-6 border-t border-border">
+            {placed.map(({ row, rarity }, i) => {
+              const o = row.celestial_objects!;
+              return (
+                <li key={row.object_id} className="border-b border-border">
+                  <button
+                    onClick={() => setSelected(row)}
+                    className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 py-3 text-left transition-colors hover:text-primary"
+                  >
+                    <span className="label-mono">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm">{o.name}</span>
+                      <span className="block truncate font-mono text-[11px] text-muted-foreground">
+                        {SCALE_LABEL[o.scale as SkyScale] ?? o.scale} ·{" "}
+                        {KIND_LABEL[o.kind_code] ?? o.kind_code}
+                      </span>
+                    </span>
+                    <span
+                      className={`shrink-0 font-mono text-[11px] ${
+                        rarity === "epic"
+                          ? "text-gold"
+                          : rarity === "rare"
+                            ? "text-primary"
+                            : "text-muted-foreground"
+                      }`}
+                    >
+                      {RARITY_LABEL[rarity]}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+
       <QuestBoard userId={userId} />
 
       <Dialog open={Boolean(selected)} onOpenChange={(o) => !o && setSelected(null)}>
