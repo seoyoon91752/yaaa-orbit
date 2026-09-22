@@ -3,6 +3,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
+import { TonightPanel } from "@/components/tonight-panel";
+import { UniversePreview } from "@/components/universe-preview";
 import { useMembership, useSession } from "@/hooks/use-session";
 import { formatDateTime } from "@/lib/format";
 
@@ -51,6 +53,10 @@ function Dashboard() {
         <Stat label="Student ID" value={profile?.student_id ?? "—"} />
         <Stat label="Email" value={profile?.email ?? "—"} />
       </div>
+
+      <TonightPanel />
+
+      <UniversePreview />
 
       <UpcomingEvents />
 
