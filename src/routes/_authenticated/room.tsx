@@ -188,6 +188,27 @@ function RoomPage() {
 
   return (
     <MemberShell eyebrow="Clubroom Booking" title="동아리방 예약">
+      <SheetStrip
+        items={[
+          {
+            label: "Bookings",
+            value: String(monthSlots.data?.length ?? 0),
+            accent: "primary",
+          },
+          {
+            label: "Booked hours",
+            value: `${[...bookedHoursByDate.values()].reduce((s, v) => s + v.count, 0)}h`,
+          },
+          {
+            label: "Mine",
+            value: String((monthSlots.data ?? []).filter((s) => s.is_mine).length),
+            accent: "gold",
+          },
+          { label: "Open hours", value: "09 — 24" },
+        ]}
+        note="SLOT · 날짜를 누르면 그날의 시간대별 예약 현황이 열립니다."
+      />
+
       <div className="flex items-center justify-between">
         <p className="font-display text-2xl font-semibold">
           {month.getFullYear()}. {String(month.getMonth() + 1).padStart(2, "0")}
