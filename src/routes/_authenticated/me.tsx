@@ -480,6 +480,67 @@ function MyPage() {
       </section>
 
       <section className="mt-16">
+        <p className="label-mono">My Hosted Activities · {hostedActivities.data?.length ?? 0}</p>
+        {(hostedActivities.data?.length ?? 0) === 0 ? (
+          <p className="mt-6 font-mono text-sm text-muted-foreground">개설한 활동이 없습니다.</p>
+        ) : (
+          <ul className="mt-6 border-t border-border">
+            {hostedActivities.data!.map((a) => (
+              <li key={a.id} className="border-b border-border">
+                <Link
+                  to="/activities/$activityId"
+                  params={{ activityId: a.id }}
+                  className="flex flex-wrap items-center gap-x-5 gap-y-1 py-4 transition-colors hover:text-primary"
+                >
+                  <span className="label-mono">{a.category}</span>
+                  <span className="text-sm">{a.title}</span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {formatDateTime(a.starts_at)}
+                  </span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {a.location ?? "—"}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="mt-16">
+        <p className="label-mono">My Gallery · {myPhotos.data?.length ?? 0}</p>
+        {(myPhotos.data?.length ?? 0) === 0 ? (
+          <p className="mt-6 font-mono text-sm text-muted-foreground">올린 사진이 없습니다.</p>
+        ) : (
+          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {myPhotos.data!.map((ph) => (
+              <article
+                key={ph.id}
+                className="overflow-hidden rounded-lg border border-border bg-card/60"
+              >
+                <div className="aspect-[4/3] w-full overflow-hidden bg-background">
+                  {ph.url ? (
+                    <img
+                      src={ph.url}
+                      alt={ph.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : null}
+                </div>
+                <div className="p-4">
+                  <h3 className="font-display text-base font-semibold">{ph.title}</h3>
+                  <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+                    {ph.shot_at ?? formatDate(ph.created_at)}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="mt-16">
         <p className="label-mono">My Posts · {myPosts.data?.length ?? 0}</p>
         {(myPosts.data?.length ?? 0) === 0 ? (
           <p className="mt-6 font-mono text-sm text-muted-foreground">작성한 글이 없습니다.</p>
