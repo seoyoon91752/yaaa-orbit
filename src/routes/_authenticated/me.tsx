@@ -233,7 +233,10 @@ function MyPage() {
       if (!email) throw new Error("이메일 정보를 찾을 수 없습니다.");
       const check = await supabase.auth.signInWithPassword({ email, password: currentPw });
       if (check.error) throw new Error("현재 비밀번호가 올바르지 않습니다.");
-      const { error } = await supabase.auth.updateUser({ password: pw });
+      const { error } = await supabase.auth.updateUser({
+        password: pw,
+        current_password: currentPw,
+      } as Parameters<typeof supabase.auth.updateUser>[0]);
       if (error) throw error;
     },
     onSuccess: () => {
