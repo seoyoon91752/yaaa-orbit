@@ -57,32 +57,32 @@
 }
 
 :root {
-  --radius: 0.25rem;
-  --background: oklch(0.145 0.022 264);
-  --foreground: oklch(0.945 0.008 250);
-  --surface: oklch(0.185 0.024 264);
-  --card: oklch(0.182 0.023 264);
-  --card-foreground: oklch(0.945 0.008 250);
-  --popover: oklch(0.182 0.023 264);
-  --popover-foreground: oklch(0.945 0.008 250);
-  --primary: oklch(0.79 0.132 205);
-  --primary-foreground: oklch(0.15 0.03 250);
-  --secondary: oklch(0.24 0.026 264);
-  --secondary-foreground: oklch(0.93 0.01 250);
-  --muted: oklch(0.22 0.024 264);
-  --muted-foreground: oklch(0.66 0.022 258);
-  --accent: oklch(0.26 0.03 250);
-  --accent-foreground: oklch(0.93 0.01 250);
-  --gold: oklch(0.83 0.125 82);
-  --destructive: oklch(0.63 0.2 24);
-  --destructive-foreground: oklch(0.97 0.01 250);
-  --border: oklch(0.3 0.025 258 / 65%);
-  --input: oklch(0.34 0.025 258 / 70%);
-  --ring: oklch(0.79 0.132 205 / 60%);
+  --radius: 0.125rem;
+  --background: oklch(0.985 0.003 250);
+  --foreground: oklch(0.3 0.055 265);
+  --surface: oklch(0.968 0.008 255);
+  --card: oklch(0.975 0.006 255);
+  --card-foreground: oklch(0.3 0.055 265);
+  --popover: oklch(0.99 0.003 250);
+  --popover-foreground: oklch(0.3 0.055 265);
+  --primary: oklch(0.55 0.21 264);
+  --primary-foreground: oklch(0.99 0.002 250);
+  --secondary: oklch(0.95 0.012 255);
+  --secondary-foreground: oklch(0.34 0.06 265);
+  --muted: oklch(0.955 0.01 255);
+  --muted-foreground: oklch(0.55 0.055 265);
+  --accent: oklch(0.93 0.025 258);
+  --accent-foreground: oklch(0.34 0.07 265);
+  --gold: oklch(0.47 0.16 254);
+  --destructive: oklch(0.55 0.2 27);
+  --destructive-foreground: oklch(0.99 0.002 250);
+  --border: oklch(0.55 0.13 264 / 32%);
+  --input: oklch(0.55 0.13 264 / 40%);
+  --ring: oklch(0.55 0.21 264 / 45%);
 }
 
 .dark {
-  --background: oklch(0.145 0.022 264);
+  --background: oklch(0.985 0.003 250);
 }
 
 @layer base {
@@ -99,6 +99,19 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in oklab, var(--primary) 9%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--primary) 9%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 28px 28px;
+    background-attachment: fixed;
   }
 
   h1,
@@ -106,11 +119,11 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--primary) 30%, transparent);
+    background: color-mix(in oklab, var(--primary) 25%, transparent);
   }
 }
 
