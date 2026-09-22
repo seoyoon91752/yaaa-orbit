@@ -53,6 +53,7 @@ function AdminPage() {
           <div className="mt-12 space-y-16">
             <RosterSection />
             <ApprovalSection />
+            <RoleSection />
           </div>
         )}
       </main>
