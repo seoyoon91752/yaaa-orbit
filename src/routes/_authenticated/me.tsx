@@ -32,7 +32,6 @@ export const Route = createFileRoute("/_authenticated/me")({
 function MyPage() {
   const { userId } = useMemberContext();
   const queryClient = useQueryClient();
-  const [phone, setPhone] = useState("");
   const [department, setDepartment] = useState("");
   const [currentPw, setCurrentPw] = useState("");
   const [pw, setPw] = useState("");
@@ -55,7 +54,6 @@ function MyPage() {
 
   useEffect(() => {
     if (profile.data) {
-      setPhone(profile.data.phone ?? "");
       setDepartment(profile.data.department ?? "");
     }
     const path = profile.data?.avatar_path;
@@ -198,7 +196,7 @@ function MyPage() {
     mutationFn: async () => {
       const { error } = await supabase
         .from("profiles")
-        .update({ phone: phone.trim() || null, department: department.trim() || null })
+        .update({ department: department.trim() || null })
         .eq("id", userId!);
       if (error) throw error;
     },
@@ -289,11 +287,12 @@ function MyPage() {
             <Row k="NAME" v={p?.full_name ?? "—"} />
             <Row k="STUDENT ID" v={p?.student_id ?? "—"} />
             <Row k="EMAIL" v={p?.email ?? "—"} />
+            <Row k="PHONE" v={p?.phone ?? "—"} />
             <Row k="JOINED" v={p?.created_at ? formatDate(p.created_at) : "—"} />
           </dl>
           <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
-            이름과 학번은 부원 명부 기준 정보로 본인이 수정할 수 없습니다. 정정이 필요하면 운영진에게
-            문의해 주세요.
+            이름·학번·연락처는 가입 시 등록된 정보로 본인이 수정할 수 없습니다. 정정이 필요하면
+            운영진에게 문의해 주세요.
           </p>
 
           <div className="mt-8 space-y-6 border-t border-border pt-6">
@@ -308,15 +307,6 @@ function MyPage() {
               <p className="mt-2 text-xs text-muted-foreground">
                 입력한 학과는 부원 프로필 명단에 표시됩니다.
               </p>
-            </div>
-            <div>
-              <p className="label-mono mb-2">연락처</p>
-              <input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="010-0000-0000"
-                className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
-              />
             </div>
             <button
               onClick={() => savePhone.mutate()}

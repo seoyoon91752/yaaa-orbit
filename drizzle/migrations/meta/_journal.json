@@ -85,6 +85,13 @@
       "when": 1790098079889,
       "tag": "0011_profile_department",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1790098283432,
+      "tag": "0012_signup_phone",
+      "breakpoints": true
     }
   ]
 }

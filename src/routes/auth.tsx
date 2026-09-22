@@ -29,6 +29,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [studentId, setStudentId] = useState("");
+  const [phone, setPhone] = useState("");
   const [honeypot, setHoneypot] = useState("");
   const [answer, setAnswer] = useState("");
   const [busy, setBusy] = useState(false);
@@ -60,6 +61,10 @@ function AuthPage() {
         toast.error("이름과 학번을 모두 입력해 주세요.");
         return;
       }
+      if (!phone.trim()) {
+        toast.error("연락처를 입력해 주세요.");
+        return;
+      }
     }
 
     setBusy(true);
@@ -70,7 +75,11 @@ function AuthPage() {
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/dashboard`,
-            data: { full_name: fullName.trim(), student_id: studentId.trim() },
+            data: {
+              full_name: fullName.trim(),
+              student_id: studentId.trim(),
+              phone: phone.trim(),
+            },
           },
         });
         if (error) throw error;
@@ -136,6 +145,14 @@ function AuthPage() {
                       placeholder="2023123456"
                       mono
                       autoComplete="off"
+                    />
+                    <Field
+                      label="연락처"
+                      value={phone}
+                      onChange={setPhone}
+                      placeholder="010-0000-0000"
+                      mono
+                      autoComplete="tel"
                     />
                   </>
                 )}
