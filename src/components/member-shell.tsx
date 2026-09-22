@@ -39,11 +39,12 @@ export function MemberShell({
         <div className="border-b border-border/70">
           <nav className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-6 py-2 text-sm">
             {NAV.map((item) => {
-              const active = pathname === item.to || pathname.startsWith(`${item.to}/`);
+              const active = pathname === item.match || pathname.startsWith(`${item.match}/`);
               return (
                 <Link
-                  key={item.to}
+                  key={item.match}
                   to={item.to}
+                  params={"params" in item ? item.params : undefined}
                   className={`shrink-0 rounded-sm px-3 py-2 transition-colors ${
                     active
                       ? "bg-primary/10 text-primary"
