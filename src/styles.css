@@ -4,15 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* 눈누 무료 한글 디스플레이 서체 — 카페24 아네모네 오스퀘어 (각진 디스플레이) */
-@font-face {
-  font-family: "Cafe24Ohsquare";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.4/Cafe24Ohsquare.woff")
-    format("woff");
-  font-weight: 400 900;
-  font-display: swap;
-}
-
 /*
  * YAAA — Yonsei Amateur Astronomy Association
  * Observatory-grade dark design system. Single dark palette.
@@ -25,7 +16,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --font-display: "Cafe24Ohsquare", "Space Grotesk", "IBM Plex Sans KR", sans-serif;
+  --font-display: "Space Grotesk", "IBM Plex Sans KR", sans-serif;
   --font-sans: "IBM Plex Sans KR", "Space Grotesk", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
@@ -115,8 +106,7 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
-    font-weight: 400;
+    letter-spacing: -0.02em;
   }
 
   ::selection {
@@ -127,8 +117,8 @@
 @utility label-mono {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
-  letter-spacing: 0.12em;
-  text-transform: none;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   color: var(--muted-foreground);
 }
 
@@ -137,7 +127,8 @@
 }
 
 @utility glow-cyan {
-  box-shadow: none;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 22%, transparent),
+    0 0 40px -18px color-mix(in oklab, var(--primary) 70%, transparent);
 }
 
 @utility reveal {

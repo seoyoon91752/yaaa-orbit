@@ -75,7 +75,7 @@ export function MemberShell({
           </div>
 
           {isLoading ? (
-            <p className="mt-12 font-mono text-sm text-muted-foreground">불러오는 중…</p>
+            <p className="mt-12 font-mono text-sm text-muted-foreground">LOADING…</p>
           ) : status !== "verified" ? (
             <div className="hairline mt-12 rounded-lg border-gold/40 bg-gold/5 p-8">
               <p className="font-display text-lg font-semibold text-gold">명부 인증이 필요합니다</p>

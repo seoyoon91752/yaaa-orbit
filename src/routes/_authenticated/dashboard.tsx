@@ -46,18 +46,18 @@ function Dashboard() {
       eyebrow="Member Console"
       title={profile?.full_name ? `${profile.full_name} 님, 환영합니다` : "부원 홈"}
     >
-      <dl className="flex flex-wrap gap-x-14 gap-y-5 border-t border-border/70 pt-6">
-        <Stat label="상태" value="명부 인증 완료" accent />
-        <Stat label="학번" value={profile?.student_id ?? "—"} />
-        <Stat label="이메일" value={profile?.email ?? "—"} />
-      </dl>
+      <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
+        <Stat label="Status" value="명부 인증 완료" accent />
+        <Stat label="Student ID" value={profile?.student_id ?? "—"} />
+        <Stat label="Email" value={profile?.email ?? "—"} />
+      </div>
 
       <UpcomingEvents />
 
-      <div className="mt-14 flex flex-wrap gap-x-10 gap-y-4">
-        <Shortcut to="/board/$board" params={{ board: "notice" }} label="공지사항" sub="notices" />
-        <Shortcut to="/board/$board" params={{ board: "free" }} label="자유게시판" sub="community" />
-        <Shortcut to="/me" label="마이페이지" sub="my record" />
+      <div className="mt-12 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
+        <Shortcut to="/board/$board" params={{ board: "notice" }} label="공지사항" sub="Notices" />
+        <Shortcut to="/board/$board" params={{ board: "free" }} label="자유게시판" sub="Community" />
+        <Shortcut to="/me" label="마이페이지" sub="My Record" />
       </div>
 
       <div className="mt-10 flex flex-wrap gap-3">
@@ -102,7 +102,7 @@ function UpcomingEvents() {
   return (
     <section className="mt-16">
       <div className="flex items-end justify-between gap-6">
-        <p className="label-mono">다가오는 일정</p>
+        <p className="label-mono">Upcoming</p>
         <Link
           to="/calendar"
           className="font-mono text-xs text-primary transition-opacity hover:opacity-80"
@@ -113,18 +113,15 @@ function UpcomingEvents() {
       {(data?.length ?? 0) === 0 ? (
         <p className="mt-6 font-mono text-sm text-muted-foreground">예정된 일정이 없습니다.</p>
       ) : (
-        <ul className="mt-2">
+        <ul className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
           {data!.map((e) => (
-            <li
-              key={e.id}
-              className="flex flex-wrap items-baseline gap-x-6 gap-y-1 border-b border-border/50 py-5"
-            >
-              <p className="w-40 shrink-0 font-mono text-xs text-muted-foreground">
+            <li key={e.id} className="bg-card px-6 py-6">
+              <p className="label-mono text-gold">{e.category}</p>
+              <p className="mt-3 truncate font-display text-lg font-semibold">{e.title}</p>
+              <p className="mt-2 font-mono text-xs text-muted-foreground">
                 {formatDateTime(e.starts_at)}
               </p>
-              <p className="font-display text-lg">{e.title}</p>
-              <p className="ml-auto font-mono text-xs text-gold">{e.category}</p>
-              <p className="w-full font-mono text-xs text-muted-foreground sm:w-auto">
+              <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
                 {e.location ?? "장소 미정"}
               </p>
             </li>
@@ -137,13 +134,13 @@ function UpcomingEvents() {
 
 function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div>
-      <dt className="font-mono text-[0.65rem] tracking-[0.12em] text-muted-foreground/70">
-        {label}
-      </dt>
-      <dd className={`mt-1.5 font-mono text-sm ${accent ? "text-primary" : "text-foreground"}`}>
+    <div className="bg-card px-6 py-6">
+      <p className="label-mono">{label}</p>
+      <p
+        className={`mt-2 truncate font-mono text-sm ${accent ? "text-primary" : "text-foreground"}`}
+      >
         {value}
-      </dd>
+      </p>
     </div>
   );
 }
@@ -160,11 +157,13 @@ function Shortcut({
   sub: string;
 }) {
   return (
-    <Link to={to} params={params ?? {}} className="group">
-      <p className="font-mono text-[0.65rem] tracking-[0.12em] text-muted-foreground/70">{sub}</p>
-      <p className="mt-2 font-display text-xl transition-colors group-hover:text-primary">
-        {label} →
-      </p>
+    <Link
+      to={to}
+      params={params ?? {}}
+      className="bg-card px-6 py-7 transition-colors hover:bg-primary/5"
+    >
+      <p className="label-mono">{sub}</p>
+      <p className="mt-3 font-display text-xl font-semibold">{label} →</p>
     </Link>
   );
 }
