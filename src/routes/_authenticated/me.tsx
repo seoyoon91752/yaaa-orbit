@@ -366,37 +366,6 @@ function MyPage() {
         </section>
       </div>
 
-      <section className="mt-16">
-        <p className="label-mono">Stardust</p>
-        <div className="mt-6 flex flex-wrap items-baseline gap-4">
-          <span className="font-mono text-4xl font-semibold text-gold">
-            {stardust.data ?? 0}
-          </span>
-          <span className="font-mono text-xs text-muted-foreground">
-            보유 별가루 · 활동 출석 시 지급됩니다
-          </span>
-        </div>
-        {(ledger.data?.length ?? 0) === 0 ? (
-          <p className="mt-6 font-mono text-sm text-muted-foreground">내역이 없습니다.</p>
-        ) : (
-          <ul className="mt-6 border-t border-border">
-            {ledger.data!.map((l) => (
-              <li
-                key={l.id}
-                className="flex items-center justify-between gap-4 border-b border-border py-3.5"
-              >
-                <span className="truncate text-sm">{l.reason}</span>
-                <span className="flex shrink-0 items-center gap-4 font-mono text-xs">
-                  <span className={l.amount > 0 ? "text-gold" : "text-muted-foreground"}>
-                    {l.amount > 0 ? `+${l.amount}` : l.amount}
-                  </span>
-                  <span className="text-muted-foreground">{formatDateTime(l.created_at)}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
 
       <section className="mt-16">
         <p className="label-mono">My Activities · {myActivities.data?.length ?? 0}</p>
@@ -510,7 +479,7 @@ function MyPage() {
         )}
       </section>
 
-      <section className="mt-16">
+      <section className="hairline mt-16 rounded-lg bg-card/60 p-8">
         <p className="label-mono">My Gallery · {myPhotos.data?.length ?? 0}</p>
         {(myPhotos.data?.length ?? 0) === 0 ? (
           <p className="mt-6 font-mono text-sm text-muted-foreground">올린 사진이 없습니다.</p>
@@ -564,6 +533,38 @@ function MyPage() {
                     {formatDate(post.created_at)}
                   </span>
                 </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="mt-16">
+        <p className="label-mono">Stardust</p>
+        <div className="mt-6 flex flex-wrap items-baseline gap-4">
+          <span className="font-mono text-4xl font-semibold text-gold">
+            {stardust.data ?? 0}
+          </span>
+          <span className="font-mono text-xs text-muted-foreground">
+            보유 별가루 · 활동 출석 시 지급됩니다
+          </span>
+        </div>
+        {(ledger.data?.length ?? 0) === 0 ? (
+          <p className="mt-6 font-mono text-sm text-muted-foreground">내역이 없습니다.</p>
+        ) : (
+          <ul className="mt-6 border-t border-border">
+            {ledger.data!.map((l) => (
+              <li
+                key={l.id}
+                className="flex items-center justify-between gap-4 border-b border-border py-3.5"
+              >
+                <span className="truncate text-sm">{l.reason}</span>
+                <span className="flex shrink-0 items-center gap-4 font-mono text-xs">
+                  <span className={l.amount > 0 ? "text-gold" : "text-muted-foreground"}>
+                    {l.amount > 0 ? `+${l.amount}` : l.amount}
+                  </span>
+                  <span className="text-muted-foreground">{formatDateTime(l.created_at)}</span>
+                </span>
               </li>
             ))}
           </ul>
