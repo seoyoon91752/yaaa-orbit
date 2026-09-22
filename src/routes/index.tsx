@@ -10,6 +10,7 @@ import { SiteHeader } from "@/components/site-header";
 import { StarField } from "@/components/star-field";
 import { Reveal } from "@/components/reveal";
 import { ConstellationArt } from "@/components/constellation-art";
+import { SkyTicker } from "@/components/sky-ticker";
 
 export const Route = createFileRoute("/")({
   head: () => ({
