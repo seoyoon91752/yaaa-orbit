@@ -10,6 +10,7 @@ const NAV = [
   { to: "/board/$board", params: { board: "free" }, label: "자유게시판", match: "/board/free" },
   { to: "/calendar", label: "일정", match: "/calendar" },
   { to: "/activities", label: "활동", match: "/activities" },
+  { to: "/gallery", label: "갤러리", match: "/gallery" },
   { to: "/equipment", label: "장비 대여", match: "/equipment" },
   { to: "/room", label: "동아리방 예약", match: "/room" },
   { to: "/sky", label: "천체 정보", match: "/sky" },
