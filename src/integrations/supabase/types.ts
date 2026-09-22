@@ -440,6 +440,77 @@ export type Database = {
         }
         Relationships: []
       }
+      quest_claims: {
+        Row: {
+          amount: number
+          claimed_at: string
+          id: string
+          quest_id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          claimed_at?: string
+          id?: string
+          quest_id: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          claimed_at?: string
+          id?: string
+          quest_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quest_claims_quest_id_fkey"
+            columns: ["quest_id"]
+            isOneToOne: false
+            referencedRelation: "quests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quests: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          goal: number
+          id: string
+          metric: string
+          reward: number
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          goal: number
+          id?: string
+          metric: string
+          reward?: number
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          goal?: number
+          id?: string
+          metric?: string
+          reward?: number
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       room_reservations: {
         Row: {
           created_at: string
@@ -655,6 +726,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      claim_quest: { Args: { _quest_id: string }; Returns: number }
       draw_celestial: {
         Args: never
         Returns: {
@@ -711,7 +783,24 @@ export type Database = {
           user_name: string
         }[]
       }
+      my_quests: {
+        Args: never
+        Returns: {
+          claimed: boolean
+          description: string
+          goal: number
+          id: string
+          metric: string
+          progress: number
+          reward: number
+          title: string
+        }[]
+      }
       norm_text: { Args: { _v: string }; Returns: string }
+      quest_metric_progress: {
+        Args: { _metric: string; _user_id: string }
+        Returns: number
+      }
     }
     Enums: {
       app_role: "admin" | "member" | "officer"
