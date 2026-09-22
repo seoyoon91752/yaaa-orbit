@@ -33,8 +33,10 @@ function PostDetail() {
   const [comment, setComment] = useState("");
 
   useEffect(() => {
-    supabase.rpc("increment_post_view", { _post_id: postId });
-  }, [postId]);
+    supabase.rpc("increment_post_view", { _post_id: postId }).then(() => {
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
+    });
+  }, [postId, queryClient]);
 
   const post = useQuery({
     queryKey: ["post", postId],
