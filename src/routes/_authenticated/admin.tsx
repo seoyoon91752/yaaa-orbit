@@ -307,6 +307,114 @@ function ApprovalSection() {
   );
 }
 
+function RoleSection() {
+  const queryClient = useQueryClient();
+
+  const members = useQuery({
+    queryKey: ["member-roles"],
+    queryFn: async () => {
+      const [{ data: profiles, error }, { data: roles, error: roleError }] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("id, full_name, student_id, email, status, created_at")
+          .eq("status", "verified")
+          .order("full_name"),
+        supabase.from("user_roles").select("user_id, role"),
+      ]);
+      if (error) throw error;
+      if (roleError) throw roleError;
+      const byUser = new Map<string, string[]>();
+      for (const r of roles ?? []) {
+        byUser.set(r.user_id, [...(byUser.get(r.user_id) ?? []), r.role]);
+      }
+      return (profiles as MemberProfile[]).map((p) => ({
+        ...p,
+        roles: byUser.get(p.id) ?? [],
+      }));
+    },
+  });
+
+  const setOfficer = useMutation({
+    mutationFn: async ({ id, make }: { id: string; make: boolean }) => {
+      if (make) {
+        const { error } = await supabase.from("user_roles").insert({ user_id: id, role: "officer" });
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("user_roles")
+          .delete()
+          .eq("user_id", id)
+          .eq("role", "officer");
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success("역할을 변경했습니다.");
+      queryClient.invalidateQueries({ queryKey: ["member-roles"] });
+      queryClient.invalidateQueries({ queryKey: ["membership"] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  return (
+    <section>
+      <header className="flex items-baseline justify-between border-b border-border pb-4">
+        <h2 className="text-xl font-semibold">역할 관리</h2>
+        <span className="font-mono text-xs text-muted-foreground">
+          {(members.data?.length ?? 0).toString().padStart(3, "0")} MEMBERS
+        </span>
+      </header>
+
+      <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        임원진은 공지사항 작성과 일정 등록, 동아리방 예약 관리만 할 수 있습니다. 명부 관리, 가입
+        승인, 역할 지정, 자유게시판 글 강제 삭제는 최고관리자 전용입니다.
+      </p>
+
+      <div className="mt-6 space-y-3">
+        {(members.data ?? []).map((m) => {
+          const admin = m.roles.includes("admin");
+          const officer = m.roles.includes("officer");
+          return (
+            <div
+              key={m.id}
+              className="hairline flex flex-wrap items-center justify-between gap-4 rounded-md bg-card/60 px-5 py-4"
+            >
+              <div>
+                <p className="text-sm font-medium">
+                  {m.full_name}{" "}
+                  <span className="font-mono text-xs text-muted-foreground">{m.student_id}</span>
+                </p>
+                <p className="mt-1 font-mono text-xs">
+                  <span className={admin ? "text-gold" : officer ? "text-primary" : "text-muted-foreground"}>
+                    {admin ? "최고관리자" : officer ? "임원진" : "부원"}
+                  </span>
+                </p>
+              </div>
+              {admin ? (
+                <span className="font-mono text-xs text-muted-foreground">ROLE LOCKED</span>
+              ) : (
+                <button
+                  onClick={() => setOfficer.mutate({ id: m.id, make: !officer })}
+                  className={`rounded-sm border px-3 py-1.5 text-xs transition-colors ${
+                    officer
+                      ? "border-border text-muted-foreground hover:border-destructive/50 hover:text-destructive"
+                      : "border-primary/40 text-primary hover:bg-primary/10"
+                  }`}
+                >
+                  {officer ? "임원진 해제" : "임원진 지정"}
+                </button>
+              )}
+            </div>
+          );
+        })}
+        {members.data?.length === 0 && (
+          <p className="py-6 text-sm text-muted-foreground">인증된 부원이 없습니다.</p>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function Input({
   value,
   onChange,
