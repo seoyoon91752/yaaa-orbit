@@ -109,6 +109,35 @@ function MyPage() {
     },
   });
 
+  const stardust = useQuery({
+    queryKey: ["stardust", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("stardust_balances")
+        .select("balance")
+        .eq("user_id", userId!)
+        .maybeSingle();
+      if (error) throw error;
+      return data?.balance ?? 0;
+    },
+  });
+
+  const ledger = useQuery({
+    queryKey: ["stardust-ledger", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("stardust_ledger")
+        .select("id, amount, reason, created_at")
+        .eq("user_id", userId!)
+        .order("created_at", { ascending: false })
+        .limit(30);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   const savePhone = useMutation({
     mutationFn: async () => {
       const { error } = await supabase
