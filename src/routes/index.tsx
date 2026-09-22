@@ -10,6 +10,8 @@ import { SiteHeader } from "@/components/site-header";
 import { StarField } from "@/components/star-field";
 import { Reveal } from "@/components/reveal";
 import { ConstellationArt } from "@/components/constellation-art";
+import { CoordinateLine } from "@/components/coordinate-line";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
