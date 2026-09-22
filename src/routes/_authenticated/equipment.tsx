@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
+import { SheetStrip } from "@/components/sheet-strip";
 import { formatDate } from "@/lib/format";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -248,6 +249,25 @@ function EquipmentPage() {
         ) : null
       }
     >
+      <SheetStrip
+        items={[
+          { label: "Inventory", value: String(items.data?.length ?? 0), accent: "primary" },
+          {
+            label: "Available",
+            value: String((items.data ?? []).filter((i) => i.status === "available").length),
+          },
+          {
+            label: "On loan",
+            value: String((rentals.data ?? []).filter((r) => r.status === "approved").length),
+            accent: "gold",
+          },
+          {
+            label: "Pending",
+            value: String((rentals.data ?? []).filter((r) => r.status === "pending").length),
+          },
+        ]}
+      />
+
       <section>
         <p className="label-mono">Inventory · {items.data?.length ?? 0}</p>
         {(items.data?.length ?? 0) === 0 ? (

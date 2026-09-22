@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
 import { formatDate } from "@/lib/format";
+import { SheetStrip } from "@/components/sheet-strip";
 
 const PAGE_SIZE = 10;
 
@@ -89,6 +90,22 @@ function BoardList() {
         ) : null
       }
     >
+      <SheetStrip
+        items={[
+          { label: "Posts", value: String(data?.count ?? 0), accent: "primary" },
+          { label: "Page", value: `${page + 1} / ${totalPages}` },
+          {
+            label: "Latest",
+            value: data?.rows[0] ? formatDate(data.rows[0].created_at) : "—",
+          },
+          {
+            label: "Write access",
+            value: kind === "notice" ? "임원진 이상" : "모든 부원",
+            accent: "gold",
+          },
+        ]}
+      />
+
       {open && canWrite && (
         <form
           onSubmit={(e) => {

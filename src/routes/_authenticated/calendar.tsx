@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell, useMemberContext } from "@/components/member-shell";
+import { SheetStrip } from "@/components/sheet-strip";
 import { formatDateTime, toLocalInput } from "@/lib/format";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -144,6 +145,25 @@ function CalendarPage() {
         ) : null
       }
     >
+      <SheetStrip
+        items={[
+          { label: "This month", value: String(events?.length ?? 0), accent: "primary" },
+          {
+            label: "Next event",
+            value: (() => {
+              const next = (events ?? []).find((e) => new Date(e.starts_at) >= new Date());
+              return next ? formatDateTime(next.starts_at) : "—";
+            })(),
+            accent: "gold",
+          },
+          {
+            label: "Categories",
+            value: String(new Set((events ?? []).map((e) => e.category)).size),
+          },
+          { label: "Booked days", value: String(byDay.size) },
+        ]}
+      />
+
       <div className="flex items-center justify-between">
         <p className="font-display text-2xl font-semibold">
           {cursor.getFullYear()}.{String(cursor.getMonth() + 1).padStart(2, "0")}

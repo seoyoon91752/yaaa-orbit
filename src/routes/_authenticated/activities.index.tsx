@@ -7,6 +7,7 @@ import { MemberShell, useMemberContext } from "@/components/member-shell";
 import { formatDateTime } from "@/lib/format";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ActivityForm, emptyActivity, type ActivityFormState } from "@/components/activity-form";
+import { SheetStrip } from "@/components/sheet-strip";
 
 export const Route = createFileRoute("/_authenticated/activities/")({
   head: () => ({
@@ -149,6 +150,19 @@ function ActivitiesPage() {
         ) : null
       }
     >
+      <SheetStrip
+        items={[
+          { label: "Open", value: String(ongoing.length), accent: "primary" },
+          { label: "Archived", value: String(done.length) },
+          {
+            label: "Next up",
+            value: ongoing[0] ? formatDateTime(ongoing[0].starts_at) : "—",
+            accent: "gold",
+          },
+          { label: "My signups", value: String(mySignups.data?.size ?? 0) },
+        ]}
+      />
+
       <div className="flex gap-1 border-b border-border">
         {(
           [
@@ -177,16 +191,30 @@ function ActivitiesPage() {
           {list.map((a) => {
             const closed = new Date(a.apply_deadline).getTime() < now;
             const joined = mySignups.data?.has(a.id) ?? false;
+            const dday = Math.ceil((new Date(a.starts_at).getTime() - now) / 86_400_000);
+            const signups = counts.data?.get(a.id) ?? 0;
             return (
               <article key={a.id} className="flex flex-col bg-card/60 p-7">
-                <div className="flex items-center gap-3">
-                  <span className="rounded-sm border border-primary/40 bg-primary/10 px-2.5 py-1 font-mono text-[11px] text-primary">
-                    {a.category}
-                  </span>
-                  <span
-                    className={`font-mono text-[11px] ${closed ? "text-muted-foreground" : "text-gold"}`}
-                  >
-                    {closed ? "마감됨" : `마감 ${formatDateTime(a.apply_deadline)}`}
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="rounded-sm border border-primary/40 bg-primary/10 px-2.5 py-1 font-mono text-[11px] text-primary">
+                      {a.category}
+                    </span>
+                    <span
+                      className={`font-mono text-[11px] ${closed ? "text-muted-foreground" : "text-gold"}`}
+                    >
+                      {closed ? "마감됨" : `마감 ${formatDateTime(a.apply_deadline)}`}
+                    </span>
+                  </div>
+                  <span className="shrink-0 text-right">
+                    <span
+                      className={`block font-mono text-2xl leading-none ${
+                        dday < 0 ? "text-muted-foreground" : "text-primary"
+                      }`}
+                    >
+                      {dday > 0 ? `D-${dday}` : dday === 0 ? "D-DAY" : `D+${-dday}`}
+                    </span>
+                    <span className="label-mono mt-1.5 block">to start</span>
                   </span>
                 </div>
                 <Link
@@ -204,6 +232,14 @@ function ActivitiesPage() {
                     {a.capacity ? ` / ${a.capacity}` : ""}
                   </div>
                 </dl>
+                {a.capacity ? (
+                  <div className="mt-3 h-1 w-full bg-border">
+                    <div
+                      className="h-full bg-primary"
+                      style={{ width: `${Math.min(100, Math.round((signups / a.capacity) * 100))}%` }}
+                    />
+                  </div>
+                ) : null}
                 {a.description && (
                   <p className="mt-4 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
                     {a.description}

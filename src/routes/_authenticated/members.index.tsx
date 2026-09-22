@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell } from "@/components/member-shell";
 import { initialOf, signAvatars } from "@/lib/avatars";
+import { SheetStrip } from "@/components/sheet-strip";
 
 export const Route = createFileRoute("/_authenticated/members/")({
   head: () => ({
@@ -58,6 +59,22 @@ function MembersPage() {
 
   return (
     <MemberShell eyebrow="Member Directory" title="부원 프로필">
+      <SheetStrip
+        items={[
+          { label: "Members", value: String(members.data?.length ?? 0), accent: "primary" },
+          { label: "Listed", value: String(list.length) },
+          {
+            label: "Departments",
+            value: String(new Set((members.data ?? []).map((m) => m.department ?? "—")).size),
+          },
+          {
+            label: "With photo",
+            value: String((members.data ?? []).filter((m) => m.avatar_url).length),
+            accent: "gold",
+          },
+        ]}
+      />
+
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
@@ -71,13 +88,16 @@ function MembersPage() {
         <p className="mt-10 font-mono text-sm text-muted-foreground">부원이 없습니다.</p>
       ) : (
         <div className="mt-8 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((m) => (
+          {list.map((m, i) => (
             <Link
               key={m.id}
               to="/members/$memberId"
               params={{ memberId: m.id }}
-              className="flex items-center gap-4 bg-card/60 p-5 transition-colors hover:bg-card"
+              className="relative flex items-center gap-4 bg-card/60 p-5 transition-colors hover:bg-card"
             >
+              <span className="absolute top-2.5 right-3 font-mono text-[10px] text-muted-foreground/70">
+                {String(i + 1).padStart(3, "0")}
+              </span>
               <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-background">
                 {m.avatar_url ? (
                   <img src={m.avatar_url} alt={m.full_name} className="h-full w-full object-cover" />
