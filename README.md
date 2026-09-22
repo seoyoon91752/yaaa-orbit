@@ -1,14 +1,96 @@
-# Welcome to your Lovable project
+# YAAA Orbit
+
+연세대학교 중앙동아리 "YAAA (연세 아마추어 천문회)"의 부원 전용 홈페이지를 만들어줘.
+
+YAAA는 올해로 41주년을 맞은 천체관측 동아리이고, 전공·학년 무관하게 가입 가능한 대형 동아리야.
+
+이 홈페이지는 신규 홍보용이 아니라 "기존 부원들의 소통과 공지"가 주 목적이야.
+
+[디자인 방향 — 매우 중요하게 신경 써줘]
+
+전체적으로 "깔끔하고 전문적이면서 트렌디한, 천체관측/우주물리 연구소" 같은 느낌을 원해.
+
+학교 동아리 홈페이지 특유의 촌스러움(파스텔톤 카드, 클립아트, 기본 부트스트랩 느낌)을 피하고,
+
+디자인 스튜디오 포트폴리오처럼 정제되고 커스텀한 만듦새로 만들어줘.
+
+- 색상: 거의 검정에 가까운 매우 짙은 네이비/블랙을 기본 배경으로 쓰고, 포인트 컬러는 딱 1~2개만
+
+  절제해서 사용해줘 (예: 차가운 시안/일렉트릭 블루 계열 하나 + 별빛 느낌의 웜 골드/앰버 계열 하나).
+
+  화려한 그라데이션 남발하지 말고, 넓은 여백과 어두운 배경 자체가 "밤하늘"처럼 느껴지게 해줘.
+
+- 타이포그래피: 헤드라인에는 개성 있고 살짝 각진/기하학적인 디스플레이 서체를, 본문에는 가독성
+
+  좋은 깔끔한 산세리프를 짝지어줘. 그리고 날짜·좌표·통계 수치·목록 번호 같은 데이터성 정보에는
+
+  모노스페이스 폰트를 포인트로 써서 "관측 장비/천체 좌표 기록" 같은 느낌을 줘.
+
+- 레이아웃: 에디토리얼하게, 여백을 충분히 두고 그리드가 딱 잡힌 느낌으로. 카드/버튼에 그림자
+
+  남발하지 말고 얇은 보더나 미묘한 글로우 정도로 절제해줘.
+
+- 모션: 스크롤에 따라 요소가 부드럽게 드러나는 정도의 은은한 애니메이션, 배경에 아주 옅은 별
+
+  파티클/성긴 별자리 선 같은 디테일 정도만 넣어줘 (과하게 반짝이거나 촌스러운 우주 클립아트 X).
+
+- 전반적으로 "학생 동아리가 만든 사이트"가 아니라 "우주 연구소/천문대 공식 사이트" 같은 신뢰감과
+
+  전문성이 느껴지게 만들어줘.
+
+[1단계: 지금 만들어줄 것]
+
+1. 메인 페이지
+
+   - 동아리 소개(이름, 41주년, 중앙동아리, 전공/학년 무관 등)
+
+   - 동아리방 위치 안내
+
+   - 자주 묻는 질문(FAQ) 섹션
+
+   - 동아리 SNS 링크(인스타그램 등) 버튼
+
+2. 회원가입 / 로그인 — 반드시 동아리원 명부에 등록된 사람만 가입 가능해야 해
+
+   - 관리자가 미리 "부원 명부"(이름, 학번 등 최소 정보)를 시스템에 등록해둘 수 있는 구조로 만들어줘
+
+   - 신규 가입 신청 시 입력한 이름+학번이 명부와 일치해야 가입이 완료되도록 해줘
+
+   - 일치하지 않으면 가입을 막고, "관리자 승인 요청" 형태로 대기 상태가 되게 해서 관리자가 수동으로 승인할 수 있는 백업 경로도 만들어줘
+
+   - 이메일 인증 필수로 넣어줘 (허위 가입 방지)
+
+   - 로그인하지 않은 사용자는 메인 페이지 외 다른 페이지에 접근할 수 없게 해줘
+
+3. 관리자 페이지 골격
+
+   - 관리자 role을 별도로 구분해줘 (일반 부원과 권한 분리)
+
+   - 부원 명부 등록/수정/삭제 기능
+
+   - 가입 승인 대기 목록 확인 및 승인/거절 기능
+
+[보안 관련 필수 요구사항 — 반드시 지켜줘]
+
+- 모든 데이터베이스 테이블에 Row Level Security(RLS)를 적용하고, 각 부원은 자기 자신의 데이터만 조회/수정할 수 있게 해줘. 다른 사람의 개인정보(이름, 학번, 연락처 등)는 관리자만 열람 가능해야 해
+
+- 로그인하지 않은 상태거나 명부 인증이 안 된 사용자는 어떤 데이터도 조회할 수 없어야 해
+
+- API 키나 민감한 값은 프론트엔드 코드에 노출되지 않도록 서버(Edge Function/환경변수) 쪽에서 처리해줘
+
+- 회원가입 폼에 스팸 방지(간단한 봇 방지 장치)를 넣어줘
+
+일단 이 1단계 구조부터 만들어줘. 만들고 나서 내가 확인한 다음 2단계(게시판, 캘린더, 마이페이지)를 이어서 요청할게.
 
 This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/5713e80e-38c6-4a6f-9536-46019ac79b41).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +102,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
