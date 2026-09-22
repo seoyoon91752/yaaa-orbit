@@ -34,7 +34,7 @@ export const Route = createFileRoute("/_authenticated/activities/$activityId")({
 
 function ActivityDetail() {
   const { activityId } = Route.useParams();
-  const { userId, profile, isOfficer } = useMemberContext();
+  const { userId, profile, isOfficer, isAdmin } = useMemberContext();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [form, setForm] = useState<ActivityFormState>(emptyActivity);
