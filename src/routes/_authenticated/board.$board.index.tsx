@@ -25,7 +25,7 @@ export const Route = createFileRoute("/_authenticated/board/$board/")({
 function BoardList() {
   const { board } = useParams({ from: "/_authenticated/board/$board/" });
   const kind = board === "notice" ? "notice" : "free";
-  const { userId, profile, isAdmin } = useMemberContext();
+  const { userId, profile, isOfficer } = useMemberContext();
   const queryClient = useQueryClient();
 
   const [page, setPage] = useState(0);
@@ -33,7 +33,7 @@ function BoardList() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
-  const canWrite = kind === "free" || isAdmin;
+  const canWrite = kind === "free" || isOfficer;
 
   const { data, isLoading } = useQuery({
     queryKey: ["posts", kind, page],
