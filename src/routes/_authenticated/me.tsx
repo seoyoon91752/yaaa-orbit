@@ -42,7 +42,7 @@ function MyPage() {
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [leaveStep, setLeaveStep] = useState<"confirm" | "password" | null>(null);
+  const [leaveStep, setLeaveStep] = useState<"confirm" | "password" | "done" | null>(null);
   const [leavePw, setLeavePw] = useState("");
   const callDeleteAccount = useServerFn(deleteMyAccount);
 
@@ -52,13 +52,13 @@ function MyPage() {
       if (!res.ok) throw new Error("비밀번호가 틀렸습니다.");
     },
     onSuccess: async () => {
-      setLeaveStep(null);
-      toast.success("탈퇴가 완료되었습니다.");
+      setLeavePw("");
+      setLeaveStep("done");
       await supabase.auth.signOut();
-      window.location.href = "/";
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
 
   const profile = useQuery({
     queryKey: ["my-profile", userId],
@@ -649,16 +649,42 @@ function MyPage() {
       <Dialog
         open={leaveStep !== null}
         onOpenChange={(v) => {
-          if (!v) setLeaveStep(null);
+          if (v) return;
+          if (leaveStep === "done") {
+            window.location.href = "/";
+            return;
+          }
+          setLeaveStep(null);
         }}
       >
         <DialogContent className="border-border bg-card">
           <DialogHeader>
             <DialogTitle className="font-display text-xl">
-              {leaveStep === "password" ? "비밀번호 확인" : "정말 탈퇴하시겠습니까?"}
+              {leaveStep === "done"
+                ? "탈퇴가 완료되었습니다"
+                : leaveStep === "password"
+                  ? "비밀번호 확인"
+                  : "정말 탈퇴하시겠습니까?"}
             </DialogTitle>
           </DialogHeader>
-          {leaveStep === "confirm" ? (
+          {leaveStep === "done" ? (
+            <>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                그동안 함께해 주셔서 감사합니다. 확인을 누르면 메인 화면으로 이동합니다.
+              </p>
+              <div className="mt-6">
+                <button
+                  onClick={() => {
+                    window.location.href = "/";
+                  }}
+                  className="rounded-sm border border-primary/40 px-5 py-2.5 text-sm text-primary transition-colors hover:bg-primary/10"
+                >
+                  확인
+                </button>
+              </div>
+            </>
+          ) : leaveStep === "confirm" ? (
+
             <>
               <p className="text-sm leading-relaxed text-muted-foreground">
                 탈퇴 시 회원 정보가 전부 삭제되고, 같은 계정으로 다시 로그인할 수 없게 됩니다.
