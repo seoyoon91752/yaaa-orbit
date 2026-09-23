@@ -120,6 +120,13 @@
       "when": 1790157908929,
       "tag": "0016_roster_delete_revokes_membership",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1790160231648,
+      "tag": "0017_reapply_membership",
+      "breakpoints": true
     }
   ]
 }

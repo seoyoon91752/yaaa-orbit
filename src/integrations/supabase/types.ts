@@ -801,6 +801,29 @@ export type Database = {
         Args: { _metric: string; _user_id: string }
         Returns: number
       }
+      reapply_membership: {
+        Args: never
+        Returns: {
+          avatar_path: string | null
+          created_at: string
+          department: string | null
+          email: string | null
+          full_name: string
+          id: string
+          phone: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["member_status"]
+          student_id: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       request_rental_return: {
         Args: { _note?: string; _rental_id: string }
         Returns: undefined
