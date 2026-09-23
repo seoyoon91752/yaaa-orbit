@@ -326,7 +326,7 @@ function RosterSection() {
       toast.success("명부에서 삭제하고 계정 권한을 회수했습니다.");
       queryClient.invalidateQueries({ queryKey: ["roster"] });
       queryClient.invalidateQueries({ queryKey: ["pending-profiles"] });
-      queryClient.invalidateQueries({ queryKey: ["role-profiles"] });
+      queryClient.invalidateQueries({ queryKey: ["member-roles"] });
       queryClient.invalidateQueries({ queryKey: ["members"] });
     },
     onError: (error: Error) => toast.error(error.message),
