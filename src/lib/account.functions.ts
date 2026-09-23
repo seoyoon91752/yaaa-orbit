@@ -79,6 +79,29 @@ export const deleteMyAccount = createServerFn({ method: "POST" })
       .update({ user_name: ANON_NAME })
       .eq("user_id", userId);
 
+    // Remove the matching roster entry so the member list stays in sync.
+    {
+      const { data: profile } = await supabaseAdmin
+        .from("profiles")
+        .select("full_name, student_id")
+        .eq("id", userId)
+        .maybeSingle();
+      if (profile) {
+        const norm = (v: string | null) => (v ?? "").replace(/\s+/g, "").toLowerCase();
+        const { data: rosterRows } = await supabaseAdmin
+          .from("roster")
+          .select("id, full_name, student_id");
+        const ids = (rosterRows ?? [])
+          .filter(
+            (r) =>
+              norm(r.full_name) === norm(profile.full_name) &&
+              norm(r.student_id) === norm(profile.student_id),
+          )
+          .map((r) => r.id);
+        if (ids.length > 0) await supabaseAdmin.from("roster").delete().in("id", ids);
+      }
+    }
+
     await supabaseAdmin.from("profiles").delete().eq("id", userId);
 
     const { error: delErr } = await supabaseAdmin.auth.admin.deleteUser(userId);
