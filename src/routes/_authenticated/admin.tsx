@@ -9,9 +9,9 @@ import { SiteHeader } from "@/components/site-header";
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "운영진 콘솔 — YAAA" },
+      { title: "관리자 콘솔 — YAAA" },
       { name: "description", content: "YAAA 부원 명부 관리와 가입 승인을 처리하는 운영진 페이지." },
-      { property: "og:title", content: "운영진 콘솔 — YAAA" },
+      { property: "og:title", content: "관리자 콘솔 — YAAA" },
       { property: "og:description", content: "부원 명부 관리 및 가입 승인." },
     ],
   }),
@@ -36,7 +36,7 @@ function AdminPage() {
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-6 py-16">
         <p className="label-mono">Operations</p>
-        <h1 className="mt-3 text-3xl font-semibold sm:text-4xl">운영진 콘솔</h1>
+        <h1 className="mt-3 text-3xl font-semibold sm:text-4xl">관리자 콘솔</h1>
 
         {membership.isLoading ? (
           <p className="mt-8 font-mono text-sm text-muted-foreground">LOADING…</p>
