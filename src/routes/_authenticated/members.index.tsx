@@ -102,8 +102,15 @@ function MembersPage() {
                 )}
               </span>
               <span className="min-w-0">
-                <span className="block truncate font-display text-base font-semibold">
-                  {m.full_name}
+                <span className="flex items-center gap-2">
+                  <span className="truncate font-display text-base font-semibold">
+                    {m.full_name}
+                  </span>
+                  {roleBadge(m.roles) && (
+                    <span className="shrink-0 rounded-sm border border-primary/40 bg-primary/10 px-1.5 py-0.5 font-mono text-[10px] text-primary">
+                      {roleBadge(m.roles)}
+                    </span>
+                  )}
                 </span>
                 <span className="mt-1 block truncate font-mono text-[11px] text-muted-foreground">
                   {m.department ?? "학과 미등록"}
