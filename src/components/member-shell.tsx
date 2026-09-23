@@ -80,9 +80,20 @@ export function MemberShell({
             <div className="hairline mt-12 rounded-lg border-gold/40 bg-gold/5 p-8">
               <p className="font-display text-lg font-semibold text-gold">명부 인증이 필요합니다</p>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                명부 인증이 완료된 부원만 게시판 · 일정 · 마이페이지를 이용할 수 있습니다. 운영진
-                승인 후 다시 확인해 주세요.
+                {status === "rejected"
+                  ? "가입 신청이 반려되었습니다. 이름·학번이 명부에 등록된 뒤 아래 버튼으로 다시 신청해 주세요."
+                  : "명부 인증이 완료된 부원만 게시판 · 일정 · 마이페이지를 이용할 수 있습니다. 운영진 승인 후 다시 확인해 주세요."}
               </p>
+              {status === "rejected" && (
+                <button
+                  type="button"
+                  disabled={reapply.isPending}
+                  onClick={() => reapply.mutate()}
+                  className="mt-6 rounded-sm border border-primary/40 px-5 py-2.5 font-mono text-xs text-primary transition-colors hover:bg-primary/10 disabled:opacity-50"
+                >
+                  {reapply.isPending ? "신청 중…" : "다시 가입 신청"}
+                </button>
+              )}
             </div>
           ) : (
             <div className="mt-12">{children}</div>
