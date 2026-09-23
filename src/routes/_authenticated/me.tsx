@@ -609,6 +609,99 @@ function MyPage() {
           </ul>
         )}
       </section>
+
+      <section className="mt-16 hairline rounded-lg border-destructive/40 bg-card/60 p-8">
+        <p className="label-mono text-destructive">Leave</p>
+        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+          탈퇴하면 회원 정보와 작성한 글·사진·별가루가 모두 삭제되며 복구할 수 없습니다.
+        </p>
+        <button
+          onClick={() => {
+            setLeaveStep("confirm");
+            setLeavePw("");
+          }}
+          className="mt-5 rounded-sm border border-destructive/50 px-5 py-2.5 text-sm text-destructive transition-colors hover:bg-destructive/10"
+        >
+          탈퇴하기
+        </button>
+      </section>
+
+      <Dialog
+        open={leaveStep !== null}
+        onOpenChange={(v) => {
+          if (!v) setLeaveStep(null);
+        }}
+      >
+        <DialogContent className="border-border bg-card">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl">
+              {leaveStep === "password" ? "비밀번호 확인" : "정말 탈퇴하시겠습니까?"}
+            </DialogTitle>
+          </DialogHeader>
+          {leaveStep === "confirm" ? (
+            <>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                탈퇴 시 회원 정보가 전부 삭제되고 작성한 글·댓글·사진·별가루·수집한 천체도 함께
+                사라집니다. 같은 계정으로 다시 로그인할 수 없습니다.
+              </p>
+              <div className="mt-6 flex gap-3">
+                <button
+                  onClick={() => setLeaveStep("password")}
+                  className="rounded-sm border border-destructive/50 px-5 py-2.5 text-sm text-destructive transition-colors hover:bg-destructive/10"
+                >
+                  예
+                </button>
+                <button
+                  onClick={() => setLeaveStep(null)}
+                  className="rounded-sm border border-border px-5 py-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  아니요
+                </button>
+              </div>
+            </>
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!leavePw) {
+                  toast.error("비밀번호를 입력해 주세요.");
+                  return;
+                }
+                leaveAccount.mutate();
+              }}
+              className="space-y-3"
+            >
+              <p className="text-sm text-muted-foreground">
+                본인 확인을 위해 비밀번호를 입력해 주세요.
+              </p>
+              <input
+                type="password"
+                value={leavePw}
+                onChange={(e) => setLeavePw(e.target.value)}
+                placeholder="비밀번호"
+                autoComplete="current-password"
+                className="w-full rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/50"
+              />
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={leaveAccount.isPending}
+                  className="rounded-sm border border-destructive/50 px-5 py-2.5 text-sm text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-60"
+                >
+                  {leaveAccount.isPending ? "처리 중…" : "탈퇴하기"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLeaveStep(null)}
+                  className="rounded-sm border border-border px-5 py-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  취소
+                </button>
+              </div>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </MemberShell>
   );
 }
