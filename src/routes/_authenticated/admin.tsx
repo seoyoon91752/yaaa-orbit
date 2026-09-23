@@ -536,6 +536,8 @@ function ApprovalSection() {
 
 function RoleSection() {
   const queryClient = useQueryClient();
+  const { session } = useSession();
+  const isSuperAdmin = Boolean(useMembership(Boolean(session)).data?.isSuperAdmin);
 
   const members = useQuery({
     queryKey: ["member-roles"],
