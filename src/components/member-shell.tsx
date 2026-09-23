@@ -1,7 +1,4 @@
 import type { ReactNode } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { StarField } from "@/components/star-field";
