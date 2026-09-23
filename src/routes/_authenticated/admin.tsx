@@ -323,8 +323,11 @@ function RosterSection() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("삭제했습니다.");
+      toast.success("명부에서 삭제하고 계정 권한을 회수했습니다.");
       queryClient.invalidateQueries({ queryKey: ["roster"] });
+      queryClient.invalidateQueries({ queryKey: ["pending-profiles"] });
+      queryClient.invalidateQueries({ queryKey: ["member-roles"] });
+      queryClient.invalidateQueries({ queryKey: ["members"] });
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -423,7 +426,14 @@ function RosterSection() {
                 />
                 <td className="py-2 text-right">
                   <button
-                    onClick={() => removeMember.mutate(row.id)}
+                    onClick={() => {
+                      if (
+                        confirm(
+                          `${row.full_name} 님을 명부에서 삭제할까요? 해당 부원의 계정 인증이 해제되어 부원 전용 공간을 이용할 수 없게 됩니다.`,
+                        )
+                      )
+                        removeMember.mutate(row.id);
+                    }}
                     className="text-xs text-muted-foreground transition-colors hover:text-destructive"
                   >
                     삭제
