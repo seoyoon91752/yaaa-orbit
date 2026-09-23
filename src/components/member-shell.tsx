@@ -36,6 +36,19 @@ export function MemberShell({
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const status = data?.profile?.status ?? "pending";
+  const queryClient = useQueryClient();
+
+  const reapply = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.rpc("reapply_membership");
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+      toast.success("가입 신청을 다시 접수했습니다.");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
 
   return (
     <div className="relative min-h-screen">
