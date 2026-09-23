@@ -561,17 +561,25 @@ function RoleSection() {
     },
   });
 
-  const setOfficer = useMutation({
-    mutationFn: async ({ id, make }: { id: string; make: boolean }) => {
+  const setRole = useMutation({
+    mutationFn: async ({
+      id,
+      role,
+      make,
+    }: {
+      id: string;
+      role: "manager" | "officer";
+      make: boolean;
+    }) => {
       if (make) {
-        const { error } = await supabase.from("user_roles").insert({ user_id: id, role: "officer" });
+        const { error } = await supabase.from("user_roles").insert({ user_id: id, role });
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from("user_roles")
           .delete()
           .eq("user_id", id)
-          .eq("role", "officer");
+          .eq("role", role);
         if (error) throw error;
       }
     },
