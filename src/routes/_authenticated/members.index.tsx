@@ -33,8 +33,6 @@ export type MemberRow = {
 /** 부원 이름 옆에 표시할 역할 배지. */
 export function roleBadge(roles: string[] | null | undefined) {
   const list = roles ?? [];
-  if (list.includes("admin")) return "최고관리자";
-  if (list.includes("manager")) return "관리자";
   if (list.includes("officer")) return "임원진";
   return null;
 }
