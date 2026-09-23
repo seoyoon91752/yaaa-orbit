@@ -141,6 +141,13 @@
       "when": 1790161747721,
       "tag": "0019_add_manager_role_enum",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1790161780247,
+      "tag": "0020_manager_role_permissions",
+      "breakpoints": true
     }
   ]
 }

@@ -758,6 +758,7 @@ export type Database = {
         Returns: boolean
       }
       increment_post_view: { Args: { _post_id: string }; Returns: undefined }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_officer: { Args: { _user_id: string }; Returns: boolean }
       is_verified_member: { Args: { _user_id: string }; Returns: boolean }
       list_members: {
@@ -768,6 +769,7 @@ export type Database = {
           department: string
           full_name: string
           id: string
+          roles: string[]
         }[]
       }
       list_room_slots: {
