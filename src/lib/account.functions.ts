@@ -40,11 +40,15 @@ export const deleteMyAccount = createServerFn({ method: "POST" })
     }
     await anon.auth.signOut();
 
-    // Remove stored files owned by the user.
-    for (const bucket of ["gallery", "avatars"]) {
-      const { data: files } = await supabaseAdmin.storage.from(bucket).list(userId, { limit: 1000 });
+    const ANON_NAME = "탈퇴한 사용자";
+
+    // Remove only the profile photo; gallery photos stay as club records.
+    {
+      const { data: files } = await supabaseAdmin.storage
+        .from("avatars")
+        .list(userId, { limit: 1000 });
       const paths = (files ?? []).map((f) => `${userId}/${f.name}`);
-      if (paths.length > 0) await supabaseAdmin.storage.from(bucket).remove(paths);
+      if (paths.length > 0) await supabaseAdmin.storage.from("avatars").remove(paths);
     }
 
     const byUser: string[] = [
@@ -55,7 +59,6 @@ export const deleteMyAccount = createServerFn({ method: "POST" })
       "room_reservations",
       "equipment_rentals",
       "activity_signups",
-      "gallery_photos",
       "user_roles",
     ];
     for (const table of byUser) {
@@ -64,8 +67,18 @@ export const deleteMyAccount = createServerFn({ method: "POST" })
         .delete()
         .eq("user_id", userId);
     }
-    await supabaseAdmin.from("post_comments").delete().eq("author_id", userId);
-    await supabaseAdmin.from("posts").delete().eq("author_id", userId);
+
+    // Keep posts, comments and gallery photos, but anonymise the author.
+    await supabaseAdmin
+      .from("post_comments")
+      .update({ author_name: ANON_NAME })
+      .eq("author_id", userId);
+    await supabaseAdmin.from("posts").update({ author_name: ANON_NAME }).eq("author_id", userId);
+    await supabaseAdmin
+      .from("gallery_photos")
+      .update({ user_name: ANON_NAME })
+      .eq("user_id", userId);
+
     await supabaseAdmin.from("profiles").delete().eq("id", userId);
 
     const { error: delErr } = await supabaseAdmin.auth.admin.deleteUser(userId);
