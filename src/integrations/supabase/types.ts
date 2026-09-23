@@ -758,6 +758,7 @@ export type Database = {
         Returns: boolean
       }
       increment_post_view: { Args: { _post_id: string }; Returns: undefined }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_officer: { Args: { _user_id: string }; Returns: boolean }
       is_verified_member: { Args: { _user_id: string }; Returns: boolean }
       list_members: {
@@ -768,6 +769,7 @@ export type Database = {
           department: string
           full_name: string
           id: string
+          roles: string[]
         }[]
       }
       list_room_slots: {
@@ -807,7 +809,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "member" | "officer"
+      app_role: "admin" | "member" | "officer" | "manager"
       board_kind: "notice" | "free"
       celestial_kind: "constellation" | "star" | "nebula" | "cluster"
       equipment_status: "available" | "rented" | "maintenance" | "broken"
@@ -946,7 +948,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "member", "officer"],
+      app_role: ["admin", "member", "officer", "manager"],
       board_kind: ["notice", "free"],
       celestial_kind: ["constellation", "star", "nebula", "cluster"],
       equipment_status: ["available", "rented", "maintenance", "broken"],

@@ -102,6 +102,7 @@ export function useMemberContext() {
     userId: session?.user.id ?? null,
     profile: data?.profile ?? null,
     isAdmin: Boolean(data?.isAdmin),
+    isSuperAdmin: Boolean(data?.isSuperAdmin),
     isOfficer: Boolean(data?.isOfficer),
   };
 }

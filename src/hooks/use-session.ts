@@ -47,12 +47,14 @@ export function useMembership(enabled: boolean) {
       const profile = (Array.isArray(claimed) ? claimed[0] : claimed) as MemberProfile | null;
 
       const { data: roles } = await supabase.from("user_roles").select("role");
-      const isAdmin = (roles ?? []).some((r) => r.role === "admin");
-      const isOfficer = isAdmin || (roles ?? []).some((r) => r.role === "officer");
+      const list = (roles ?? []).map((r) => r.role as string);
+      const isSuperAdmin = list.includes("admin");
+      const isAdmin = isSuperAdmin || list.includes("manager");
+      const isOfficer = isAdmin || list.includes("officer");
 
       const { data: anyAdmin } = await supabase.rpc("admin_exists");
 
-      return { profile, isAdmin, isOfficer, adminExists: Boolean(anyAdmin) };
+      return { profile, isAdmin, isSuperAdmin, isOfficer, adminExists: Boolean(anyAdmin) };
     },
   });
 }

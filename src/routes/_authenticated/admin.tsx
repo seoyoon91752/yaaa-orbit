@@ -536,6 +536,8 @@ function ApprovalSection() {
 
 function RoleSection() {
   const queryClient = useQueryClient();
+  const { session } = useSession();
+  const isSuperAdmin = Boolean(useMembership(Boolean(session)).data?.isSuperAdmin);
 
   const members = useQuery({
     queryKey: ["member-roles"],
@@ -561,17 +563,25 @@ function RoleSection() {
     },
   });
 
-  const setOfficer = useMutation({
-    mutationFn: async ({ id, make }: { id: string; make: boolean }) => {
+  const setRole = useMutation({
+    mutationFn: async ({
+      id,
+      role,
+      make,
+    }: {
+      id: string;
+      role: "manager" | "officer";
+      make: boolean;
+    }) => {
       if (make) {
-        const { error } = await supabase.from("user_roles").insert({ user_id: id, role: "officer" });
+        const { error } = await supabase.from("user_roles").insert({ user_id: id, role });
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from("user_roles")
           .delete()
           .eq("user_id", id)
-          .eq("role", "officer");
+          .eq("role", role);
         if (error) throw error;
       }
     },
@@ -593,14 +603,21 @@ function RoleSection() {
       </header>
 
       <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-        임원진은 공지사항 작성과 일정 등록, 동아리방 예약 관리만 할 수 있습니다. 명부 관리, 가입
-        승인, 역할 지정, 자유게시판 글 강제 삭제는 최고관리자 전용입니다.
+        관리자는 최고관리자와 동일한 권한을 가지며(최고관리자 지정 권한 제외), 최고관리자만 지정할
+        수 있습니다. 임원진은 공지사항 작성과 일정 등록, 장비 · 동아리방 관리를 할 수 있습니다.
+        관리자 · 임원진은 중복으로 지정할 수 있습니다.
       </p>
 
       <div className="mt-6 space-y-3">
         {(members.data ?? []).map((m) => {
           const admin = m.roles.includes("admin");
+          const manager = m.roles.includes("manager");
           const officer = m.roles.includes("officer");
+          const labels = [
+            admin ? "최고관리자" : null,
+            manager ? "관리자" : null,
+            officer ? "임원진" : null,
+          ].filter(Boolean) as string[];
           return (
             <div
               key={m.id}
@@ -612,16 +629,31 @@ function RoleSection() {
                   <span className="font-mono text-xs text-muted-foreground">{m.student_id}</span>
                 </p>
                 <p className="mt-1 font-mono text-xs">
-                  <span className={admin ? "text-gold" : officer ? "text-primary" : "text-muted-foreground"}>
-                    {admin ? "최고관리자" : officer ? "임원진" : "부원"}
+                  <span className={labels.length ? "text-primary" : "text-muted-foreground"}>
+                    {labels.length ? labels.join(" · ") : "부원"}
                   </span>
                 </p>
               </div>
-              {admin ? (
-                <span className="font-mono text-xs text-muted-foreground">ROLE LOCKED</span>
-              ) : (
+              <div className="flex flex-wrap gap-2">
+                {admin && (
+                  <span className="rounded-sm border border-gold/40 px-3 py-1.5 font-mono text-xs text-gold">
+                    최고관리자
+                  </span>
+                )}
+                {isSuperAdmin && (
+                  <button
+                    onClick={() => setRole.mutate({ id: m.id, role: "manager", make: !manager })}
+                    className={`rounded-sm border px-3 py-1.5 text-xs transition-colors ${
+                      manager
+                        ? "border-border text-muted-foreground hover:border-destructive/50 hover:text-destructive"
+                        : "border-primary/40 text-primary hover:bg-primary/10"
+                    }`}
+                  >
+                    {manager ? "관리자 해제" : "관리자 지정"}
+                  </button>
+                )}
                 <button
-                  onClick={() => setOfficer.mutate({ id: m.id, make: !officer })}
+                  onClick={() => setRole.mutate({ id: m.id, role: "officer", make: !officer })}
                   className={`rounded-sm border px-3 py-1.5 text-xs transition-colors ${
                     officer
                       ? "border-border text-muted-foreground hover:border-destructive/50 hover:text-destructive"
@@ -630,7 +662,7 @@ function RoleSection() {
                 >
                   {officer ? "임원진 해제" : "임원진 지정"}
                 </button>
-              )}
+              </div>
             </div>
           );
         })}
