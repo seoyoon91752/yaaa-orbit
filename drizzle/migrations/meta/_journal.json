@@ -148,6 +148,13 @@
       "when": 1790161780247,
       "tag": "0020_manager_role_permissions",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1790166445026,
+      "tag": "0021_grant_stardust_admin_only",
+      "breakpoints": true
     }
   ]
 }

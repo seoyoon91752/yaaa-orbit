@@ -54,6 +54,7 @@ function AdminPage() {
             <RosterSection />
             <ApprovalSection />
             <RoleSection />
+            <StardustSection />
             <QuestSection />
           </div>
         )}
@@ -668,6 +669,130 @@ function RoleSection() {
         })}
         {members.data?.length === 0 && (
           <p className="py-6 text-sm text-muted-foreground">인증된 부원이 없습니다.</p>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function StardustSection() {
+  const queryClient = useQueryClient();
+  const [q, setQ] = useState("");
+  const [amounts, setAmounts] = useState<Record<string, string>>({});
+  const [reasons, setReasons] = useState<Record<string, string>>({});
+
+  const rows = useQuery({
+    queryKey: ["stardust-admin"],
+    queryFn: async () => {
+      const [{ data: profiles, error }, { data: balances, error: balErr }] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("id, full_name, student_id")
+          .eq("status", "verified")
+          .order("full_name"),
+        supabase.from("stardust_balances").select("user_id, balance"),
+      ]);
+      if (error) throw error;
+      if (balErr) throw balErr;
+      const byUser = new Map((balances ?? []).map((b) => [b.user_id, b.balance]));
+      return (profiles ?? []).map((p) => ({ ...p, balance: byUser.get(p.id) ?? 0 }));
+    },
+  });
+
+  const grant = useMutation({
+    mutationFn: async ({ id, amount, reason }: { id: string; amount: number; reason: string }) => {
+      const { error } = await supabase.rpc("grant_stardust", {
+        _user_id: id,
+        _amount: amount,
+        _reason: reason,
+      });
+      if (error) throw error;
+    },
+    onSuccess: (_d, v) => {
+      toast.success(
+        v.amount > 0 ? `별가루 ${v.amount}개를 지급했습니다.` : `별가루 ${-v.amount}개를 회수했습니다.`,
+      );
+      setAmounts((prev) => ({ ...prev, [v.id]: "" }));
+      setReasons((prev) => ({ ...prev, [v.id]: "" }));
+      queryClient.invalidateQueries({ queryKey: ["stardust-admin"] });
+      queryClient.invalidateQueries({ queryKey: ["stardust"] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const list = (rows.data ?? []).filter((m) => {
+    const term = q.trim();
+    if (!term) return true;
+    return m.full_name.includes(term) || m.student_id.includes(term);
+  });
+
+  return (
+    <section>
+      <header className="flex items-baseline justify-between border-b border-border pb-4">
+        <h2 className="text-xl font-semibold">별가루 지급</h2>
+        <span className="font-mono text-xs text-muted-foreground">
+          {list.length.toString().padStart(3, "0")} MEMBERS
+        </span>
+      </header>
+
+      <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        인증된 부원에게 별가루를 직접 지급하거나, 음수를 입력해 회수할 수 있습니다. 지급 내역은
+        해당 부원의 별가루 기록에 남습니다.
+      </p>
+
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="이름 또는 학번 검색"
+        className="mt-6 w-full max-w-sm rounded-sm border border-input bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-primary/60"
+      />
+
+      <div className="mt-6 space-y-3">
+        {list.map((m) => (
+          <div
+            key={m.id}
+            className="hairline flex flex-wrap items-center justify-between gap-4 rounded-md bg-card/60 px-5 py-4"
+          >
+            <div>
+              <p className="text-sm font-medium">
+                {m.full_name}{" "}
+                <span className="font-mono text-xs text-muted-foreground">{m.student_id}</span>
+              </p>
+              <p className="mt-1 font-mono text-xs text-primary">보유 {m.balance} ✦</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                value={amounts[m.id] ?? ""}
+                onChange={(e) => setAmounts((prev) => ({ ...prev, [m.id]: e.target.value }))}
+                placeholder="개수"
+                inputMode="numeric"
+                className="w-20 rounded-sm border border-input bg-background/60 px-3 py-2 font-mono text-sm outline-none focus:border-primary/60"
+              />
+              <input
+                value={reasons[m.id] ?? ""}
+                onChange={(e) => setReasons((prev) => ({ ...prev, [m.id]: e.target.value }))}
+                placeholder="사유 (선택)"
+                className="w-40 rounded-sm border border-input bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary/60"
+              />
+              <button
+                disabled={grant.isPending}
+                onClick={() => {
+                  const amount = Number((amounts[m.id] ?? "").trim());
+                  if (!Number.isInteger(amount) || amount === 0) {
+                    toast.error("0이 아닌 정수를 입력해 주세요.");
+                    return;
+                  }
+                  grant.mutate({ id: m.id, amount, reason: reasons[m.id] ?? "" });
+                }}
+                className="rounded-sm border border-primary/40 px-3 py-2 text-xs text-primary transition-colors hover:bg-primary/10 disabled:opacity-50"
+              >
+                지급
+              </button>
+            </div>
+          </div>
+        ))}
+        {list.length === 0 && (
+          <p className="py-6 text-sm text-muted-foreground">대상 부원이 없습니다.</p>
         )}
       </div>
     </section>
