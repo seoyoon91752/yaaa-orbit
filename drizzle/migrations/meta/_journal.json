@@ -134,6 +134,13 @@
       "when": 1790160414178,
       "tag": "0018_claim_membership_reopens_rejected",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1790161747721,
+      "tag": "0019_add_manager_role_enum",
+      "breakpoints": true
     }
   ]
 }
