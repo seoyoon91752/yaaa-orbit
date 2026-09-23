@@ -402,6 +402,7 @@ const METRIC_LABEL: Record<string, string> = {
   collection: "천체 수집",
   gallery: "갤러리 업로드",
   writing: "게시글 · 댓글",
+  signup: "회원가입",
 };
 
 function QuestBoard({ userId }: { userId: string | null }) {

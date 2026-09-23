@@ -67,6 +67,7 @@ const QUEST_METRICS = [
   { value: "collection", label: "천체 수집" },
   { value: "gallery", label: "갤러리 업로드" },
   { value: "writing", label: "게시글 · 댓글" },
+  { value: "signup", label: "회원가입" },
 ] as const;
 
 function QuestSection() {
