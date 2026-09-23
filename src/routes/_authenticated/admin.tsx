@@ -464,7 +464,7 @@ function ApprovalSection() {
       const { data, error } = await supabase
         .from("profiles")
         .select("id, full_name, student_id, email, status, created_at")
-        .neq("status", "verified")
+        .eq("status", "pending")
         .order("created_at", { ascending: true });
       if (error) throw error;
       return data as MemberProfile[];
