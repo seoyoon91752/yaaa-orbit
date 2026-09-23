@@ -127,6 +127,13 @@
       "when": 1790160231648,
       "tag": "0017_reapply_membership",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1790160414178,
+      "tag": "0018_claim_membership_reopens_rejected",
+      "breakpoints": true
     }
   ]
 }
