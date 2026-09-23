@@ -661,8 +661,7 @@ function MyPage() {
           {leaveStep === "confirm" ? (
             <>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                탈퇴 시 회원 정보와 별가루·수집한 천체가 삭제되고, 같은 계정으로 다시 로그인할 수
-                없습니다. 작성한 글·댓글·사진은 남지만 작성자는 '탈퇴한 사용자'로 표시됩니다.
+                탈퇴 시 회원 정보가 전부 삭제되고, 같은 계정으로 다시 로그인할 수 없게 됩니다.
               </p>
               <div className="mt-6 flex gap-3">
                 <button
