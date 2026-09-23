@@ -1,7 +1,4 @@
 import type { ReactNode } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { StarField } from "@/components/star-field";
@@ -39,19 +36,7 @@ export function MemberShell({
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const status = data?.profile?.status ?? "pending";
-  const queryClient = useQueryClient();
 
-  const reapply = useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase.rpc("reapply_membership");
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries();
-      toast.success("가입 신청을 다시 접수했습니다.");
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
 
   return (
     <div className="relative min-h-screen">
@@ -97,19 +82,9 @@ export function MemberShell({
               <p className="font-display text-lg font-semibold text-gold">명부 인증이 필요합니다</p>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
                 {status === "rejected"
-                  ? "가입 신청이 반려되었습니다. 이름·학번이 명부에 등록된 뒤 아래 버튼으로 다시 신청해 주세요."
+                  ? "가입 신청이 반려되었습니다. 이름·학번을 확인한 뒤 다시 회원가입해 주세요."
                   : "명부 인증이 완료된 부원만 게시판 · 일정 · 마이페이지를 이용할 수 있습니다. 운영진 승인 후 다시 확인해 주세요."}
               </p>
-              {status === "rejected" && (
-                <button
-                  type="button"
-                  disabled={reapply.isPending}
-                  onClick={() => reapply.mutate()}
-                  className="mt-6 rounded-sm border border-primary/40 px-5 py-2.5 font-mono text-xs text-primary transition-colors hover:bg-primary/10 disabled:opacity-50"
-                >
-                  {reapply.isPending ? "신청 중…" : "다시 가입 신청"}
-                </button>
-              )}
             </div>
           ) : (
             <div className="mt-12">{children}</div>
