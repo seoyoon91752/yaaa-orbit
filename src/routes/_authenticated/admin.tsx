@@ -426,7 +426,14 @@ function RosterSection() {
                 />
                 <td className="py-2 text-right">
                   <button
-                    onClick={() => removeMember.mutate(row.id)}
+                    onClick={() => {
+                      if (
+                        confirm(
+                          `${row.full_name} 님을 명부에서 삭제할까요? 해당 부원의 계정 인증이 해제되어 부원 전용 공간을 이용할 수 없게 됩니다.`,
+                        )
+                      )
+                        removeMember.mutate(row.id);
+                    }}
                     className="text-xs text-muted-foreground transition-colors hover:text-destructive"
                   >
                     삭제
