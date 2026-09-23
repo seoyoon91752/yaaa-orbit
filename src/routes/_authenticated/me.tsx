@@ -7,6 +7,9 @@ import { MemberShell, useMemberContext } from "@/components/member-shell";
 import { formatDate, formatDateTime } from "@/lib/format";
 import { signAvatars } from "@/lib/avatars";
 import { ConstellationAvatar } from "@/components/constellation-avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useServerFn } from "@tanstack/react-start";
+import { deleteMyAccount } from "@/lib/account.functions";
 
 const RENTAL_LABEL: Record<string, string> = {
   pending: "대기중",
