@@ -42,7 +42,7 @@ function MyPage() {
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [leaveStep, setLeaveStep] = useState<"confirm" | "password" | null>(null);
+  const [leaveStep, setLeaveStep] = useState<"confirm" | "password" | "done" | null>(null);
   const [leavePw, setLeavePw] = useState("");
   const callDeleteAccount = useServerFn(deleteMyAccount);
 
@@ -52,13 +52,13 @@ function MyPage() {
       if (!res.ok) throw new Error("비밀번호가 틀렸습니다.");
     },
     onSuccess: async () => {
-      setLeaveStep(null);
-      toast.success("탈퇴가 완료되었습니다.");
+      setLeavePw("");
+      setLeaveStep("done");
       await supabase.auth.signOut();
-      window.location.href = "/";
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
 
   const profile = useQuery({
     queryKey: ["my-profile", userId],
